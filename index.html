@@ -130,11 +130,14 @@ img{display:block}
 
 /* ── 住客的話 ── */
 .voices{background:#26291f;color:#e6e1d1;padding:clamp(80px,12vw,140px) 28px}
-.voices-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(48px,8vw,80px)}
+.voices-inner{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(40px,6vw,64px)}
+.voices-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(30px,4vw,48px)}
+.voices-more{align-self:center;font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:4px;color:#e6e1d1;border:1px solid rgba(230,225,209,.45);padding:14px 30px}
+.voices-more:hover{border-color:#e6e1d1;background:rgba(230,225,209,.08);color:#fff}
 .voices .sec-head .en{color:#8d886f}
 .voices .rating{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#b5b09c}
 .voices figure{margin:0;display:flex;flex-direction:column;gap:14px;border-left:1px solid rgba(230,225,209,.25);padding-left:clamp(20px,4vw,36px)}
-.voices blockquote{margin:0;font-size:clamp(16px,3vw,19px);font-weight:300;line-height:2.2;letter-spacing:2px}
+.voices blockquote{margin:0;font-size:clamp(15px,2.4vw,17px);font-weight:300;line-height:2.05;letter-spacing:1.4px}
 .voices figcaption{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#8d886f}
 
 /* ── 須知 ── */
@@ -325,20 +328,59 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     <div class="sec-head">
       <div class="en">VOICES</div>
       <h2>住客的話</h2>
-      <div class="rating">Google 評論　4.8 ★</div>
+      <div class="rating">Google 評論　4.8 ★　62 則</div>
     </div>
+    <div class="voices-grid">
     <figure>
-      <blockquote>超級滿意的民宿。主人熱情好客，招待得無微不至。早餐好好吃，好像不計成本似的。明明已吃過早餐，和主人聊天聊太久又拿出甜點招待，晚上回來後繼續和主人聊天，邊喝金門高粱助興。</blockquote>
-      <figcaption>Google 評論・五星住客</figcaption>
+      <blockquote>超級滿意的民宿。主人熱情好客，招待得無微不至。早餐好好吃，好像不計成本似。明明已吃過早餐，和主人聊天聊太久又拿出甜點招待（住宿費沒有附甜點哦），晚上回來後繼續和主人聊天，邊喝金門高粱助興。 環境從裡到外更是棒的沒話說，床超好睡，庭園超漂亮。值得多住幾晚。</blockquote>
+      <figcaption>maggie mao・Google 評論 5★・3 年前</figcaption>
     </figure>
     <figure>
-      <blockquote>環境從裡到外更是棒得沒話說，床超好睡，庭園超漂亮。值得多住幾晚。</blockquote>
-      <figcaption>Google 評論・五星住客</figcaption>
+      <blockquote>住宿環境乾淨舒適，房間整理得很用心，設備齊全,老闆親切熱情，周邊環境安靜，很適合放鬆度假，下次有機會一定會再入住！ 早餐超豐盛 超好吃👍👍👍</blockquote>
+      <figcaption>右・Google 評論 5★・2 個月前</figcaption>
     </figure>
     <figure>
-      <blockquote>風景優美寧靜，房間乾淨舒適，早餐豐盛可口，老闆與管家健談，慢活渡假好選擇。</blockquote>
-      <figcaption>Google 評論・五星住客</figcaption>
+      <blockquote>真是一次放鬆且舒服的旅行，這次在民宿待了兩晚，感受到民宿主人程先生與管家夏哥的熱情款待，真的在花蓮享受慢活與自在的生活步調，讓自己的身心靈好好充了一次電。</blockquote>
+      <figcaption>黃俊獅・Google 評論 5★・10 個月前</figcaption>
     </figure>
+    <figure>
+      <blockquote>莊園主人程先生熱情接待,介紹園內一草一物,豐盛又養生的早餐,早上從二樓大廳靜.近觀賞水池周遭百態,"心"去感受,我倆夫婦難忘回憶,感恩.</blockquote>
+      <figcaption>黃文昇・Google 評論 5★・2 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>在山遇三天兩夜.感覺好像到另一世界.讓身心靈徹底放鬆.這裡有老板用心佈置的藝術品.還有在地食材美味又養生的早餐.如果想要遠離城市的熱鬧.不妨來一趟山遇之旅.會讓您愛上這塊純淨的土地。</blockquote>
+      <figcaption>Ariel Lai・Google 評論 5★・6 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>一個能夠放鬆心情找尋靈感的好地方，適合全家入住也適合一個人旅行駐足！（巧遇白腹秧雞一家在院子裡覓食）</blockquote>
+      <figcaption>吳尚容・Google 評論 5★・4 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>在那裡莊主和管家都待人和善，還特別幫我們準備素食早餐，那裡的環境讓人很放鬆，感覺讓人遠離世俗的一切。</blockquote>
+      <figcaption>歐展宏・Google 評論 5★・4 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>老闆很用心 讓每個人都有回到家的感覺 跟老闆連喝兩天 他還是起得來做早餐XD</blockquote>
+      <figcaption>習大大・Google 評論 5★・7 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>一對超用心的夫妻,經營好景色 慢活又放鬆的超值民宿。 比5星級旅館還要好!</blockquote>
+      <figcaption>蕭明德・Google 評論 5★・8 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>老闆親切又健談 房間很舒適 現打果汁超級讚</blockquote>
+      <figcaption>Erin Liu・Google 評論 5★・7 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>雖然已經晚上六點了，但是民宿裡面氛圍還是很棒，舒適又輕鬆，老闆也非常健談，小庭院整理的漂亮。 二樓的公共空間很棒，不管是來玩還是放鬆身心都很適合，很推薦來花蓮的人來找老闆喝咖啡聊天哦！ 因為房間已經放了很多東西就沒有拍囉！</blockquote>
+      <figcaption>Erica Chang・Google 評論 5★・5 年前</figcaption>
+    </figure>
+    <figure>
+      <blockquote>風景優美寧靜 房間乾淨舒適 早餐豐盛可口 老闆與管家健談 慢活渡假好選擇</blockquote>
+      <figcaption>大伯&amp;米日常・Google 評論 5★・2 年前</figcaption>
+    </figure>
+    </div>
+    <a class="voices-more" href="https://www.google.com/maps/place/%E8%8A%B1%E8%93%AE+%E5%B1%B1%E9%81%87%E8%8E%8A%E5%9C%92%E7%BE%8E%E6%A8%82%E5%9C%B0/@23.8443443,121.483352,17z/data=!4m8!3m7!1s0x3468a50f7b10b5cd:0xa779ef2218a8b9f2!8m2!3d23.8443443!4d121.483352!9m1!1b1!16s%2Fg%2F11clsyjwls?hl=zh-TW" target="_blank" rel="noopener">查看全部 Google 評論</a>
   </div>
 </section>
 
