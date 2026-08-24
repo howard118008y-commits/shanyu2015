@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>山遇莊園民宿｜花蓮壽豐 山腳下的家園</title>
+<meta name="description" content="花蓮壽豐「山遇莊園美樂地」民宿——山腳下靜心、談心、放心的家園。含次日早餐，LINE 加好友即可預約（ID：hans588121）。">
+<meta property="og:title" content="山遇莊園民宿｜花蓮壽豐 山腳下的家園">
+<meta property="og:description" content="不是過路旅館，也不是豪奢民宿——是提供人生有夢者一方靜心、談心、放心的家園。LINE 預約：hans588121">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/hero.jpg">
+<meta property="og:locale" content="zh_TW">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231c1e18'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23f4f1e8' font-family='serif'%3E山%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#f4f1e8;font-family:'Noto Serif TC',serif;color:#26291f;-webkit-font-smoothing:antialiased}
+a{color:#5c6150;text-decoration:none;transition:color .3s ease,background .3s ease,border-color .3s ease}
+a:hover{color:#26291f}
+img{display:block}
+.sans{font-family:'Noto Sans TC',sans-serif}
+
+.nowrap{white-space:nowrap}
+@keyframes heroFade{from{opacity:0}to{opacity:1}}
+@keyframes splashText{0%{opacity:0}35%{opacity:1}75%{opacity:1}100%{opacity:0}}
+@keyframes splashOut{to{opacity:0;visibility:hidden}}
+@keyframes slideFade{0%{opacity:0}6%{opacity:1}40%{opacity:1}52%{opacity:0}100%{opacity:0}}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
+@keyframes slowRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes scrollHint{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(10px);opacity:.25}}
+
+/* ── 開場 ── */
+.splash{position:fixed;inset:0;z-index:100;background:#f4f1e8;display:flex;align-items:center;justify-content:center;animation:splashOut .9s 2.6s ease both;pointer-events:none}
+.splash .mark{writing-mode:vertical-rl;font-size:clamp(40px,7vw,56px);font-weight:600;letter-spacing:30px;color:#26291f;animation:splashText 2.8s ease both;padding-top:30px}
+@media (prefers-reduced-motion:reduce){.splash{display:none}}
+
+/* ── 固定導覽 ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:space-between;align-items:center;padding:22px 28px;mix-blend-mode:difference;color:#f4f1e8;pointer-events:none}
+.nav .brand{font-weight:600;font-size:19px;letter-spacing:10px}
+.nav a{pointer-events:auto;color:#f4f1e8;font-size:12.5px;letter-spacing:5px;border:1px solid rgba(244,241,232,.55);padding:10px 22px}
+.nav a:hover{color:#fff;border-color:#fff}
+.nav::before{content:"";position:absolute;top:0;left:0;right:0;bottom:-34px;background:linear-gradient(rgba(20,22,16,.6),rgba(20,22,16,0));opacity:0;transition:opacity .4s ease;pointer-events:none;z-index:-1}
+.nav.on-photo{mix-blend-mode:normal}
+.nav.on-photo::before{opacity:1}
+
+/* ── Hero ── */
+.hero{position:relative;height:100vh;min-height:560px;background:#1c1e18;overflow:hidden}
+.hero-img{position:absolute;inset:0;animation:heroFade 2.4s ease both}
+.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:0;animation:slideFade 21s ease-in-out infinite,kenburns 21s linear infinite}
+.hero-img img:nth-child(1){animation-delay:0s,0s}
+.hero-img img:nth-child(2){animation-delay:7s,7s}
+.hero-img img:nth-child(3){animation-delay:14s,14s}
+@media (prefers-reduced-motion:reduce){.hero-img img{animation:none}.hero-img img:first-child{opacity:1}}
+.hero-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(20,22,16,0) 45%,rgba(20,22,16,.42) 100%);pointer-events:none}
+.hero-title{position:absolute;top:50%;right:clamp(24px,8vw,110px);transform:translateY(-50%);display:flex;gap:26px;color:#f4f1e8;pointer-events:none;animation:slowRise 1.6s .5s ease both}
+.hero-title .sub{writing-mode:vertical-rl;font-size:clamp(14px,2.4vw,17px);letter-spacing:9px;font-weight:300;opacity:.85;padding-top:8px}
+.hero-title h1{margin:0;writing-mode:vertical-rl;font-size:clamp(52px,10vw,88px);font-weight:600;letter-spacing:26px;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);color:#f4f1e8;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none}
+.scroll-hint .word{font-family:'Noto Sans TC',sans-serif;font-size:10.5px;letter-spacing:5px;opacity:.75}
+.scroll-hint .line{width:1px;height:44px;background:linear-gradient(#f4f1e8,transparent);animation:scrollHint 2.6s ease-in-out infinite}
+@media (max-width:640px){
+  .hero{height:auto;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:38px;padding:80px 0 34px}
+  .hero-img{position:static;order:2;animation:heroFade 2.4s ease both}
+  .hero-img img{position:static;width:100%;height:auto;object-fit:unset;opacity:1;animation:none}
+  .hero-img img:nth-child(2),.hero-img img:nth-child(3){display:none}
+  .hero-shade{display:none}
+  .hero-title{position:static;transform:none;order:1;justify-content:center}
+  .scroll-hint{position:static;transform:none;order:3;align-self:center;margin-top:6px}
+}
+
+/* ── 序 ── */
+.intro{padding:clamp(90px,16vw,170px) 28px;display:flex;justify-content:center}
+.intro-inner{display:flex;flex-direction:row-reverse;gap:clamp(30px,7vw,70px);align-items:flex-start;height:clamp(330px,52vw,420px)}
+.intro h2{margin:0;writing-mode:vertical-rl;font-size:clamp(24px,4.6vw,34px);font-weight:600;letter-spacing:14px;color:#26291f}
+.intro p{margin:0;writing-mode:vertical-rl;font-size:clamp(14px,2.6vw,16px);font-weight:300;line-height:2.6;letter-spacing:4px;color:#55584a;max-height:100%}
+
+/* ── 心:三聯段 ── */
+.spirit{padding:0 28px clamp(90px,16vw,170px);display:flex;justify-content:center}
+.spirit-inner{display:flex;justify-content:center;gap:clamp(34px,9vw,110px);flex-wrap:wrap}
+.spirit-item{display:flex;flex-direction:row-reverse;gap:clamp(14px,2.6vw,24px);height:clamp(240px,38vw,320px);padding-top:18px;border-top:1px solid #d8d2bf}
+.spirit-item h3{margin:0;writing-mode:vertical-rl;font-size:clamp(20px,3.4vw,26px);font-weight:600;letter-spacing:16px;color:#26291f}
+.spirit-item p{margin:0;writing-mode:vertical-rl;font-size:clamp(12.5px,2vw,13.5px);font-weight:300;line-height:2.4;letter-spacing:3px;color:#55584a}
+
+/* ── 區塊標題列 ── */
+.sec-head{display:flex;align-items:baseline;gap:22px}
+.sec-head .en{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:6px;color:#a09a83}
+.sec-head h2{margin:0;font-size:clamp(24px,4.6vw,32px);font-weight:600;letter-spacing:10px}
+
+/* ── 房 ── */
+.rooms{padding:0 0 clamp(80px,12vw,140px)}
+.rooms .sec-head{padding:0 clamp(24px,6vw,72px);margin-bottom:clamp(44px,7vw,72px)}
+.rooms .sec-head h2{font-size:clamp(26px,5vw,36px)}
+.room-list{display:flex;flex-direction:column;gap:clamp(64px,10vw,120px)}
+.room{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(26px,4vw,56px);align-items:end;padding:0 clamp(24px,6vw,72px)}
+.room.alt{direction:rtl}
+.room>*{direction:ltr}
+.room-photo{position:relative}
+.room-photo img{width:100%;height:auto}
+.room-info{display:flex;flex-direction:column;gap:16px;padding-bottom:8px}
+.room-no{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:5px;color:#a09a83}
+.room-info h3{margin:0;font-size:clamp(22px,3.6vw,28px);font-weight:600;letter-spacing:6px}
+.room-cap{font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:2px;color:#a09a83}
+.room-desc{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2.2;letter-spacing:1px;color:#55584a;max-width:26em}
+.price-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 28px;border-top:1px solid #d8d2bf;padding-top:14px;margin-top:4px}
+.price{display:flex;align-items:baseline;gap:8px}
+.price .label{font-family:'Noto Sans TC',sans-serif;font-size:11.5px;letter-spacing:2px;color:#a09a83}
+.price .wk{font-size:18px;letter-spacing:1px;color:#26291f}
+.price .cny{font-size:15px;letter-spacing:1px;color:#55584a}
+.whole-house{margin:clamp(56px,9vw,90px) clamp(24px,6vw,72px) 0;border-top:1px solid #d8d2bf;border-bottom:1px solid #d8d2bf;padding:26px 4px;display:flex;flex-wrap:wrap;gap:10px 36px;align-items:baseline;justify-content:center;text-align:center}
+.whole-house .name{font-size:17px;letter-spacing:5px}
+.whole-house .name span{font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:2px;color:#a09a83}
+
+/* ── 朝食 ── */
+.breakfast{position:relative;background:#1c1e18}
+.breakfast>img{width:100%;height:auto}
+.breakfast-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,22,16,.55) 0%,rgba(20,22,16,.1) 55%,rgba(20,22,16,0) 75%);pointer-events:none}
+.breakfast-text{position:absolute;left:clamp(24px,7vw,90px);top:50%;transform:translateY(-50%);color:#f4f1e8;display:flex;flex-direction:column;gap:18px;max-width:24em;pointer-events:none}
+.breakfast-text .en{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:6px;opacity:.8}
+.breakfast-text h2{margin:0;font-size:clamp(24px,4.6vw,32px);font-weight:600;letter-spacing:8px}
+.breakfast-text p{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2.3;letter-spacing:1.5px;opacity:.92}
+.breakfast-text small{font-size:12.5px;opacity:.7}
+@media (max-width:640px){
+  .breakfast{background:#f4f1e8}
+  .breakfast-shade{display:none}
+  .breakfast-text{position:static;transform:none;color:#26291f;padding:44px 28px 52px;max-width:none}
+  .breakfast-text p{opacity:1;color:#55584a}
+}
+
+/* ── 住客的話 ── */
+.voices{background:#26291f;color:#e6e1d1;padding:clamp(80px,12vw,140px) 28px}
+.voices-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(48px,8vw,80px)}
+.voices .sec-head .en{color:#8d886f}
+.voices .rating{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#b5b09c}
+.voices figure{margin:0;display:flex;flex-direction:column;gap:14px;border-left:1px solid rgba(230,225,209,.25);padding-left:clamp(20px,4vw,36px)}
+.voices blockquote{margin:0;font-size:clamp(16px,3vw,19px);font-weight:300;line-height:2.2;letter-spacing:2px}
+.voices figcaption{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#8d886f}
+
+/* ── 須知 ── */
+.info{padding:clamp(80px,12vw,140px) 28px;max-width:720px;margin:0 auto}
+.info .sec-head{margin-bottom:clamp(36px,6vw,56px)}
+.info-list{border-top:1px solid #d8d2bf}
+.info-row{display:flex;gap:clamp(18px,4vw,40px);padding:20px 2px;border-bottom:1px solid #d8d2bf;align-items:baseline}
+.info-row dt{flex:none;width:80px;margin:0;font-size:14.5px;letter-spacing:3px;color:#26291f}
+.info-row dd{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2;letter-spacing:.5px;color:#55584a}
+
+/* ── 交通 ── */
+.access{background:#ece8db;padding:clamp(70px,10vw,120px) 0}
+.access .sec-head{padding:0 clamp(24px,6vw,72px);margin-bottom:clamp(36px,6vw,56px)}
+.access-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(28px,5vw,56px);padding:0 clamp(24px,6vw,72px);align-items:center}
+.access-map{height:clamp(300px,44vw,440px);filter:grayscale(.85) sepia(.12);overflow:hidden}
+.access-map iframe{width:100%;height:100%;border:0}
+.access-text{display:flex;flex-direction:column;gap:18px}
+.access-text .addr{margin:0;font-size:clamp(17px,3vw,21px);letter-spacing:3px;line-height:2}
+.access-text .how{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14px;line-height:2.1;letter-spacing:1px;color:#55584a}
+.nav-btn{align-self:flex-start;font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:4px;color:#26291f;border:1px solid #26291f;padding:12px 26px;margin-top:6px}
+.nav-btn:hover{background:#26291f;color:#f4f1e8}
+
+/* ── 預約 ── */
+.reserve{background:#1c1e18;color:#e6e1d1;padding:clamp(90px,14vw,160px) 28px;text-align:center}
+.reserve-inner{display:flex;flex-direction:column;align-items:center;gap:26px}
+.reserve .en{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:6px;color:#8d886f}
+.reserve h2{margin:0;font-size:clamp(26px,5vw,38px);font-weight:600;letter-spacing:12px}
+.reserve .lead{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2.2;letter-spacing:2px;color:#b5b09c}
+.reserve-btns{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:8px}
+.btn-line{display:inline-flex;align-items:center;gap:10px;background:#06c755;color:#fff;font-family:'Noto Sans TC',sans-serif;font-weight:500;font-size:15px;letter-spacing:4px;padding:16px 38px}
+.btn-line:hover{background:#05b34c;color:#fff}
+.btn-tel{display:inline-flex;align-items:center;font-family:'Noto Sans TC',sans-serif;font-size:15px;letter-spacing:4px;color:#e6e1d1;border:1px solid rgba(230,225,209,.5);padding:16px 34px}
+.btn-tel:hover{border-color:#e6e1d1;color:#fff}
+.reserve .fine{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#8d886f}
+.reserve .fine a{color:#a09a83}
+.reserve .fine a:hover{color:#e6e1d1}
+.reserve .fine a.fb{border-bottom:1px solid rgba(160,154,131,.4)}
+
+/* ── Footer ── */
+footer{background:#14160f;color:#8d886f;padding:44px 28px calc(110px + env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+footer .brand{font-size:20px;letter-spacing:10px;color:#c9c3ae}
+footer .lines{font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:12.5px;letter-spacing:1.5px;line-height:2}
+footer .lines a{color:#a09a83;border-bottom:1px solid rgba(160,154,131,.4)}
+footer .lines a:hover{color:#c9c3ae}
+footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
+
+/* ── 底部固定預約列 ── */
+.sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;gap:1px;background:rgba(20,22,16,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding-bottom:env(safe-area-inset-bottom)}
+.sticky-bar .line{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;color:#f4f1e8;font-family:'Noto Sans TC',sans-serif;font-weight:500;font-size:14.5px;letter-spacing:4px;padding:17px 0;border-top:1px solid rgba(6,199,85,.7)}
+.sticky-bar .line:hover{background:rgba(6,199,85,.15);color:#fff}
+.sticky-bar .tel{flex:none;display:flex;align-items:center;justify-content:center;width:64px;color:#c9c3ae;border-top:1px solid rgba(201,195,174,.3);border-left:1px solid rgba(201,195,174,.15)}
+.sticky-bar .tel:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<div class="splash" aria-hidden="true"><div class="mark">山遇</div></div>
+
+<nav class="nav">
+  <div class="brand">山遇</div>
+  <a href="#reserve">預 約</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-img">
+    <img src="assets/hero.jpg" alt="山遇莊園主棟正面全景" fetchpriority="high">
+    <img src="assets/hero-living.jpg" alt="挑高客廳與山景窗" loading="lazy">
+    <img src="assets/hero-porch.jpg" alt="一樓迴廊與鞦韆座椅" loading="lazy">
+  </div>
+  <div class="hero-shade"></div>
+  <div class="hero-title">
+    <div class="sub">花蓮壽豐　山腳下的家園</div>
+    <h1>山遇</h1>
+  </div>
+  <div class="scroll-hint">
+    <div class="word">SCROLL</div>
+    <div class="line"></div>
+  </div>
+</header>
+
+<section class="intro" data-reveal>
+  <div class="intro-inner">
+    <h2>立冬之時<br>與山相遇</h2>
+    <p>「山遇」是農舍主人夢想莊園的實現地。不是過路旅館，也不是豪奢民宿——是提供人生有夢者，一方靜心、談心、放心的家園。</p>
+  </div>
+</section>
+
+<section class="spirit" data-reveal>
+  <div class="spirit-inner">
+    <div class="spirit-item">
+      <h3>靜心</h3>
+      <p>山腳下的清晨，<br>鳥聲與山嵐替代了鬧鐘。</p>
+    </div>
+    <div class="spirit-item">
+      <h3>談心</h3>
+      <p>廊下鞦韆、池畔小徑，<br>一杯熱茶慢慢說。</p>
+    </div>
+    <div class="spirit-item">
+      <h3>放心</h3>
+      <p>不是旅館，是家園。<br>安然地睡，自在地醒。</p>
+    </div>
+  </div>
+</section>
+
+<section class="rooms">
+  <div class="sec-head" data-reveal>
+    <div class="en">ROOMS</div>
+    <h2>房</h2>
+  </div>
+  <div class="room-list">
+
+    <article class="room" data-reveal>
+      <div class="room-photo"><img src="assets/room-yunsidai.jpg" alt="雲絲帶房——兩單人床禪風房" loading="lazy"></div>
+      <div class="room-info">
+        <div class="room-no">〇一</div>
+        <h3>雲絲帶</h3>
+        <div class="room-cap">二人房・兩單人床・一樓無障礙</div>
+        <p class="room-desc">位於一樓的無障礙空間，冬暖夏涼、舒適禪風。天候雲雨之際，落地窗前即可望見山腰的雲絲帶。</p>
+        <div class="price-row">
+          <div class="price"><span class="label">平日</span><span class="wk">NT$2,500</span></div>
+          <div class="price"><span class="label">春節</span><span class="cny">NT$3,500</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="room alt" data-reveal>
+      <div class="room-photo"><img src="assets/room-lihalai.jpg" alt="里哈籟房——綠野風格山景房" loading="lazy"></div>
+      <div class="room-info">
+        <div class="room-no">〇二</div>
+        <h3>里哈籟</h3>
+        <div class="room-cap">二至四人房・兩雙人床</div>
+        <p class="room-desc">猶如房名之意，一室輕鬆自在的綠野風格。窗外是山，枕邊是綠。</p>
+        <div class="price-row">
+          <div class="price"><span class="label">平日</span><span class="wk">NT$3,000</span></div>
+          <div class="price"><span class="label">春節</span><span class="cny">NT$4,000</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="room" data-reveal>
+      <div class="room-photo"><img src="assets/room-zhenqing.jpg" alt="山遇真情房——暖色調親子家族房" loading="lazy"></div>
+      <div class="room-info">
+        <div class="room-no">〇三</div>
+        <h3>山遇真情</h3>
+        <div class="room-cap">四人房・兩雙人床</div>
+        <p class="room-desc">溫暖舒適的親子家族房，極佳視野景緻，可近觀臺灣特有豐田玉石產地之中央山脈系。</p>
+        <div class="price-row">
+          <div class="price"><span class="label">平日</span><span class="wk">NT$4,500</span></div>
+          <div class="price"><span class="label">春節</span><span class="cny">NT$5,500</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="room alt" data-reveal>
+      <div class="room-photo"><img src="assets/room-cabin.jpg" alt="山遇・水見曉逐獨棟木屋外觀" loading="lazy"></div>
+      <div class="room-info">
+        <div class="room-no">〇四</div>
+        <h3>山遇・水見曉逐 木屋</h3>
+        <div class="room-cap">獨棟木屋・兩間雙人套房・起居室與廚房</div>
+        <p class="room-desc">獨棟木屋擁溫馨起居室、廚房及兩間雙人套房。可遠眺中央山脈豐田玉石產出段的山高雲繞，近賞莊園生態池畔的美麗畫境。</p>
+        <div class="price-row">
+          <div class="price"><span class="label">平日</span><span class="wk">NT$6,600</span></div>
+          <div class="price"><span class="label">春節</span><span class="cny">NT$8,800</span></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+  <div class="whole-house" data-reveal>
+    <div class="name">主棟包棟<span>　十人</span></div>
+    <div class="price"><span class="label">平日</span><span class="wk">NT$10,000</span></div>
+    <div class="price"><span class="label">春節</span><span class="cny">NT$13,000</span></div>
+  </div>
+</section>
+
+<section class="breakfast">
+  <img src="assets/breakfast.jpg" alt="餐廳窗景與早餐" loading="lazy">
+  <div class="breakfast-shade"></div>
+  <div class="breakfast-text" data-reveal>
+    <div class="en">MORNING</div>
+    <h2>朝食</h2>
+    <p>主人親手準備的家常早餐，選用花蓮在地食材。<br>配一杯熱茶，看山嵐慢慢散開。<br><small>早餐依季節調整，素食請提前告知。<br>木屋早餐以四人為基準，每增加一人酌收 150 元。</small></p>
+  </div>
+</section>
+
+<section class="voices">
+  <div class="voices-inner" data-reveal>
+    <div class="sec-head">
+      <div class="en">VOICES</div>
+      <h2>住客的話</h2>
+      <div class="rating">Google 評論　4.8 ★</div>
+    </div>
+    <figure>
+      <blockquote>超級滿意的民宿。主人熱情好客，招待得無微不至。早餐好好吃，好像不計成本似的。明明已吃過早餐，和主人聊天聊太久又拿出甜點招待，晚上回來後繼續和主人聊天，邊喝金門高粱助興。</blockquote>
+      <figcaption>Google 評論・五星住客</figcaption>
+    </figure>
+    <figure>
+      <blockquote>環境從裡到外更是棒得沒話說，床超好睡，庭園超漂亮。值得多住幾晚。</blockquote>
+      <figcaption>Google 評論・五星住客</figcaption>
+    </figure>
+    <figure>
+      <blockquote>風景優美寧靜，房間乾淨舒適，早餐豐盛可口，老闆與管家健談，慢活渡假好選擇。</blockquote>
+      <figcaption>Google 評論・五星住客</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="info" data-reveal>
+  <div class="sec-head">
+    <div class="en">INFORMATION</div>
+    <h2>須知</h2>
+  </div>
+  <dl class="info-list">
+    <div class="info-row"><dt>入住</dt><dd>下午 3:00 後（提早抵達可先寄放行李）</dd></div>
+    <div class="info-row"><dt>退房</dt><dd>上午 11:00 前</dd></div>
+    <div class="info-row"><dt>預約</dt><dd>LINE（ID：hans588121）加好友聊天預約，主人親自回覆；亦可電洽 <span class="nowrap">0939-588121</span> / <span class="nowrap">(03) 8650-566</span></dd></div>
+    <div class="info-row"><dt>早餐</dt><dd>住宿含次日早餐；木屋以四人為基準，每增加一人酌收 150 元</dd></div>
+    <div class="info-row"><dt>付款</dt><dd>訂金與付款細節，請於 LINE 上與主人確認</dd></div>
+    <div class="info-row"><dt>提醒</dt><dd>全館禁菸；寵物同行請先詢問；山區夜晚較涼，備件薄外套</dd></div>
+  </dl>
+</section>
+
+<section class="access">
+  <div class="sec-head" data-reveal>
+    <div class="en">ACCESS</div>
+    <h2>至</h2>
+  </div>
+  <div class="access-grid">
+    <div class="access-map">
+      <iframe src="https://www.google.com/maps?q=%E8%8A%B1%E8%93%AE%E7%B8%A3%E5%A3%BD%E8%B1%90%E9%84%89%E8%B1%90%E5%B1%B1%E6%9D%91%E5%92%8C%E5%B9%B3%E8%A1%978%E8%99%9F&output=embed" loading="lazy" title="山遇莊園位置地圖"></iframe>
+    </div>
+    <div class="access-text">
+      <p class="addr">花蓮縣壽豐鄉<br>豐山村和平街8號</p>
+      <p class="how">台9線 212km 處轉入壽豐豐山村，近豐田車站。<br>火車：搭至豐田車站，步行約 10 分鐘。<br>開車：由花蓮市區出發約 25 分鐘。</p>
+      <a class="nav-btn" href="https://www.google.com/maps/search/?api=1&query=%E8%8A%B1%E8%93%AE%E7%B8%A3%E5%A3%BD%E8%B1%90%E9%84%89%E8%B1%90%E5%B1%B1%E6%9D%91%E5%92%8C%E5%B9%B3%E8%A1%978%E8%99%9F" target="_blank" rel="noopener">開啟導航 →</a>
+    </div>
+  </div>
+</section>
+
+<section id="reserve" class="reserve">
+  <div class="reserve-inner" data-reveal>
+    <div class="en">RESERVATION</div>
+    <h2>與山相遇</h2>
+    <p class="lead">以 LINE 加好友聊天預約，主人親自回覆。<br>空房日期、房價與細節，都在對話中為您安排。</p>
+    <div class="reserve-btns">
+      <a class="btn-line" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.5 13.4 22 11.83 22 10.13 22 5.64 17.52 2 12 2z"/></svg>
+        LINE 預約
+      </a>
+      <a class="btn-tel" href="tel:0939588121">0939-588121</a>
+    </div>
+    <div class="fine">LINE ID：hans588121　程先生　·　市話 <a class="nowrap" href="tel:038650566">(03) 8650-566</a>　·　<a class="fb" href="https://www.facebook.com/shanyu2015" target="_blank" rel="noopener">Facebook 粉絲頁</a></div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand">山遇</div>
+  <div class="lines">花蓮縣壽豐鄉豐山村和平街8號<br><span class="nowrap">0939-588121 程先生</span> ｜ <span class="nowrap">(03) 8650-566</span> ｜ <span class="nowrap">LINE：hans588121</span><br><a href="https://www.facebook.com/shanyu2015" target="_blank" rel="noopener">Facebook</a></div>
+  <div class="copy">© 2026 山遇莊園民宿</div>
+</footer>
+
+<div class="sticky-bar">
+  <a class="line" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="#06c755" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.5 13.4 22 11.83 22 10.13 22 5.64 17.52 2 12 2z"/></svg>
+    LINE 預約
+  </a>
+  <a class="tel" href="tel:0939588121" aria-label="撥打電話">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+  </a>
+</div>
+
+<script>
+(function () {
+  var splash = document.querySelector('.splash');
+  if (splash) setTimeout(function () { splash.remove(); }, 3700);
+  var els = document.querySelectorAll('[data-reveal]');
+  if (!('IntersectionObserver' in window)) return;
+  els.forEach(function (el) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = 'opacity 1.5s ease, transform 1.5s ease';
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'none';
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(function (el) { io.observe(el); });
+})();
+(function () {
+  var nav = document.querySelector('.nav');
+  if (!nav) return;
+  var zones = [].slice.call(document.querySelectorAll('.hero, .breakfast'));
+  function navShade() {
+    var mid = nav.offsetHeight * 0.55;
+    var over = zones.some(function (el) {
+      var r = el.getBoundingClientRect();
+      return r.top < mid && r.bottom > mid;
+    });
+    nav.classList.toggle('on-photo', over);
+  }
+  window.addEventListener('scroll', navShade, { passive: true });
+  window.addEventListener('resize', navShade);
+  navShade();
+})();
+</script>
+</body>
+</html>
