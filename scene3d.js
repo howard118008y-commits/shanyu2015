@@ -55,6 +55,10 @@ export function buildScene(canvas, opts = {}) {
   });
 
   const hot = [];
+  const L1 = new THREE.Group(), L2 = new THREE.Group();
+  L2.position.z = -3.1;                       // 二樓往後推，讓一樓前緣完全露出
+  scene.add(L1); scene.add(L2);
+  let layer = L1;                             // put/slab 目前掛載的層
   const mat = c => new THREE.MeshLambertMaterial({ color: c });
   const geoCache = new Map(), matCache = new Map();
   const M = c => { if (!matCache.has(c)) matCache.set(c, mat(c)); return matCache.get(c); };
@@ -70,7 +74,7 @@ export function buildScene(canvas, opts = {}) {
     m.position.set(g(gx + gw/2) - CX, y0 + h/2, g(gz + gd/2) - CZ);
     m.castShadow = !o.flat; m.receiveShadow = true;
     if (o.rot) m.rotation.y = o.rot;
-    scene.add(m); return m;
+    layer.add(m); return m;
   }
   const slab = (gx, gz, gw, gd, c, y, t = 0.14) => put(gx, gz, gw, gd, t, c, y - t/2, { flat: true });
   const V = (gx, gz, y) => new THREE.Vector3(g(gx) - CX, y, g(gz) - CZ);
@@ -78,12 +82,12 @@ export function buildScene(canvas, opts = {}) {
   // ── 裝飾元件 ──
   function pendant(gx, gz, ceilY, shade = C.lampShade, drop = 0.62) {
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, drop, 6), M(C.lampMetal));
-    cord.position.copy(V(gx, gz, ceilY - drop/2)); scene.add(cord);
+    cord.position.copy(V(gx, gz, ceilY - drop/2)); layer.add(cord);
     const s = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.3, 14, 1, true), M(shade));
     s.material.side = THREE.DoubleSide;
-    s.position.copy(V(gx, gz, ceilY - drop - 0.13)); s.castShadow = true; scene.add(s);
+    s.position.copy(V(gx, gz, ceilY - drop - 0.13)); s.castShadow = true; layer.add(s);
     const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), M(0xfff0c4));
-    bulb.position.copy(V(gx, gz, ceilY - drop - 0.24)); scene.add(bulb);
+    bulb.position.copy(V(gx, gz, ceilY - drop - 0.24)); layer.add(bulb);
   }
   function windowOn(side, gx, gz, gw, y, h = 1.15, sill = 0.85) {
     const t = 0.1, out = side === 'n' ? [gx, gz - 0.02, gw, t] : [gx - 0.02, gz, t, gw];
@@ -107,21 +111,21 @@ export function buildScene(canvas, opts = {}) {
   function nightstand(gx, gz, y, col) {
     put(gx, gz, 0.62, 0.62, 0.42, col, y, { r: 0.05 });
     const base = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 0.2, 8), M(C.lampMetal));
-    base.position.copy(V(gx + 0.31, gz + 0.31, y + 0.52)); scene.add(base);
+    base.position.copy(V(gx + 0.31, gz + 0.31, y + 0.52)); layer.add(base);
     const sh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.22, 12), M(C.lampShade));
-    sh.position.copy(V(gx + 0.31, gz + 0.31, y + 0.72)); sh.castShadow = true; scene.add(sh);
+    sh.position.copy(V(gx + 0.31, gz + 0.31, y + 0.72)); sh.castShadow = true; layer.add(sh);
   }
   function plant(gx, gz, y, s = 1) {
     put(gx, gz, 0.5*s, 0.5*s, 0.26*s, C.pot, y, { r: 0.08 });
     const leaf = new THREE.Mesh(new THREE.SphereGeometry(g(0.32*s), 12, 10), M(C.plant));
     leaf.position.copy(V(gx + 0.25*s, gz + 0.25*s, y + 0.26*s + g(0.24*s)));
-    leaf.castShadow = true; scene.add(leaf);
+    leaf.castShadow = true; layer.add(leaf);
   }
   function tvUnit(gx, gz, y) {
     put(gx, gz, 2.2, 0.55, 0.42, C.yWood, y, { r: 0.04 });
     put(gx + 0.35, gz + 0.16, 1.5, 0.1, 0.7, C.tv, y + 0.42, { r: 0.03 });
     const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.13, 10), M(C.cup));
-    cup.position.copy(V(gx + 1.9, gz + 0.28, y + 0.49)); cup.castShadow = true; scene.add(cup);
+    cup.position.copy(V(gx + 1.9, gz + 0.28, y + 0.49)); cup.castShadow = true; layer.add(cup);
   }
   function brickWall(gx, gz, gw, y, h) {          // 木屋紅磚牆（橫紋）
     put(gx, gz, gw, 0.16, h, C.cBrick, y, { r: 0.02 });
@@ -132,6 +136,75 @@ export function buildScene(canvas, opts = {}) {
     put(gx, gz, gw, 0.16, h, col, y, { r: 0.02 });
     for (let i = 0; i * 0.5 < gw - 0.3; i++)
       put(gx + 0.2 + i * 0.5, gz - 0.03, 0.06, 0.05, h - 0.2, C.cBeam, y + 0.1, { r: 0.01 });
+  }
+
+
+  // ── 名稱標籤 ──
+  const labelSprites = [];
+  function makeLabel(gx, gz, y, text, sub, logoKey) {
+    const cv = document.createElement('canvas');
+    cv.width = 560; cv.height = 170;
+    const ctx = cv.getContext('2d');
+    function paint(logoImg) {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = 'rgba(247,244,236,0.95)';
+      ctx.strokeStyle = '#26291f'; ctx.lineWidth = 4;
+      const r = 26, w = cv.width - 8, h = cv.height - 8;
+      ctx.beginPath(); ctx.moveTo(4 + r, 4);
+      ctx.arcTo(4 + w, 4, 4 + w, 4 + h, r); ctx.arcTo(4 + w, 4 + h, 4, 4 + h, r);
+      ctx.arcTo(4, 4 + h, 4, 4, r); ctx.arcTo(4, 4, 4 + w, 4, r); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      if (logoImg) ctx.drawImage(logoImg, 26, 34, 100, 100);
+      ctx.fillStyle = '#26291f';
+      ctx.font = '600 60px "Noto Serif TC", serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText(text, 146, sub ? 88 : 108);
+      if (sub) {
+        ctx.fillStyle = '#7a7461';
+        ctx.font = '300 30px "Noto Sans TC", sans-serif';
+        ctx.fillText(sub, 148, 130);
+      }
+      tex.needsUpdate = true;
+    }
+    const tex = new THREE.CanvasTexture(cv);
+    tex.anisotropy = 4;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
+    sp.scale.set(3.5, 1.06, 1);
+    sp.position.copy(V(gx, gz, y));
+    sp.renderOrder = 999;
+    layer.add(sp); labelSprites.push(sp);
+    paint(null);
+    if (logoKey) {
+      const img = new Image();
+      img.onload = () => paint(img);
+      img.src = 'assets/logo/' + logoKey + '.svg';
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => paint(null));
+    return sp;
+  }
+
+
+  // 獨棟小木屋：牆體 + 斜屋頂 + 門窗
+  function cabinHouse(gx, gz, gw, gd, y) {
+    const wallH = 1.5;
+    woodWall(gx, gz, gw, y, wallH, C.cWall);                       // 正面木牆
+    put(gx, gz, 0.16, gd, wallH, C.cWall, y, { r: 0.02 });          // 側牆
+    put(gx + gw - 0.16, gz, 0.16, gd, wallH, C.cWall, y, { r: 0.02 });
+    put(gx, gz + gd - 0.16, gw, 0.16, wallH, C.cWall, y, { r: 0.02 });
+    put(gx + 0.2, gz + 0.2, gw - 0.4, gd - 0.4, 0.06, C.cFloor, y, { flat: true });
+    // 斜屋頂：兩片傾斜板
+    const rw = g(gw) * 0.62, rl = g(gd) + 0.3, pitch = 0.62;
+    [-1, 1].forEach(sgn => {
+      const p = new THREE.Mesh(rbox(rw, 0.14, rl, 0.05), M(C.cBeam));
+      p.position.set(g(gx + gw/2) - CX + sgn * rw * 0.42, y + wallH + 0.42, g(gz + gd/2) - CZ);
+      p.rotation.z = -sgn * pitch;
+      p.castShadow = true; layer.add(p);
+    });
+    put(gx + gw/2 - 0.1, gz, 0.2, gd, 0.12, C.cBeam, y + wallH + 0.86, { r: 0.03 });   // 屋脊
+    put(gx + gw/2 - 0.55, gz - 0.04, 1.1, 0.1, 1.05, 0x6b4a2c, y, { r: 0.03 });        // 門
+    put(gx + gw/2 + 0.62, gz - 0.04, 0.9, 0.1, 0.75, C.glassWin, y + 0.55, { r: 0.03 }); // 窗
+    put(gx + 0.35, gz - 0.04, 0.8, 0.1, 0.7, C.glassWin, y + 0.6, { r: 0.03 });
+    put(gx + gw - 1.3, gz + gd * 0.3, 0.5, 0.5, 1.9, C.cBrick, y, { r: 0.04 });         // 煙囪
   }
 
   const FH = 3.3, F1 = 0, F2 = FH;
@@ -175,30 +248,26 @@ export function buildScene(canvas, opts = {}) {
   pendant(3.2, 3.0, F1 + 2.25);
   pendant(3.2, 7.2, F1 + 2.25);
 
-  // 木屋（右半層）：木牆、紅磚、雙人床、吊燈
-  roomShell(7.7, 0.3, 6.0, 9.4, F1, C.cFloor, C.cWall, 'cabin', 2.3);
-  woodWall(7.7, 0.16, 6.0, F1, 2.3, C.cWall);
-  brickWall(11.0, 0.16, 2.7, F1, 2.2);
-  bed(8.4, 1.0, 2.2, 2.9, F1, C.cBeam, 0xd6c19c);
-  nightstand(10.8, 1.0, F1, C.cBeam);
-  put(11.6, 4.2, 1.8, 0.8, 0.4, C.table, F1, { r: 0.05 });
-  put(11.7, 5.2, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
-  put(8.3, 6.4, 3.0, 1.1, 0.46, C.seat, F1, { r: 0.13 });
-  slab(8.4, 7.8, 4.2, 1.4, C.rug2, F1 + 0.05, 0.05);
+  // 木屋（右半層）：獨棟小木屋立在庭園地坪上
+  roomShell(7.7, 0.3, 6.0, 9.4, F1, C.cFloor, C.cWall, 'cabin', 0.95);
+  slab(7.9, 4.6, 5.6, 4.6, C.rug2, F1 + 0.05, 0.05);
+  cabinHouse(8.6, 1.2, 4.4, 3.4, F1);
+  put(9.0, 6.0, 1.8, 0.8, 0.4, C.table, F1, { r: 0.05 });
+  put(9.2, 7.0, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
+  put(11.4, 6.0, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
+  plant(12.6, 5.4, F1, 1.1); plant(8.0, 8.6, F1, 0.95); plant(13.0, 8.4, F1, 1.0);
   windowOn('n', 10.2, 0.3, 2.8, F1, 1.35, 0.9);
-  plant(13.0, 8.4, F1, 1.05);
-  pendant(10.0, 3.2, F1 + 2.25, 0xe7b98a, 0.75);
-  pendant(10.0, 7.4, F1 + 2.25, 0xe7b98a, 0.75);
 
   // 中央走道：吧台、樓梯、程先生
   put(6.45, 3.4, 1.2, 2.6, 0.66, C.bar, F1, { r: 0.06 });
   for (let i = 0; i < 2; i++) {
     const st = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.55, 12), M(C.seat));
-    st.position.copy(V(6.35, 4.2 + i * 1.2, F1 + 0.28)); st.castShadow = true; scene.add(st);
+    st.position.copy(V(6.35, 4.2 + i * 1.2, F1 + 0.28)); st.castShadow = true; layer.add(st);
   }
   for (let i = 0; i < 11; i++) put(6.5, 0.5 + i * 0.22, 1.1, 0.22, 0.3 + i * 0.27, C.stair, F1, { r: 0.02 });
 
   // ════════ 二樓 loft ════════
+  layer = L2;
   slab(-0.3, -0.3, 14.6, 10.6, C.slab, F2);
   shell(F2, FH * 0.94);
 
@@ -237,6 +306,14 @@ export function buildScene(canvas, opts = {}) {
   put(6.42, 2.6, 1.16, 4.2, 1.15, C.shell, F2, { r: 0.02 });
   for (let i = 0; i < 11; i++) put(6.5, 0.5 + i * 0.22, 1.1, 0.22, 3.3 - i * 0.27, C.stair, F2 - 3.3 + 0.3, { r: 0.02 });
 
+  // ── 名稱標籤 ──
+  layer = L1;
+  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '二人房・兩單人床', 'yunsidai');
+  makeLabel(10.7, 6.4, F1 + 2.72, '水見曉逐', '獨棟木屋', 'cabin');
+  layer = L2;
+  makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
+  makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房', 'zhenqing');
+
   // ── 人物 ──
   function person(gx, gz, y, cloth, hair, facing, label) {
     const grp = new THREE.Group(), S = 0.5;
@@ -255,14 +332,16 @@ export function buildScene(canvas, opts = {}) {
       arm.castShadow = true; grp.add(arm);
     });
     grp.position.copy(V(gx, gz, y)); grp.rotation.y = facing;
-    scene.add(grp);
+    layer.add(grp);
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(S*1.2, S*1.2, 2.1, 10),
       new THREE.MeshLambertMaterial({ color: cloth, transparent: true, opacity: 0.001 }));
     hit.position.copy(V(gx, gz, y + 1.05));
     hit.userData.room = label; hit.userData.base = cloth;
-    hot.push(hit); scene.add(hit);
+    hot.push(hit); layer.add(hit);
   }
+  layer = L1;
   person(5.4, 9.3, F1, C.host, C.hostHair, 0.2, 'host');        // 程先生・一樓前緣
+  layer = L2;
   person(8.6, 9.3, F2, C.keeper, C.keeperHair, -0.2, 'keeper'); // 夏先生・二樓前緣
 
   // ── 互動 ──
@@ -291,9 +370,6 @@ export function buildScene(canvas, opts = {}) {
     if (o && opts.onPick) opts.onPick(o.userData.room);
   });
 
-  let idle = true, last = 0;
-  controls.addEventListener('start', () => { idle = false; last = performance.now(); });
-  controls.addEventListener('end', () => { last = performance.now(); });
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
@@ -308,9 +384,6 @@ export function buildScene(canvas, opts = {}) {
     if (!running) return;
     requestAnimationFrame(loop);
     resize();
-    if (!idle && performance.now() - last > 4000) idle = true;
-    controls.autoRotate = idle && opts.autoRotate !== false;
-    controls.autoRotateSpeed = 0.38;
     controls.update();
     renderer.render(scene, camera);
   })();
