@@ -5,34 +5,33 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 export function buildScene(canvas, opts = {}) {
   const U = 0.85, g = n => n * U, CX = g(7), CZ = g(5);
   const C = {
-    shell:0xf3efe4, shellSide:0xeae4d5, slab:0xeee6d3, skirt:0xded5bf,
-    // 雲絲帶：暖褐木質
-    yFloor:0xd9c3a6, yWall:0xb9977f, yWood:0x4a2f1b, yAccent:0xa8714c,
-    // 木屋：木牆＋紅磚
-    cFloor:0xc4a06a, cWall:0x9c7038, cBrick:0xa8523a, cBeam:0x452f16,
-    // 里哈籟：萊姆綠
-    lFloor:0xd7dcbe, lWall:0x7ca83e, lAccent:0xb6d073,
-    // 山遇真情：磚紅暖色
-    zFloor:0xdcc7ab, zWall:0xa8402a, zAccent:0xd08a4e,
+    shell:0xf4f1e8, shellSide:0xece8db, slab:0xe6ddc9, skirt:0xd8d2bf,
+    // 雲絲帶：灰褐木質
+    yFloor:0xded4bf, yWall:0xb5a894, yWood:0x4a4032, yAccent:0x8d886f,
+    // 木屋：暖木＋灰磚
+    cFloor:0xd6cab0, cWall:0xa08e72, cBrick:0x96705c, cBeam:0x3f382c,
+    // 里哈籟：灰綠（主頁 sage 的亮版）
+    lFloor:0xe0dece, lWall:0x7d8a68, lAccent:0xa8b391,
+    // 山遇真情：柔和磚紅（往灰褐收）
+    zFloor:0xe2d7c3, zWall:0xa07a63, zAccent:0xc0a184,
     // 共用
-    sheet:0xf7f4ec, quilt:0xe6dcc6, pillow:0xf2ece0,
-    frame:0x5d4227, glassWin:0x7cc44e, winFrame:0x33302a,
-    lampShade:0xf6dfa0, lampMetal:0x2e2a22, tv:0x1c1c1c,
-    rug:0xc9b48a, rug2:0xb2c096, table:0xb37f42, seat:0x9d7345, bar:0xa06a38,
-    stair:0xc19b6c, plant:0x578a3c, pot:0xa97448, art:0xb09a72,
-    mahjong:0x6f9068, cup:0xf0ece0,
-    skin:0xe8c49a, host:0x40554a, hostHair:0x35302a, keeper:0x8a6a4c, keeperHair:0x4a3f33,
-    hot:0xe8bd77,
+    sheet:0xf4f1e8, quilt:0xe6e1d1, pillow:0xefeade,
+    frame:0x55483a, glassWin:0x8fa07a, winFrame:0x26291f,
+    lampShade:0xefe4c6, lampMetal:0x26291f, tv:0x1c1e18,
+    rug:0xd8d2bf, rug2:0xc9cdb6, table:0xa08a68, seat:0x8d7f66, bar:0x8f7a5c,
+    stair:0xb5a68c, plant:0x6b7a55, pot:0x9a8870, art:0xa09a83,
+    mahjong:0x6b7a55, cup:0xf4f1e8,
+    hot:0xc9a86a,
   };
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xefeade);
+  scene.background = new THREE.Color(0xf4f1e8);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio * 1.5, 3));   // 高 DPI 渲染
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.18;
+  renderer.toneMappingExposure = 1.12;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -44,9 +43,9 @@ export function buildScene(canvas, opts = {}) {
   camera.position.set(15, 6.6, 17);
   controls.target.set(0, 3.0, 0);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.46));
+  scene.add(new THREE.AmbientLight(0xfffbf2, 0.54));
   scene.add(new THREE.HemisphereLight(0xfff8ee, 0x9a9384, 0.42));
-  const key = new THREE.DirectionalLight(0xfff2df, 1.55);
+  const key = new THREE.DirectionalLight(0xfff6e6, 1.32);
   key.position.set(14, 19, 13); key.castShadow = true;
   key.shadow.mapSize.set(4096, 4096);
   Object.assign(key.shadow.camera, { left:-17, right:17, top:20, bottom:-12, far:52 });
@@ -215,9 +214,9 @@ export function buildScene(canvas, opts = {}) {
 
 
   // ── 取自實景照片的裝飾 ──
-  const DC = { brass:0xc9a227, brassDark:0x9a7a1c, duck:0xf2c422, duckBill:0xe07a2a,
-               poster:0x2f6f8f, forest:0x4f7a3a, mirror:0xd8d3c4, scroll:0xf2ece0,
-               porcelain:0xf4f2ea, porcelainBlue:0x35558c, redLamp:0xc0442f, wood:0x7a5a34 };
+  const DC = { brass:0xb99a52, brassDark:0x8a7440, duck:0xe3c05a, duckBill:0xc98f4e,
+               poster:0x5b7f8a, forest:0x6b7a55, mirror:0xe6e1d1, scroll:0xf4f1e8,
+               porcelain:0xf4f1e8, porcelainBlue:0x5b6f8a, redLamp:0xa8705a, wood:0x6b5a42 };
 
   // 留聲機（木屋大廳紅磚牆前那台）
   function gramophone(gx, gz, y) {
