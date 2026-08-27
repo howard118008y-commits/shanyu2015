@@ -232,7 +232,32 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 .map .hot polygon{transition:fill .25s}
 .map .hot:hover polygon,.map .hot:focus-visible polygon{fill:#a89468}
 .map-note{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#a09a83;margin:clamp(16px,3vw,26px) 0 0;padding:0 24px;line-height:2}
+
+/* ── 3D 莊園 ── */
+.hero3d{position:relative;height:min(88vh,760px);min-height:460px;background:#efeade;overflow:hidden}
+.hero3d canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+.hero3d canvas:active{cursor:grabbing}
+.hero3d-head{position:absolute;left:clamp(24px,6vw,72px);top:clamp(28px,6vw,64px);pointer-events:none;display:flex;flex-direction:column;gap:10px}
+.hero3d-head .en{font-family:'Noto Sans TC',sans-serif;font-size:11.5px;letter-spacing:6px;color:#8d886f}
+.hero3d-head h2{margin:0;font-size:clamp(24px,4.4vw,34px);font-weight:600;letter-spacing:10px;color:#26291f}
+.hero3d-head p{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:13px;line-height:2.1;letter-spacing:1.5px;color:#5b5545;max-width:19em}
+.hero3d-tip{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font-family:'Noto Sans TC',sans-serif;font-size:11.5px;letter-spacing:3px;color:#8d886f;pointer-events:none;text-align:center;padding:0 20px}
+.hero3d-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:#efeade}
+.hero3d-load button{font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:4px;color:#26291f;background:none;border:1px solid #26291f;padding:14px 32px;cursor:pointer}
+.hero3d-load button:hover{background:#26291f;color:#f4f1e8}
+.hero3d-load span{font-family:'Noto Sans TC',sans-serif;font-size:11.5px;letter-spacing:2px;color:#8d886f}
+.hero3d.ready .hero3d-load{display:none}
+@media(max-width:640px){
+  .hero3d{height:min(72vh,540px)}
+  .hero3d-head p{display:none}
+}
 </style>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
 </head>
 <body>
 
@@ -259,6 +284,20 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     <div class="line"></div>
   </div>
 </header>
+
+<section class="hero3d" id="hero3d">
+  <canvas></canvas>
+  <div class="hero3d-head">
+    <div class="en">THE ESTATE</div>
+    <h2>立體導覽</h2>
+    <p>主棟兩層與獨棟木屋。拖曳可繞著莊園轉一圈，點房間看實景照片。</p>
+  </div>
+  <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
+  <div class="hero3d-load">
+    <span>互動式 3D　約 700 KB</span>
+    <button type="button">載入立體導覽</button>
+  </div>
+</section>
 
 <section class="intro" data-reveal>
   <div class="intro-inner">
@@ -723,6 +762,46 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
     });
   });
+})();
+</script>
+<script>
+(function(){
+  var sec = document.getElementById('hero3d');
+  if (!sec) return;
+  var canvas = sec.querySelector('canvas'), btn = sec.querySelector('.hero3d-load button');
+  var started = false;
+
+  function supported(){
+    try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; }
+  }
+  function openRoom(key){
+    var target = document.querySelector('[data-gallery="' + key + '"]');
+    if (!target) return;
+    target.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(function(){ target.querySelector('.ph-main').click(); }, 550);
+  }
+  function start(){
+    if (started) return;
+    started = true;
+    btn.textContent = '載入中…';
+    import('./scene3d.js')
+      .then(function(m){ m.buildScene(canvas, { onPick: openRoom }); sec.classList.add('ready'); })
+      .catch(function(){ btn.textContent = '載入失敗，請重試'; started = false; });
+  }
+  btn.addEventListener('click', start);
+
+  if (!supported()) {
+    btn.textContent = '此裝置不支援 3D';
+    btn.disabled = true;
+    return;
+  }
+  // 桌機且非省流量時，捲到就自動載入
+  var slow = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''));
+  if (!slow && innerWidth > 900 && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function(es, o){
+      es.forEach(function(e){ if (e.isIntersecting) { o.disconnect(); start(); } });
+    }, {rootMargin: '200px'}).observe(sec);
+  }
 })();
 </script>
 </body>
