@@ -290,7 +290,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   <div class="hero3d-head">
     <div class="en">THE ESTATE</div>
     <h2>立體導覽</h2>
-    <p>主棟兩層與獨棟木屋。拖曳可繞著莊園轉一圈，點房間看實景照片。</p>
+    <p>主棟一、二樓剖面。拖曳轉一圈，點房間看實景照片，也找得到主人和管家。</p>
   </div>
   <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
   <div class="hero3d-load">
@@ -774,7 +774,17 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   function supported(){
     try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; }
   }
+  var tip = sec.querySelector('.hero3d-tip');
+  var TIP0 = tip.textContent;
+  var NAMES = { host:'民宿主人・程先生', keeper:'管家・夏哥',
+                yunsidai:'雲絲帶　二人房', lihalai:'里哈籟　二至四人房', zhenqing:'山遇真情　四人房' };
+  function onHover(key){ tip.textContent = key && NAMES[key] ? NAMES[key] : TIP0; }
   function openRoom(key){
+    if (key === 'host' || key === 'keeper') {
+      var v = document.querySelector('.voices');
+      if (v) v.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
     var target = document.querySelector('[data-gallery="' + key + '"]');
     if (!target) return;
     target.scrollIntoView({behavior:'smooth', block:'center'});
@@ -785,7 +795,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     started = true;
     btn.textContent = '載入中…';
     import('./scene3d.js')
-      .then(function(m){ m.buildScene(canvas, { onPick: openRoom }); sec.classList.add('ready'); })
+      .then(function(m){ m.buildScene(canvas, { onPick: openRoom, onHover: onHover }); sec.classList.add('ready'); })
       .catch(function(){ btn.textContent = '載入失敗，請重試'; started = false; });
   }
   btn.addEventListener('click', start);
