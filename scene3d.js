@@ -22,6 +22,7 @@ export function buildScene(canvas, opts = {}) {
     stair:0xb5a68c, plant:0x6b7a55, pot:0x9a8870, art:0xa09a83,
     mahjong:0x6b7a55, cup:0xf4f1e8,
     hot:0xc9a86a,
+    skin:0xdcc3a6, host:0x55584a, hostHair:0x26291f, keeper:0x8d886f, keeperHair:0x3a352c,
   };
 
   const scene = new THREE.Scene();
@@ -383,6 +384,36 @@ export function buildScene(canvas, opts = {}) {
   layer = L2;
   makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
   makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房', 'zhenqing');
+
+  // ── 人物（程式建模，配色跟著主頁色盤） ──
+  function person(gx, gz, y, cloth, hair, facing, label) {
+    const grp = new THREE.Group(), S = 0.5;
+    const legs = new THREE.Mesh(new THREE.CylinderGeometry(S*0.6, S*0.68, 0.74, 14), M(0x3f3a30));
+    legs.position.y = 0.37;
+    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.66, 0.52, 5, 14), M(cloth));
+    torso.position.y = 1.12;
+    const head = new THREE.Mesh(new THREE.SphereGeometry(S*0.74, 20, 16), M(C.skin));
+    head.position.y = 1.78;
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(S*0.78, 20, 14, 0, Math.PI*2, 0, Math.PI*0.56), M(hair));
+    cap.position.y = 1.81;
+    [legs, torso, head, cap].forEach(m => { m.castShadow = true; grp.add(m); });
+    [-1, 1].forEach(sd => {
+      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.22, 0.44, 5, 12), M(cloth));
+      arm.position.set(sd * S * 0.8, 1.14, 0); arm.rotation.z = sd * 0.17;
+      arm.castShadow = true; grp.add(arm);
+    });
+    grp.position.copy(V(gx, gz, y)); grp.rotation.y = facing;
+    layer.add(grp);
+    const hit = new THREE.Mesh(new THREE.CylinderGeometry(S*1.2, S*1.2, 2.1, 10),
+      new THREE.MeshLambertMaterial({ color: cloth, transparent: true, opacity: 0.001 }));
+    hit.position.copy(V(gx, gz, y + 1.05));
+    hit.userData.room = label; hit.userData.base = cloth;
+    hot.push(hit); layer.add(hit);
+  }
+  layer = L1;
+  person(5.4, 9.3, F1, C.host, C.hostHair, 0.2, 'host');        // 程先生・一樓前緣
+  layer = L2;
+  person(8.6, 9.3, F2, C.keeper, C.keeperHair, -0.2, 'keeper'); // 夏先生・二樓前緣
 
   // ── 互動 ──
   const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();

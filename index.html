@@ -302,7 +302,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   <div class="hero3d-head">
     <div class="en">THE ESTATE</div>
     <h2>立體導覽</h2>
-    <p>四間房的立體剖面。拖曳轉一圈，點房間看房型與房價。</p>
+    <p>四間房的立體剖面。拖曳轉一圈，點房間看房型與房價，也找得到主人與管家。</p>
   </div>
   <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
   <div class="r3d-card" id="r3dCard">
@@ -715,10 +715,18 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     cabin:    { name:'水見曉逐', cap:'獨棟木屋・兩間雙人套房<br>起居室與廚房，近賞生態池畔',
                 wk:'NT$6,600', cny:'春節 NT$8,800', shot:'assets/cabin-2main.jpg', logo:'cabin' }
   };
+  var PEOPLE = { host:'民宿主人・程先生', keeper:'管家・夏先生' };
   var current = null;
-  function onHover(key){ tip.textContent = key && ROOMS[key] ? ROOMS[key].name : TIP0; }
+  function onHover(key){
+    tip.textContent = (key && ROOMS[key]) ? ROOMS[key].name : (key && PEOPLE[key]) ? PEOPLE[key] : TIP0;
+  }
   function hideCard(){ card.classList.remove('show'); current = null; }
   function showCard(key){
+    if (PEOPLE[key]) {
+      var v = document.querySelector('.voices');
+      if (v) v.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
     var r = ROOMS[key];
     if (!r) { hideCard(); return; }
     current = key;
