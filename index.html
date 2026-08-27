@@ -276,7 +276,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   <div class="hero3d-head">
     <div class="en">THE ESTATE</div>
     <h2>立體導覽</h2>
-    <p>主棟一、二樓剖面。拖曳轉一圈，點房間看實景照片，也找得到主人和管家。</p>
+    <p>四間房的立體剖面。拖曳轉一圈，點房間看實景照片，也找得到主人與管家。</p>
   </div>
   <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
   <div class="hero3d-load">
@@ -669,7 +669,8 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   var tip = sec.querySelector('.hero3d-tip');
   var TIP0 = tip.textContent;
   var NAMES = { host:'民宿主人・程先生', keeper:'管家・夏哥',
-                yunsidai:'雲絲帶　二人房', lihalai:'里哈籟　二至四人房', zhenqing:'山遇真情　四人房' };
+                yunsidai:'雲絲帶　二人房', lihalai:'里哈籟　二至四人房', zhenqing:'山遇真情　四人房',
+                cabin:'山遇・水見曉逐　獨棟木屋' };
   function onHover(key){ tip.textContent = key && NAMES[key] ? NAMES[key] : TIP0; }
   function openRoom(key){
     if (key === 'host' || key === 'keeper') {
