@@ -14,6 +14,7 @@
 <meta property="og:url" content="https://shanyu2015.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:locale" content="zh_TW">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231c1e18'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23f4f1e8' font-family='serif'%3E山%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -219,6 +220,31 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   .ph-zoom{opacity:1}
 }
 
+
+/* ── 3D 房間資訊卡 ── */
+.r3d-card{position:absolute;right:clamp(20px,4vw,54px);bottom:clamp(56px,8vw,76px);width:min(330px,78vw);
+  background:#f7f4ec;border:1px solid #26291f;box-shadow:0 18px 46px rgba(28,30,24,.24);
+  opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .28s,transform .28s;z-index:5}
+.r3d-card.show{opacity:1;transform:none;pointer-events:auto}
+.r3d-card img.shot{width:100%;height:168px;object-fit:cover;display:block}
+.r3d-card .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px}
+.r3d-card .top{display:flex;align-items:center;gap:11px}
+.r3d-card .top img{width:32px;height:32px;flex:none}
+.r3d-card h3{margin:0;font-size:20px;font-weight:600;letter-spacing:5px;color:#26291f;
+  font-family:'Ma Shan Zheng','Kaiti TC','BiauKai','DFKai-SB',serif}
+.r3d-card .cap{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:12.5px;letter-spacing:1.5px;color:#7a7461;line-height:1.9}
+.r3d-card .price{display:flex;gap:18px;align-items:baseline;border-top:1px solid #ded6c2;padding-top:10px}
+.r3d-card .price b{font-weight:600;font-size:17px;color:#26291f;letter-spacing:1px}
+.r3d-card .price span{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:2px;color:#a09a83}
+.r3d-card .more{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:3px;color:#26291f;
+  background:none;border:1px solid #26291f;padding:10px 0;cursor:pointer;width:100%}
+.r3d-card .more:hover{background:#26291f;color:#f7f4ec}
+.r3d-card .close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;cursor:pointer;
+  background:rgba(28,30,24,.62);color:#f7f4ec;font-size:17px;line-height:1}
+@media(max-width:640px){
+  .r3d-card{right:12px;left:12px;width:auto;bottom:44px}
+  .r3d-card img.shot{height:126px}
+}
 /* ── 3D 莊園 ── */
 .hero3d{position:relative;height:min(88vh,760px);min-height:460px;background:#efeade;overflow:hidden}
 .hero3d canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
@@ -276,9 +302,19 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   <div class="hero3d-head">
     <div class="en">THE ESTATE</div>
     <h2>立體導覽</h2>
-    <p>四間房的立體剖面。拖曳轉一圈，點房間看實景照片，也找得到主人與管家。</p>
+    <p>四間房的立體剖面。拖曳轉一圈，點房間看房型與房價。</p>
   </div>
   <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
+  <div class="r3d-card" id="r3dCard">
+    <button class="close" type="button" aria-label="關閉">×</button>
+    <img class="shot" src="" alt="">
+    <div class="body">
+      <div class="top"><img class="logo" src="" alt=""><h3></h3></div>
+      <p class="cap"></p>
+      <div class="price"><b></b><span></span></div>
+      <button class="more" type="button">看全部照片</button>
+    </div>
+  </div>
   <div class="hero3d-load">
     <span>互動式 3D　約 700 KB</span>
     <button type="button">載入立體導覽</button>
@@ -668,27 +704,47 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   }
   var tip = sec.querySelector('.hero3d-tip');
   var TIP0 = tip.textContent;
-  var NAMES = { host:'民宿主人・程先生', keeper:'管家・夏哥',
-                yunsidai:'雲絲帶　二人房', lihalai:'里哈籟　二至四人房', zhenqing:'山遇真情　四人房',
-                cabin:'山遇・水見曉逐　獨棟木屋' };
-  function onHover(key){ tip.textContent = key && NAMES[key] ? NAMES[key] : TIP0; }
-  function openRoom(key){
-    if (key === 'host' || key === 'keeper') {
-      var v = document.querySelector('.voices');
-      if (v) v.scrollIntoView({behavior:'smooth', block:'start'});
-      return;
-    }
-    var target = document.querySelector('[data-gallery="' + key + '"]');
-    if (!target) return;
-    target.scrollIntoView({behavior:'smooth', block:'center'});
-    setTimeout(function(){ target.querySelector('.ph-main').click(); }, 550);
+  var card = document.getElementById('r3dCard');
+  var ROOMS = {
+    yunsidai: { name:'雲絲帶', cap:'二人房・兩單人床・一樓無障礙<br>落地窗前可望見山腰的雲絲帶',
+                wk:'NT$2,500', cny:'春節 NT$3,500', shot:'assets/room-yunsidai.jpg', logo:'yunsidai' },
+    lihalai:  { name:'里哈籟', cap:'二至四人房・兩雙人床<br>一室輕鬆自在的綠野風格，窗外是山',
+                wk:'NT$3,000', cny:'春節 NT$4,000', shot:'assets/room-lihalai.jpg', logo:'lihalai' },
+    zhenqing: { name:'山遇真情', cap:'四人房・兩雙人床<br>暖色調親子家族房，可近觀中央山脈',
+                wk:'NT$4,500', cny:'春節 NT$5,500', shot:'assets/room-zhenqing.jpg', logo:'zhenqing' },
+    cabin:    { name:'水見曉逐', cap:'獨棟木屋・兩間雙人套房<br>起居室與廚房，近賞生態池畔',
+                wk:'NT$6,600', cny:'春節 NT$8,800', shot:'assets/cabin-2main.jpg', logo:'cabin' }
+  };
+  var current = null;
+  function onHover(key){ tip.textContent = key && ROOMS[key] ? ROOMS[key].name : TIP0; }
+  function hideCard(){ card.classList.remove('show'); current = null; }
+  function showCard(key){
+    var r = ROOMS[key];
+    if (!r) { hideCard(); return; }
+    current = key;
+    card.querySelector('.shot').src = r.shot;
+    card.querySelector('.shot').alt = r.name;
+    card.querySelector('.logo').src = 'assets/logo/' + r.logo + '.svg';
+    card.querySelector('h3').textContent = r.name;
+    card.querySelector('.cap').innerHTML = r.cap;
+    card.querySelector('.price b').textContent = r.wk;
+    card.querySelector('.price span').textContent = r.cny;
+    card.classList.add('show');
   }
+  card.querySelector('.close').addEventListener('click', hideCard);
+  card.querySelector('.more').addEventListener('click', function(){
+    var t = current && document.querySelector('[data-gallery="' + current + '"]');
+    if (!t) return;
+    hideCard();
+    t.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(function(){ t.querySelector('.ph-main').click(); }, 550);
+  });
   function start(){
     if (started) return;
     started = true;
     btn.textContent = '載入中…';
     import('./scene3d.js')
-      .then(function(m){ m.buildScene(canvas, { onPick: openRoom, onHover: onHover }); sec.classList.add('ready'); })
+      .then(function(m){ m.buildScene(canvas, { onPick: showCard, onHover: onHover }); sec.classList.add('ready'); })
       .catch(function(){ btn.textContent = '載入失敗，請重試'; started = false; });
   }
   btn.addEventListener('click', start);

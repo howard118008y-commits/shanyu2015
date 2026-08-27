@@ -7,19 +7,19 @@ export function buildScene(canvas, opts = {}) {
   const C = {
     shell:0xf3efe4, shellSide:0xeae4d5, slab:0xeee6d3, skirt:0xded5bf,
     // 雲絲帶：暖褐木質
-    yFloor:0xd8c4b0, yWall:0xc6ac9c, yWood:0x5e412e, yAccent:0xac8571,
+    yFloor:0xd9c3a6, yWall:0xb9977f, yWood:0x4a2f1b, yAccent:0xa8714c,
     // 木屋：木牆＋紅磚
-    cFloor:0xc2a878, cWall:0x9a7b4e, cBrick:0xa8654a, cBeam:0x5a4326,
+    cFloor:0xc4a06a, cWall:0x9c7038, cBrick:0xa8523a, cBeam:0x452f16,
     // 里哈籟：萊姆綠
-    lFloor:0xd9dcc4, lWall:0x8fae5d, lAccent:0xc8d7a0,
+    lFloor:0xd7dcbe, lWall:0x7ca83e, lAccent:0xb6d073,
     // 山遇真情：磚紅暖色
-    zFloor:0xdccbb4, zWall:0x9f5639, zAccent:0xc98a5e,
+    zFloor:0xdcc7ab, zWall:0xa8402a, zAccent:0xd08a4e,
     // 共用
     sheet:0xf7f4ec, quilt:0xe6dcc6, pillow:0xf2ece0,
-    frame:0x6b4f35, glassWin:0x92c973, winFrame:0x4a4238,
-    lampShade:0xf3e2b8, lampMetal:0x4c4438, tv:0x2b2b2b,
-    rug:0xcdbd9c, rug2:0xbfc9ab, table:0xb68d5c, seat:0xa8845e, bar:0xa8794e,
-    stair:0xc7ab84, plant:0x6f9455, pot:0xb08868, art:0xb9a888,
+    frame:0x5d4227, glassWin:0x7cc44e, winFrame:0x33302a,
+    lampShade:0xf6dfa0, lampMetal:0x2e2a22, tv:0x1c1c1c,
+    rug:0xc9b48a, rug2:0xb2c096, table:0xb37f42, seat:0x9d7345, bar:0xa06a38,
+    stair:0xc19b6c, plant:0x578a3c, pot:0xa97448, art:0xb09a72,
     mahjong:0x6f9068, cup:0xf0ece0,
     skin:0xe8c49a, host:0x40554a, hostHair:0x35302a, keeper:0x8a6a4c, keeperHair:0x4a3f33,
     hot:0xe8bd77,
@@ -29,7 +29,10 @@ export function buildScene(canvas, opts = {}) {
   scene.background = new THREE.Color(0xefeade);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio * 1.5, 3));   // 高 DPI 渲染
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.18;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -41,16 +44,16 @@ export function buildScene(canvas, opts = {}) {
   camera.position.set(15, 6.6, 17);
   controls.target.set(0, 3.0, 0);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.78));
-  scene.add(new THREE.HemisphereLight(0xfff8ee, 0xc9c2b0, 0.5));
-  const key = new THREE.DirectionalLight(0xfff2df, 0.95);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.46));
+  scene.add(new THREE.HemisphereLight(0xfff8ee, 0x9a9384, 0.42));
+  const key = new THREE.DirectionalLight(0xfff2df, 1.55);
   key.position.set(14, 19, 13); key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(4096, 4096);
   Object.assign(key.shadow.camera, { left:-17, right:17, top:20, bottom:-12, far:52 });
   key.shadow.bias = -0.0013;
   scene.add(key);
   [[0,1.6,2],[0,4.9,2],[-4,1.6,-1],[-4,4.9,-1]].forEach(p => {
-    const l = new THREE.PointLight(0xfff0d8, 0.32, 16, 1.7);
+    const l = new THREE.PointLight(0xffeccd, 0.5, 17, 1.6);
     l.position.set(p[0], p[1], p[2]); scene.add(l);
   });
 
@@ -143,31 +146,34 @@ export function buildScene(canvas, opts = {}) {
   const labelSprites = [];
   function makeLabel(gx, gz, y, text, sub, logoKey) {
     const cv = document.createElement('canvas');
-    cv.width = 560; cv.height = 170;
+    cv.width = 1120; cv.height = 340;   // 2x 供高 DPI
     const ctx = cv.getContext('2d');
     function paint(logoImg) {
       ctx.clearRect(0, 0, cv.width, cv.height);
       ctx.fillStyle = 'rgba(247,244,236,0.95)';
       ctx.strokeStyle = '#26291f'; ctx.lineWidth = 4;
-      const r = 26, w = cv.width - 8, h = cv.height - 8;
+      ctx.save(); ctx.scale(2, 2);
+      const r = 26, w = 560 - 8, h = 170 - 8;
       ctx.beginPath(); ctx.moveTo(4 + r, 4);
       ctx.arcTo(4 + w, 4, 4 + w, 4 + h, r); ctx.arcTo(4 + w, 4 + h, 4, 4 + h, r);
       ctx.arcTo(4, 4 + h, 4, 4, r); ctx.arcTo(4, 4, 4 + w, 4, r); ctx.closePath();
       ctx.fill(); ctx.stroke();
       if (logoImg) ctx.drawImage(logoImg, 26, 34, 100, 100);
       ctx.fillStyle = '#26291f';
-      ctx.font = '600 60px "Noto Serif TC", serif';
+      ctx.font = '400 66px "Ma Shan Zheng", "Kaiti TC", "BiauKai", "DFKai-SB", "楷體", "Noto Serif TC", serif';
       ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
       ctx.fillText(text, 146, sub ? 88 : 108);
       if (sub) {
         ctx.fillStyle = '#7a7461';
-        ctx.font = '300 30px "Noto Sans TC", sans-serif';
+        ctx.font = '300 29px "Noto Sans TC", sans-serif';
         ctx.fillText(sub, 148, 130);
       }
+      ctx.restore();
       tex.needsUpdate = true;
     }
     const tex = new THREE.CanvasTexture(cv);
-    tex.anisotropy = 4;
+    tex.anisotropy = 8;
+    tex.minFilter = THREE.LinearFilter;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
     sp.scale.set(3.5, 1.06, 1);
     sp.position.copy(V(gx, gz, y));
@@ -207,6 +213,59 @@ export function buildScene(canvas, opts = {}) {
     put(gx + gw - 1.3, gz + gd * 0.3, 0.5, 0.5, 1.9, C.cBrick, y, { r: 0.04 });         // 煙囪
   }
 
+
+  // ── 取自實景照片的裝飾 ──
+  const DC = { brass:0xc9a227, brassDark:0x9a7a1c, duck:0xf2c422, duckBill:0xe07a2a,
+               poster:0x2f6f8f, forest:0x4f7a3a, mirror:0xd8d3c4, scroll:0xf2ece0,
+               porcelain:0xf4f2ea, porcelainBlue:0x35558c, redLamp:0xc0442f, wood:0x7a5a34 };
+
+  // 留聲機（木屋大廳紅磚牆前那台）
+  function gramophone(gx, gz, y) {
+    put(gx, gz, 0.95, 0.8, 0.5, DC.wood, y, { r: 0.05 });               // 木箱
+    const horn = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.62, 16, 1, true), M(DC.brass));
+    horn.material.side = THREE.DoubleSide;
+    horn.position.copy(V(gx + 0.48, gz + 0.4, y + 0.92));
+    horn.rotation.set(Math.PI * 0.12, 0, Math.PI * 0.14);
+    horn.castShadow = true; layer.add(horn);
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.4, 8), M(DC.brassDark));
+    arm.position.copy(V(gx + 0.48, gz + 0.4, y + 0.62));
+    arm.rotation.z = 0.3; layer.add(arm);
+  }
+  // 小黃鴨（山遇真情床頭那隻）
+  function duck(gx, gz, y) {
+    const b = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 12), M(DC.duck));
+    b.position.copy(V(gx, gz, y + 0.17)); b.castShadow = true; layer.add(b);
+    const h = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), M(DC.duck));
+    h.position.copy(V(gx + 0.02, gz - 0.08, y + 0.36)); h.castShadow = true; layer.add(h);
+    const bill = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.11, 8), M(DC.duckBill));
+    bill.position.copy(V(gx + 0.02, gz - 0.2, y + 0.34)); bill.rotation.x = Math.PI / 2; layer.add(bill);
+  }
+  // 青花瓷茶具（木屋窗邊那組）
+  function teaSet(gx, gz, y) {
+    put(gx, gz, 1.0, 0.62, 0.1, DC.wood, y, { r: 0.03 });                // 茶盤
+    [0, 1].forEach(i => {
+      const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.11, 12), M(DC.porcelain));
+      cup.position.copy(V(gx + 0.28 + i * 0.34, gz + 0.3, y + 0.16)); cup.castShadow = true; layer.add(cup);
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.014, 6, 14), M(DC.porcelainBlue));
+      rim.position.copy(V(gx + 0.28 + i * 0.34, gz + 0.3, y + 0.21));
+      rim.rotation.x = Math.PI / 2; layer.add(rim);
+    });
+    put(gx + 0.06, gz + 0.12, 0.36, 0.36, 0.3, DC.porcelain, y + 0.1, { r: 0.05 });   // 面紙木盒
+  }
+  // 圓形掛鏡（紅磚牆上）
+  function roundMirror(gx, gz, y, r = 0.3) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.05, 8, 22), M(C.frame));
+    ring.position.copy(V(gx, gz, y)); ring.castShadow = true; layer.add(ring);
+    const face = new THREE.Mesh(new THREE.CircleGeometry(r - 0.03, 22), M(DC.mirror));
+    face.position.copy(V(gx, gz + 0.04, y)); layer.add(face);
+  }
+  // 書法直幅
+  function scroll(gx, gz, y, h = 1.3) {
+    put(gx, gz, 0.42, 0.05, h, DC.scroll, y, { r: 0.01 });
+    put(gx - 0.03, gz - 0.01, 0.48, 0.07, 0.07, C.frame, y + h, { r: 0.02 });
+    put(gx - 0.03, gz - 0.01, 0.48, 0.07, 0.07, C.frame, y - 0.07, { r: 0.02 });
+  }
+
   const FH = 3.3, F1 = 0, F2 = FH;
 
   // ── 外殼（兩面牆） ──
@@ -244,6 +303,8 @@ export function buildScene(canvas, opts = {}) {
   windowOn('w', 0.3, 2.0, 3.0, F1);
   windowOn('w', 0.3, 7.0, 2.2, F1);
   picture('n', 3.6, 0.3, 1.4, F1 + 1.4);
+  scroll(1.5, 0.34, F1 + 0.85);
+  roundMirror(5.2, 0.36, F1 + 1.55, 0.26);
   plant(5.5, 8.4, F1, 1.0); plant(0.9, 8.6, F1, 0.85);
   pendant(3.2, 3.0, F1 + 2.25);
   pendant(3.2, 7.2, F1 + 2.25);
@@ -257,6 +318,12 @@ export function buildScene(canvas, opts = {}) {
   put(11.4, 6.0, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
   plant(12.6, 5.4, F1, 1.1); plant(8.0, 8.6, F1, 0.95); plant(13.0, 8.4, F1, 1.0);
   windowOn('n', 10.2, 0.3, 2.8, F1, 1.35, 0.9);
+  gramophone(12.5, 0.5, F1);
+  roundMirror(11.9, 0.36, F1 + 1.7, 0.3);
+  scroll(13.2, 0.34, F1 + 1.1, 1.1);
+  [0, 1, 2].forEach(i => picture('n', 8.1 + i * 0.75, 0.32, 0.66, F1 + 1.75, 0.5, [DC.forest, C.art, DC.forest][i]));
+  teaSet(9.4, 6.2, F1 + 0.4);
+  pendant(10.8, 2.6, F1 + 2.25, DC.redLamp, 0.7);
 
   // 中央走道：吧台、樓梯、程先生
   put(6.45, 3.4, 1.2, 2.6, 0.66, C.bar, F1, { r: 0.06 });
@@ -282,6 +349,8 @@ export function buildScene(canvas, opts = {}) {
   put(1.4, 6.6, 2.6, 1.0, 0.44, C.seat, F2, { r: 0.12 });
   put(4.4, 6.8, 0.7, 0.7, 0.4, C.table, F2, { r: 0.05 });
   picture('w', 0.3, 7.6, 1.2, F2 + 1.35, 0.55, C.lAccent);
+  roundMirror(2.6, 0.36, F2 + 1.6, 0.26);
+  scroll(5.4, 0.34, F2 + 0.9, 1.2);
   plant(5.4, 8.6, F2, 1.0);
   pendant(3.2, 3.6, F2 + 2.15, 0xdfe8c4);
   pendant(3.2, 7.6, F2 + 2.15, 0xdfe8c4);
@@ -292,7 +361,9 @@ export function buildScene(canvas, opts = {}) {
   bed(11.0, 0.9, 2.0, 2.9, F2, C.frame, C.zAccent);
   nightstand(10.4, 0.9, F2, C.frame);
   windowOn('n', 8.8, 0.3, 2.6, F2, 1.3, 0.9);
-  picture('n', 11.9, 0.3, 1.4, F2 + 1.3, 0.55, C.zAccent);
+  picture('n', 9.2, 0.3, 1.05, F2 + 1.35, 0.78, DC.poster);      // THE BIG BLUE 海報
+  picture('n', 11.4, 0.3, 1.15, F2 + 1.3, 0.62, DC.forest);      // 森林畫
+  duck(10.55, 0.55, F2 + 1.15);                                  // 床頭小黃鴨
   slab(8.4, 4.6, 4.4, 1.4, C.rug, F2 + 0.05, 0.05);
   put(8.5, 6.6, 3.0, 1.0, 0.44, C.seat, F2, { r: 0.12 });
   put(12.0, 6.6, 0.8, 0.8, 0.4, C.table, F2, { r: 0.05 });
@@ -313,36 +384,6 @@ export function buildScene(canvas, opts = {}) {
   layer = L2;
   makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
   makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房', 'zhenqing');
-
-  // ── 人物 ──
-  function person(gx, gz, y, cloth, hair, facing, label) {
-    const grp = new THREE.Group(), S = 0.5;
-    const legs = new THREE.Mesh(new THREE.CylinderGeometry(S*0.6, S*0.68, 0.74, 12), M(0x4a4438));
-    legs.position.y = 0.37;
-    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.66, 0.52, 4, 12), M(cloth));
-    torso.position.y = 1.12;
-    const head = new THREE.Mesh(new THREE.SphereGeometry(S*0.74, 18, 14), M(C.skin));
-    head.position.y = 1.78;
-    const cap = new THREE.Mesh(new THREE.SphereGeometry(S*0.78, 18, 12, 0, Math.PI*2, 0, Math.PI*0.56), M(hair));
-    cap.position.y = 1.81;
-    [legs, torso, head, cap].forEach(m => { m.castShadow = true; grp.add(m); });
-    [-1, 1].forEach(s => {
-      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.22, 0.44, 4, 10), M(cloth));
-      arm.position.set(s * S * 0.8, 1.14, 0); arm.rotation.z = s * 0.17;
-      arm.castShadow = true; grp.add(arm);
-    });
-    grp.position.copy(V(gx, gz, y)); grp.rotation.y = facing;
-    layer.add(grp);
-    const hit = new THREE.Mesh(new THREE.CylinderGeometry(S*1.2, S*1.2, 2.1, 10),
-      new THREE.MeshLambertMaterial({ color: cloth, transparent: true, opacity: 0.001 }));
-    hit.position.copy(V(gx, gz, y + 1.05));
-    hit.userData.room = label; hit.userData.base = cloth;
-    hot.push(hit); layer.add(hit);
-  }
-  layer = L1;
-  person(5.4, 9.3, F1, C.host, C.hostHair, 0.2, 'host');        // 程先生・一樓前緣
-  layer = L2;
-  person(8.6, 9.3, F2, C.keeper, C.keeperHair, -0.2, 'keeper'); // 夏先生・二樓前緣
 
   // ── 互動 ──
   const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
