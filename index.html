@@ -219,20 +219,6 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   .ph-zoom{opacity:1}
 }
 
-/* ── 莊園導覽（等距圖） ── */
-.map{background:#efeade;padding:clamp(70px,10vw,120px) 0 clamp(60px,9vw,100px)}
-.map .sec-head{padding:0 clamp(24px,6vw,72px);margin-bottom:clamp(22px,4vw,34px)}
-.map-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:clamp(18px,3vw,28px);padding:0 20px}
-.map-tabs button{font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:3px;color:#5b5545;background:none;border:1px solid #c9c1aa;padding:11px 24px;cursor:pointer}
-.map-tabs button[aria-selected="true"]{background:#26291f;border-color:#26291f;color:#f4f1e8}
-.map-stage{overflow-x:auto;padding:0 16px}
-.map-stage svg{display:block;margin:0 auto;width:min(1000px,100%);min-width:560px;height:auto}
-.map-stage svg.off{display:none}
-.map .hot{cursor:pointer}
-.map .hot polygon{transition:fill .25s}
-.map .hot:hover polygon,.map .hot:focus-visible polygon{fill:#a89468}
-.map-note{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#a09a83;margin:clamp(16px,3vw,26px) 0 0;padding:0 24px;line-height:2}
-
 /* ── 3D 莊園 ── */
 .hero3d{position:relative;height:min(88vh,760px);min-height:460px;background:#efeade;overflow:hidden}
 .hero3d canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
@@ -421,75 +407,6 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 </section>
 
 
-<section class="map" id="map">
-  <div class="sec-head" data-reveal>
-    <div class="en">MAP</div>
-    <h2>莊園導覽</h2>
-  </div>
-  <div class="map-tabs" role="tablist">
-    <button type="button" role="tab" aria-selected="true" data-floor="f1">一樓與庭園</button>
-    <button type="button" role="tab" aria-selected="false" data-floor="f2">二樓</button>
-  </div>
-  <div class="map-stage">
-    <svg id="f1" viewBox="-460 -282 1365 755" role="img" aria-label="一樓與庭園配置圖">
-<polygon points="173.4,-229.9 853.4,150.1 561.0,313.5 -119.0,-66.5" fill="#c6d1b0" stroke="none" stroke-width="1" />
-<polygon points="319.6,-140.6 571.2,0.0 401.2,95.0 306.0,79.8 170.0,3.8 156.4,-64.6 265.2,-125.4" fill="#a9c3c9" stroke="#8ba7ae" stroke-width="1.2" />
-<text x="333.2" y="-11.4" font-size="14" fill="#42606a" text-anchor="middle" font-weight="500" letter-spacing="4" font-family="'Noto Serif TC',serif">生態池</text>
-<polygon points="435.2,201.4 454.9,212.4 441.3,220.0 421.6,209.0" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<polygon points="470.9,181.4 490.6,192.5 477.0,200.1 457.3,189.0" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<polygon points="506.6,161.5 526.3,172.5 512.7,180.1 493.0,169.1" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<polygon points="542.3,141.5 562.0,152.6 548.4,160.2 528.7,149.2" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<polygon points="578.0,121.6 597.7,132.6 584.1,140.2 564.4,129.2" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<polygon points="613.7,101.6 633.4,112.7 619.8,120.3 600.1,109.2" fill="#cfc9b8" stroke="#b6af9c" stroke-width="0.7" />
-<g class="hot" data-room="cabin" tabindex="0" role="button" aria-label="木屋"><polygon points="581.4,107.3 717.4,183.3 717.4,222.3 581.4,146.3" fill="#b9a47e" stroke="#26291f" stroke-width="1.1" /><polygon points="816.0,128.2 717.4,183.3 717.4,222.3 816.0,167.2" fill="#cbb790" stroke="#26291f" stroke-width="1.1" /><polygon points="680.0,52.2 816.0,128.2 717.4,183.3 581.4,107.3" fill="#d8c5a2" stroke="#26291f" stroke-width="1.1" /></g>
-<text x="697.0" y="118.7" font-size="13.5" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">木屋</text>
-<polygon points="-122.4,-45.6 -20.4,11.4 -278.8,155.8 -380.8,98.8" fill="#d5cdb8" stroke="#c0b9a4" stroke-width="1" />
-<polygon points="0.0,0.0 442.0,247.0 136.0,418.0 -306.0,171.0" fill="#e6e0d0" stroke="#c0b9a4" stroke-width="1.2" />
-<text x="-207.4" y="58.9" font-size="11.5" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">騎樓</text>
-<polygon points="0.0,-39.0 442.0,208.0 442.0,247.0 0.0,0.0" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="449.5,203.8 442.0,208.0 442.0,247.0 449.5,242.8" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="7.5,-43.2 449.5,203.8 442.0,208.0 0.0,-39.0" fill="#ded7c3" stroke="#26291f" stroke-width="1.0" />
-<polygon points="-313.5,127.8 -306.0,132.0 -306.0,171.0 -313.5,166.8" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="0.0,-39.0 -306.0,132.0 -306.0,171.0 0.0,0.0" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="-7.5,-43.2 0.0,-39.0 -306.0,132.0 -313.5,127.8" fill="#ded7c3" stroke="#26291f" stroke-width="1.0" />
-<polygon points="-181.6,93.0 -172.0,98.3 -172.0,101.5 -181.6,96.1" fill="#7a7561" stroke="#26291f" stroke-width="0.7" /><polygon points="-127.8,73.6 -172.0,98.3 -172.0,101.5 -127.8,76.8" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><polygon points="-137.4,68.3 -127.8,73.6 -172.0,98.3 -181.6,93.0" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><text x="-163.2" y="34.2" font-size="10.5" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">側門</text>
-<polygon points="369.2,208.5 410.0,231.3 410.0,234.5 369.2,211.7" fill="#7a7561" stroke="#26291f" stroke-width="0.7" /><polygon points="419.6,226.0 410.0,231.3 410.0,234.5 419.6,229.1" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><polygon points="378.8,203.2 419.6,226.0 410.0,231.3 369.2,208.5" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><text x="431.8" y="210.9" font-size="10.5" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">後門</text>
-<polygon points="37.4,42.1 289.0,182.7 289.0,195.7 37.4,55.1" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="307.7,172.2 289.0,182.7 289.0,195.7 307.7,185.2" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="56.1,31.6 307.7,172.2 289.0,182.7 37.4,42.1" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<polygon points="-68.0,141.1 -3.4,177.2 -3.4,188.1 -68.0,152.0" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="98.6,120.2 -3.4,177.2 -3.4,188.1 98.6,131.1" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="34.0,84.1 98.6,120.2 -3.4,177.2 -68.0,141.1" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<polygon points="71.4,162.0 180.2,222.8 180.2,233.7 71.4,172.9" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="231.2,194.3 180.2,222.8 180.2,233.7 231.2,205.2" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="122.4,133.5 231.2,194.3 180.2,222.8 71.4,162.0" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<polygon points="23.8,211.4 102.0,255.1 102.0,266.0 23.8,222.3" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="153.0,226.6 102.0,255.1 102.0,266.0 153.0,237.5" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="74.8,182.9 153.0,226.6 102.0,255.1 23.8,211.4" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<polygon points="149.6,298.6 187.0,319.5 187.0,332.5 149.6,311.6" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="323.0,243.5 187.0,319.5 187.0,332.5 323.0,256.5" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="285.6,222.6 323.0,243.5 187.0,319.5 149.6,298.6" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<text x="229.5" y="287.8" font-size="10" fill="#6d6754" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">沙發</text>
-<polygon points="-217.6,173.9 -40.8,272.7 -40.8,288.8 -217.6,190.0" fill="#aea68e" stroke="#26291f" stroke-width="0.85" /><polygon points="-11.9,256.5 -40.8,272.7 -40.8,288.8 -11.9,272.6" fill="#bdb59d" stroke="#26291f" stroke-width="0.85" /><polygon points="-188.7,157.7 -11.9,256.5 -40.8,272.7 -217.6,173.9" fill="#c9c1aa" stroke="#26291f" stroke-width="0.85" />
-<text x="-117.3" y="232.8" font-size="11.5" fill="#5b5545" text-anchor="middle" font-weight="500" letter-spacing="2" font-family="'Noto Serif TC',serif">吧台</text>
-<polygon points="-54.4,306.9 -45.6,311.9 -45.6,316.5 -54.4,311.6" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="10.5,280.5 -45.6,311.9 -45.6,316.5 10.5,285.2" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="1.7,275.6 10.5,280.5 -45.6,311.9 -54.4,306.9" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-45.6,307.7 -36.7,312.6 -36.7,321.5 -45.6,316.5" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="19.4,281.3 -36.7,312.6 -36.7,321.5 19.4,290.1" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="10.5,276.4 19.4,281.3 -36.7,312.6 -45.6,307.7" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-36.7,308.5 -27.9,313.4 -27.9,326.4 -36.7,321.5" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="28.2,282.1 -27.9,313.4 -27.9,326.4 28.2,295.1" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="19.4,277.1 28.2,282.1 -27.9,313.4 -36.7,308.5" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-27.9,309.3 -19.0,314.2 -19.0,331.4 -27.9,326.4" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="37.1,282.9 -19.0,314.2 -19.0,331.4 37.1,300.0" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="28.2,277.9 37.1,282.9 -19.0,314.2 -27.9,309.3" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-19.0,310.0 -10.2,315.0 -10.2,336.3 -19.0,331.4" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="45.9,283.6 -10.2,315.0 -10.2,336.3 45.9,304.9" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="37.1,278.7 45.9,283.6 -10.2,315.0 -19.0,310.0" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-10.2,310.8 -1.4,315.8 -1.4,341.2 -10.2,336.3" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="54.7,284.4 -1.4,315.8 -1.4,341.2 54.7,309.9" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="45.9,279.5 54.7,284.4 -1.4,315.8 -10.2,310.8" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<text x="59.5" y="293.6" font-size="11" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="2" font-family="'Noto Serif TC',serif">樓梯</text>
-<g class="hot" data-room="yunsidai" tabindex="0" role="button" aria-label="雲絲帶房"><polygon points="10.2,317.3 136.0,387.6 136.0,418.0 10.2,347.7" fill="#ab9d7d" stroke="#26291f" stroke-width="1.1" /><polygon points="217.6,342.0 136.0,387.6 136.0,418.0 217.6,372.4" fill="#b9ab8b" stroke="#26291f" stroke-width="1.1" /><polygon points="91.8,271.7 217.6,342.0 136.0,387.6 10.2,317.3" fill="#c9bb9c" stroke="#26291f" stroke-width="1.1" /></g>
-<text x="113.9" y="329.6" font-size="13.5" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">雲絲帶</text>
-<polygon points="241.4,352.2 250.9,357.5 250.9,360.6 241.4,355.3" fill="#7a7561" stroke="#26291f" stroke-width="0.7" /><polygon points="301.9,329.0 250.9,357.5 250.9,360.6 301.9,332.1" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><polygon points="292.4,323.7 301.9,329.0 250.9,357.5 241.4,352.2" fill="#8d886f" stroke="#26291f" stroke-width="0.7" /><text x="319.6" y="372.4" font-size="10.5" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">正門</text>
-    </svg>
-    <svg class="off" id="f2" viewBox="-358 -95 866 569" role="img" aria-label="二樓配置圖">
-<polygon points="0.0,0.0 442.0,247.0 136.0,418.0 -306.0,171.0" fill="#e6e0d0" stroke="#c0b9a4" stroke-width="1.2" />
-<polygon points="0.0,-35.1 442.0,211.9 442.0,247.0 0.0,0.0" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="449.5,207.7 442.0,211.9 442.0,247.0 449.5,242.8" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="7.5,-39.3 449.5,207.7 442.0,211.9 0.0,-35.1" fill="#ded7c3" stroke="#26291f" stroke-width="1.0" />
-<polygon points="-313.5,131.7 -306.0,135.9 -306.0,171.0 -313.5,166.8" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="0.0,-35.1 -306.0,135.9 -306.0,171.0 0.0,0.0" fill="#c8c1ac" stroke="#26291f" stroke-width="1.0" /><polygon points="-7.5,-39.3 0.0,-35.1 -306.0,135.9 -313.5,131.7" fill="#ded7c3" stroke="#26291f" stroke-width="1.0" />
-<polygon points="-122.4,77.2 13.6,153.2 13.6,155.8 -122.4,79.8" fill="#9db4bc" stroke="#26291f" stroke-width="1.1" /><polygon points="136.0,84.8 13.6,153.2 13.6,155.8 136.0,87.4" fill="#adc4cb" stroke="#26291f" stroke-width="1.1" /><polygon points="0.0,8.8 136.0,84.8 13.6,153.2 -122.4,77.2" fill="#bcd0d6" stroke="#26291f" stroke-width="1.1" /><text x="6.8" y="81.0" font-size="11.5" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">玻璃地板景觀台</text><text x="-22.1" y="97.2" font-size="9.5" fill="#6d6754" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">腳下就是一樓</text>
-<polygon points="23.8,152.4 153.0,224.6 153.0,233.7 23.8,161.5" fill="#c2b9a1" stroke="#26291f" stroke-width="1.1" /><polygon points="275.4,156.2 153.0,224.6 153.0,233.7 275.4,165.3" fill="#cfc7b0" stroke="#26291f" stroke-width="1.1" /><polygon points="146.2,84.0 275.4,156.2 153.0,224.6 23.8,152.4" fill="#dbd3bd" stroke="#26291f" stroke-width="1.1" /><text x="149.6" y="154.3" font-size="13" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">麻將區</text>
-<g class="hot" data-room="lihalai" tabindex="0" role="button" aria-label="里哈籟"><polygon points="136.0,225.8 272.0,301.8 272.0,330.6 136.0,254.6" fill="#ab9d7d" stroke="#26291f" stroke-width="1.1" /><polygon points="421.6,218.2 272.0,301.8 272.0,330.6 421.6,247.0" fill="#b9ab8b" stroke="#26291f" stroke-width="1.1" /><polygon points="285.6,142.2 421.6,218.2 272.0,301.8 136.0,225.8" fill="#c9bb9c" stroke="#26291f" stroke-width="1.1" /></g><text x="278.8" y="222.0" font-size="14" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">里哈籟</text>
-<polygon points="-285.6,161.9 -102.0,264.5 -102.0,273.6 -285.6,171.0" fill="#c2b9a1" stroke="#26291f" stroke-width="1.1" /><polygon points="44.2,182.8 -102.0,264.5 -102.0,273.6 44.2,191.9" fill="#cfc7b0" stroke="#26291f" stroke-width="1.1" /><polygon points="-139.4,80.2 44.2,182.8 -102.0,264.5 -285.6,161.9" fill="#dbd3bd" stroke="#26291f" stroke-width="1.1" /><text x="-120.7" y="172.4" font-size="12" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">海報收藏區</text>
-<g class="hot" data-room="zhenqing" tabindex="0" role="button" aria-label="山遇真情"><polygon points="0.0,301.8 136.0,377.8 136.0,406.6 0.0,330.6" fill="#ab9d7d" stroke="#26291f" stroke-width="1.1" /><polygon points="261.8,307.5 136.0,377.8 136.0,406.6 261.8,336.3" fill="#b9ab8b" stroke="#26291f" stroke-width="1.1" /><polygon points="125.8,231.5 261.8,307.5 136.0,377.8 0.0,301.8" fill="#c9bb9c" stroke="#26291f" stroke-width="1.1" /></g><text x="130.9" y="304.7" font-size="14" fill="#26291f" text-anchor="middle" font-weight="500" letter-spacing="3" font-family="'Noto Serif TC',serif">山遇真情</text>
-<polygon points="-88.4,262.7 -79.6,267.6 -79.6,297.5 -88.4,292.6" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="-21.8,235.3 -79.6,267.6 -79.6,297.5 -21.8,265.2" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="-30.6,230.4 -21.8,235.3 -79.6,267.6 -88.4,262.7" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-79.6,271.8 -70.7,276.7 -70.7,302.5 -79.6,297.5" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="-12.9,244.4 -70.7,276.7 -70.7,302.5 -12.9,270.2" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="-21.8,239.5 -12.9,244.4 -70.7,276.7 -79.6,271.8" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-70.7,280.9 -61.9,285.8 -61.9,307.4 -70.7,302.5" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="-4.1,253.5 -61.9,285.8 -61.9,307.4 -4.1,275.1" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="-12.9,248.6 -4.1,253.5 -61.9,285.8 -70.7,280.9" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-61.9,290.0 -53.0,294.9 -53.0,312.4 -61.9,307.4" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="4.8,262.6 -53.0,294.9 -53.0,312.4 4.8,280.1" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="-4.1,257.7 4.8,262.6 -53.0,294.9 -61.9,290.0" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-53.0,299.1 -44.2,304.0 -44.2,317.3 -53.0,312.4" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="13.6,271.7 -44.2,304.0 -44.2,317.3 13.6,285.0" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="4.8,266.8 13.6,271.7 -44.2,304.0 -53.0,299.1" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<polygon points="-44.2,308.2 -35.4,313.1 -35.4,322.2 -44.2,317.3" fill="#aea68e" stroke="#26291f" stroke-width="0.65" /><polygon points="22.4,280.8 -35.4,313.1 -35.4,322.2 22.4,289.9" fill="#bdb59d" stroke="#26291f" stroke-width="0.65" /><polygon points="13.6,275.9 22.4,280.8 -35.4,313.1 -44.2,308.2" fill="#c9c1aa" stroke="#26291f" stroke-width="0.65" />
-<text x="47.6" y="250.8" font-size="10.5" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="1" font-family="'Noto Serif TC',serif">樓梯 ↓ 一樓</text>
-<text x="129.2" y="193.8" font-size="10" fill="#a09a83" text-anchor="middle" font-weight="500" letter-spacing="2" font-family="'Noto Serif TC',serif">走廊</text>
-    </svg>
-  </div>
-  <p class="map-note">點圖上的房間可看該房照片。示意圖，比例與實際略有出入。</p>
-</section>
 
 <section class="breakfast">
   <div class="breakfast-imgs">
@@ -737,32 +654,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 })();
 </script>
 <script>
-(function(){
-  var tabs = document.querySelectorAll('.map-tabs button');
-  if (!tabs.length) return;
-  tabs.forEach(function(t){
-    t.addEventListener('click', function(){
-      tabs.forEach(function(o){
-        o.setAttribute('aria-selected', String(o === t));
-        document.getElementById(o.dataset.floor).classList.toggle('off', o !== t);
-      });
-    });
-  });
-  // 點地圖上的房間 -> 開該房相簿
-  document.querySelectorAll('.map .hot').forEach(function(hot){
-    function go(){
-      var key = hot.getAttribute('data-room');
-      var target = document.querySelector('[data-gallery="' + key + '"]');
-      if (!target) return;
-      target.scrollIntoView({behavior:'smooth', block:'center'});
-      setTimeout(function(){ target.querySelector('.ph-main').click(); }, 550);
-    }
-    hot.addEventListener('click', go);
-    hot.addEventListener('keydown', function(e){
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-    });
-  });
-})();
+
 </script>
 <script>
 (function(){
