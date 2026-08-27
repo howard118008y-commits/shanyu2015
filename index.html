@@ -117,19 +117,17 @@ img{display:block}
 .whole-house .name span{font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:2px;color:#a09a83}
 
 /* ── 朝食 ── */
-.breakfast{position:relative;background:#1c1e18}
-.breakfast>img{width:100%;height:auto}
-.breakfast-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,22,16,.55) 0%,rgba(20,22,16,.1) 55%,rgba(20,22,16,0) 75%);pointer-events:none}
-.breakfast-text{position:absolute;left:clamp(24px,7vw,90px);top:50%;transform:translateY(-50%);color:#f4f1e8;display:flex;flex-direction:column;gap:18px;max-width:24em;pointer-events:none}
-.breakfast-text .en{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:6px;opacity:.8}
+.breakfast{background:#1c1e18;color:#f4f1e8;padding:0 0 clamp(56px,8vw,88px)}
+.breakfast-imgs{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.breakfast-imgs img{width:100%;height:clamp(280px,42vw,560px);object-fit:cover;display:block}
+.breakfast-text{max-width:640px;margin:clamp(40px,6vw,64px) auto 0;padding:0 28px;display:flex;flex-direction:column;gap:18px;text-align:center;align-items:center}
+.breakfast-text .en{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:6px;color:#8d886f}
 .breakfast-text h2{margin:0;font-size:clamp(24px,4.6vw,32px);font-weight:600;letter-spacing:8px}
-.breakfast-text p{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2.3;letter-spacing:1.5px;opacity:.92}
-.breakfast-text small{font-size:12.5px;opacity:.7}
-@media (max-width:640px){
-  .breakfast{background:#f4f1e8}
-  .breakfast-shade{display:none}
-  .breakfast-text{position:static;transform:none;color:#26291f;padding:44px 28px 52px;max-width:none}
-  .breakfast-text p{opacity:1;color:#55584a}
+.breakfast-text p{margin:0;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:14.5px;line-height:2.3;letter-spacing:1.5px;color:#c8c3ae}
+.breakfast-text small{font-size:12.5px;color:#8d886f}
+@media(max-width:640px){
+  .breakfast-imgs{grid-template-columns:1fr}
+  .breakfast-imgs img{height:clamp(260px,72vw,400px)}
 }
 
 /* ── 住客的話 ── */
@@ -318,8 +316,10 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 </section>
 
 <section class="breakfast">
-  <img src="assets/breakfast.jpg" alt="餐廳窗景與早餐" loading="lazy" width="1500" height="2000">
-  <div class="breakfast-shade"></div>
+  <div class="breakfast-imgs">
+    <img src="assets/breakfast.jpg" alt="二樓餐廳，整面窗外是庭園綠意" loading="lazy" width="1500" height="2000">
+    <img src="assets/breakfast-dish.jpg" alt="主人手做的家常早餐" loading="lazy" width="1200" height="1600">
+  </div>
   <div class="breakfast-text" data-reveal>
     <div class="en">MORNING</div>
     <h2>朝食</h2>
