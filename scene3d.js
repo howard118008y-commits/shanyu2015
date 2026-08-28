@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 export function buildScene(canvas, opts = {}) {
   const U = 0.85, g = n => n * U, CX = g(7), CZ = g(5);
@@ -120,9 +121,9 @@ export function buildScene(canvas, opts = {}) {
   }
   function plant(gx, gz, y, s = 1) {
     put(gx, gz, 0.5*s, 0.5*s, 0.26*s, C.pot, y, { r: 0.08 });
-    const leaf = new THREE.Mesh(new THREE.SphereGeometry(g(0.32*s), 12, 10), M(C.plant));
-    leaf.position.copy(V(gx + 0.25*s, gz + 0.25*s, y + 0.26*s + g(0.24*s)));
-    leaf.castShadow = true; layer.add(leaf);
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(g(0.3*s), 10, 8), M(C.plant));
+    leaf.position.copy(V(gx + 0.25*s, gz + 0.25*s, y + 0.26*s + g(0.22*s)));
+    leaf.castShadow = true; leaf.visible = false; layer.add(leaf);   // 由 glb 盆栽取代
   }
   function tvUnit(gx, gz, y) {
     put(gx, gz, 2.2, 0.55, 0.42, C.yWood, y, { r: 0.04 });
@@ -266,6 +267,38 @@ export function buildScene(canvas, opts = {}) {
     put(gx - 0.03, gz - 0.01, 0.48, 0.07, 0.07, C.frame, y - 0.07, { r: 0.02 });
   }
 
+
+  // ── 外部模型（poly.pizza，CC0 公眾領域）──
+  const MODELS = {}, gltf = new GLTFLoader();
+  function loadModel(key) {
+    return new Promise(res => gltf.load('models/' + key + '.glb',
+      g => { MODELS[key] = g.scene; res(); },
+      undefined,
+      () => res()));                     // 載不到就跳過，場景照常
+  }
+  // 放置一份模型副本：以「格座標 + 目標高度」定位，並把材質換成場景色盤
+  function place(key, gx, gz, y, targetH, tint, rotY = 0) {
+    const src = MODELS[key];
+    if (!src) return null;
+    const o = src.clone(true);
+    o.traverse(m => {
+      if (!m.isMesh) return;
+      m.material = m.material.clone();
+      if (tint !== undefined) m.material.color.setHex(tint);
+      m.castShadow = true; m.receiveShadow = true;
+    });
+    const bb = new THREE.Box3().setFromObject(o);
+    const size = bb.getSize(new THREE.Vector3());
+    const sc = targetH / (size.y || 1);
+    o.scale.setScalar(sc);
+    const bb2 = new THREE.Box3().setFromObject(o);
+    const c2 = bb2.getCenter(new THREE.Vector3());
+    o.position.set(g(gx) - CX - c2.x, y - bb2.min.y, g(gz) - CZ - c2.z);
+    o.rotation.y = rotY;
+    layer.add(o);
+    return o;
+  }
+
   const FH = 3.3, F1 = 0, F2 = FH;
 
   // ── 外殼（兩面牆） ──
@@ -385,35 +418,33 @@ export function buildScene(canvas, opts = {}) {
   makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
   makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房', 'zhenqing');
 
-  // ── 人物（程式建模，配色跟著主頁色盤） ──
-  function person(gx, gz, y, cloth, hair, facing, label) {
-    const grp = new THREE.Group(), S = 0.5;
-    const legs = new THREE.Mesh(new THREE.CylinderGeometry(S*0.6, S*0.68, 0.74, 14), M(0x3f3a30));
-    legs.position.y = 0.37;
-    const torso = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.66, 0.52, 5, 14), M(cloth));
-    torso.position.y = 1.12;
-    const head = new THREE.Mesh(new THREE.SphereGeometry(S*0.74, 20, 16), M(C.skin));
-    head.position.y = 1.78;
-    const cap = new THREE.Mesh(new THREE.SphereGeometry(S*0.78, 20, 14, 0, Math.PI*2, 0, Math.PI*0.56), M(hair));
-    cap.position.y = 1.81;
-    [legs, torso, head, cap].forEach(m => { m.castShadow = true; grp.add(m); });
-    [-1, 1].forEach(sd => {
-      const arm = new THREE.Mesh(new THREE.CapsuleGeometry(S*0.22, 0.44, 5, 12), M(cloth));
-      arm.position.set(sd * S * 0.8, 1.14, 0); arm.rotation.z = sd * 0.17;
-      arm.castShadow = true; grp.add(arm);
-    });
-    grp.position.copy(V(gx, gz, y)); grp.rotation.y = facing;
-    layer.add(grp);
-    const hit = new THREE.Mesh(new THREE.CylinderGeometry(S*1.2, S*1.2, 2.1, 10),
-      new THREE.MeshLambertMaterial({ color: cloth, transparent: true, opacity: 0.001 }));
-    hit.position.copy(V(gx, gz, y + 1.05));
-    hit.userData.room = label; hit.userData.base = cloth;
-    hot.push(hit); layer.add(hit);
-  }
-  layer = L1;
-  person(5.4, 9.3, F1, C.host, C.hostHair, 0.2, 'host');        // 程先生・一樓前緣
-  layer = L2;
-  person(8.6, 9.3, F2, C.keeper, C.keeperHair, -0.2, 'keeper'); // 夏先生・二樓前緣
+
+  // ── 以實體模型取代幾何佔位（載入後才加入，載不到不影響場景）──
+  Promise.all(['plant','chair','table'].map(loadModel)).then(() => {
+    const P90 = Math.PI / 2;
+    // 雲絲帶
+    layer = L1;
+    place('plant', 5.5, 8.6, F1, 0.72, C.plant);
+    place('plant', 0.8, 8.8, F1, 0.62, C.plant);
+    place('chair', 3.9, 6.9, F1, 0.9,  C.seat, P90);
+    // 木屋庭園
+    place('plant', 13.1, 5.2, F1, 0.75, C.plant);
+    place('plant', 13.1, 8.6, F1, 0.68, C.plant);
+    place('chair', 9.3, 7.0, F1, 0.9, C.seat, -0.4);
+    place('chair', 11.5, 6.0, F1, 0.9, C.seat, 2.6);
+    place('table', 9.0, 6.0, F1, 0.62, C.table, P90);
+    // 中央走道
+    place('chair', 6.4, 4.4, F1, 0.9, C.seat, P90);
+    place('chair', 6.4, 5.6, F1, 0.9, C.seat, P90);
+    // 二樓
+    layer = L2;
+    place('plant', 5.4, 8.8, F2, 0.68, C.plant);
+    place('plant', 13.1, 8.8, F2, 0.72, C.plant);
+    place('chair', 4.6, 6.9, F2, 0.9, C.seat, 0.3);
+    place('chair', 12.2, 6.7, F2, 0.9, C.seat, -0.3);
+    place('table', 1.4, 7.0, F2, 0.6, C.mahjong, P90);
+    layer = L1;
+  });
 
   // ── 互動 ──
   const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
