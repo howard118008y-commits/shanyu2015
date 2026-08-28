@@ -321,8 +321,8 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 .lb.open{opacity:1;pointer-events:auto}
 .lb img{max-width:92vw;max-height:84vh;width:auto;height:auto;display:block}
 .lb button{position:absolute;background:none;border:0;color:#e6e1d1;cursor:pointer;font-family:'Noto Serif TC',serif;line-height:1;padding:12px}
-.lb-close{top:14px;right:18px;font-size:30px}
-.lb-prev,.lb-next{top:50%;transform:translateY(-50%);font-size:44px;opacity:.75}
+.lb-close{top:14px;right:18px;font-size:30px;min-width:48px;min-height:48px}
+.lb-prev,.lb-next{top:50%;transform:translateY(-50%);font-size:44px;opacity:.75;min-width:48px;min-height:48px}
 .lb-prev{left:8px}.lb-next{right:8px}
 .lb-prev:hover,.lb-next:hover,.lb-close:hover{color:#fff;opacity:1}
 .lb-count{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:3px;color:#a09a83}
@@ -349,11 +349,13 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
 .r3d-card .price b{font-weight:600;font-size:17px;color:#26291f;letter-spacing:1px}
 .r3d-card .price span{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:2px;color:#a09a83}
 .r3d-card .more{font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:3px;color:#26291f;
-  background:none;border:1px solid #26291f;padding:10px 0;cursor:pointer;width:100%}
+  background:none;border:1px solid #26291f;padding:14px 0;cursor:pointer;width:100%;min-height:46px}
 .r3d-card .more:hover{background:#26291f;color:#f7f4ec}
-.r3d-card .close{position:absolute;top:8px;right:8px;width:30px;height:30px;border:0;cursor:pointer;
+.r3d-card .close{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;cursor:pointer;
   background:rgba(28,30,24,.62);color:#f7f4ec;font-size:17px;line-height:1}
 @media(max-width:640px){
+  .nav a{min-height:44px;display:inline-flex;align-items:center;padding:10px 20px}
+  .reserve .fine a,.foot .lines a{display:inline-block;padding:6px 2px}
   .r3d-card{right:12px;left:12px;width:auto;bottom:44px}
   .r3d-card img.shot{height:126px}
 }
@@ -468,10 +470,10 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
       <div class="room-photo room-gallery" data-gallery="yunsidai">
         <button class="ph-main" type="button" data-src="assets/room-yunsidai.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房"><img src="assets/room-yunsidai.jpg" alt="雲絲帶房——兩單人床禪風房" loading="lazy" width="460" height="410"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
-          <button type="button" data-src="assets/room-yunsidai-3.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-3.jpg" alt="" loading="lazy" width="460" height="570"></button>
-          <button type="button" data-src="assets/room-yunsidai-4.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-4.jpg" alt="" loading="lazy" width="460" height="444"></button>
-          <button type="button" data-src="assets/room-bath-1.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-bath-1.jpg" alt="" loading="lazy" width="720" height="1280"></button>
-          <button type="button" data-src="assets/room-yunsidai-2.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-2.jpg" alt="" loading="lazy" width="1124" height="1456"></button>
+          <button type="button" data-src="assets/room-yunsidai-3.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-3.jpg" alt="雲絲帶房床鋪與窗邊光線" loading="lazy" width="460" height="570"></button>
+          <button type="button" data-src="assets/room-yunsidai-4.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-4.jpg" alt="雲絲帶房電視與木質收納櫃" loading="lazy" width="460" height="444"></button>
+          <button type="button" data-src="assets/room-bath-1.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-bath-1.jpg" alt="房內獨立衛浴淋浴間" loading="lazy" width="720" height="1280"></button>
+          <button type="button" data-src="assets/room-yunsidai-2.jpg" aria-label="放大檢視雲絲帶房——兩單人床禪風房其他角度"><img src="assets/room-yunsidai-2.jpg" alt="雲絲帶房各角度一覽" loading="lazy" width="1124" height="1456"></button>
         </div>
       </div>
       <div class="room-info">
@@ -490,8 +492,8 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
       <div class="room-photo room-gallery" data-gallery="lihalai">
         <button class="ph-main" type="button" data-src="assets/room-lihalai.jpg" aria-label="放大檢視里哈籟房——綠野風格山景房"><img src="assets/room-lihalai.jpg" alt="里哈籟房——綠野風格山景房" loading="lazy" width="1280" height="720"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
-          <button type="button" data-src="assets/room-lihalai-3.jpg" aria-label="放大檢視其他角度"><img src="assets/room-lihalai-3.jpg" alt="" loading="lazy" width="720" height="1280"></button>
-          <button type="button" data-src="assets/room-lihalai-2.jpg" aria-label="放大檢視其他角度"><img src="assets/room-lihalai-2.jpg" alt="" loading="lazy" width="1108" height="1477"></button>
+          <button type="button" data-src="assets/room-lihalai-3.jpg" aria-label="放大檢視其他角度"><img src="assets/room-lihalai-3.jpg" alt="里哈籟房綠色房門" loading="lazy" width="720" height="1280"></button>
+          <button type="button" data-src="assets/room-lihalai-2.jpg" aria-label="放大檢視其他角度"><img src="assets/room-lihalai-2.jpg" alt="里哈籟房各角度一覽" loading="lazy" width="1108" height="1477"></button>
         </div>
       </div>
       <div class="room-info">
@@ -510,8 +512,8 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
       <div class="room-photo room-gallery" data-gallery="zhenqing">
         <button class="ph-main" type="button" data-src="assets/room-zhenqing.jpg" aria-label="放大檢視山遇真情房——暖色調親子家族房"><img src="assets/room-zhenqing.jpg" alt="山遇真情房——暖色調親子家族房" loading="lazy" width="1280" height="720"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
-          <button type="button" data-src="assets/room-zhenqing-3.jpg" aria-label="放大檢視其他角度"><img src="assets/room-zhenqing-3.jpg" alt="" loading="lazy" width="1280" height="720"></button>
-          <button type="button" data-src="assets/room-zhenqing-2.jpg" aria-label="放大檢視其他角度"><img src="assets/room-zhenqing-2.jpg" alt="" loading="lazy" width="1280" height="1280"></button>
+          <button type="button" data-src="assets/room-zhenqing-3.jpg" aria-label="放大檢視其他角度"><img src="assets/room-zhenqing-3.jpg" alt="山遇真情房木門與衛浴" loading="lazy" width="1280" height="720"></button>
+          <button type="button" data-src="assets/room-zhenqing-2.jpg" aria-label="放大檢視其他角度"><img src="assets/room-zhenqing-2.jpg" alt="山遇真情房各角度一覽" loading="lazy" width="1280" height="1280"></button>
         </div>
       </div>
       <div class="room-info">
@@ -530,11 +532,11 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
       <div class="room-photo room-gallery" data-gallery="cabin">
         <button class="ph-main" type="button" data-src="assets/cabin-2main.jpg" aria-label="放大檢視山遇・水見曉逐獨棟木屋外觀"><img src="assets/cabin-2main.jpg" alt="山遇・水見曉逐獨棟木屋外觀" loading="lazy" width="1243" height="664"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
-          <button type="button" data-src="assets/cabin-main.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-main.jpg" alt="" loading="lazy" width="1069" height="748"></button>
-          <button type="button" data-src="assets/cabin-3.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-3.jpg" alt="" loading="lazy" width="1477" height="1108"></button>
-          <button type="button" data-src="assets/cabin-1.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-1.jpg" alt="" loading="lazy" width="1108" height="1477"></button>
-          <button type="button" data-src="assets/cabin-2.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-2.jpg" alt="" loading="lazy" width="1280" height="1280"></button>
-          <button type="button" data-src="assets/room-cabin.jpg" aria-label="放大檢視其他角度"><img src="assets/room-cabin.jpg" alt="" loading="lazy" width="1108" height="1477"></button>
+          <button type="button" data-src="assets/cabin-main.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-main.jpg" alt="水見曉逐木屋雙人床與木質牆面" loading="lazy" width="1069" height="748"></button>
+          <button type="button" data-src="assets/cabin-3.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-3.jpg" alt="水見曉逐木屋大廳、紅磚牆與留聲機" loading="lazy" width="1477" height="1108"></button>
+          <button type="button" data-src="assets/cabin-1.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-1.jpg" alt="水見曉逐木屋室內一覽" loading="lazy" width="1108" height="1477"></button>
+          <button type="button" data-src="assets/cabin-2.jpg" aria-label="放大檢視其他角度"><img src="assets/cabin-2.jpg" alt="水見曉逐木屋起居空間" loading="lazy" width="1280" height="1280"></button>
+          <button type="button" data-src="assets/room-cabin.jpg" aria-label="放大檢視其他角度"><img src="assets/room-cabin.jpg" alt="水見曉逐木屋外觀與周邊" loading="lazy" width="1108" height="1477"></button>
         </div>
       </div>
       <div class="room-info">
@@ -755,6 +757,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   function show(i){
     idx = (i + list.length) % list.length;
     img.src = list[idx];
+    img.alt = (opener && opener.querySelector('img') && opener.querySelector('img').alt) || '房型照片';
     count.textContent = list.length > 1 ? (idx + 1) + ' / ' + list.length : '';
     lb.querySelector('.lb-prev').hidden = list.length < 2;
     lb.querySelector('.lb-next').hidden = list.length < 2;
@@ -848,6 +851,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     card.querySelector('.shot').src = r.shot;
     card.querySelector('.shot').alt = r.name;
     card.querySelector('.logo').src = 'assets/logo/' + r.logo + '.svg';
+    card.querySelector('.logo').alt = r.name + ' 房型標誌';
     card.querySelector('h3').textContent = r.name;
     card.querySelector('.cap').innerHTML = r.cap;
     card.querySelector('.price b').textContent = r.wk;
