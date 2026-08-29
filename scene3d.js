@@ -325,11 +325,11 @@ export function buildScene(canvas, opts = {}) {
   slab(-0.3, -0.3, 14.6, 10.6, C.slab, F1);
   shell(F1, FH);
 
-  // 雲絲帶（左半層）：暖褐木質、兩單人床、電視櫃
+  // 雲絲帶（左半層）：暖褐木質、一大床一小床、電視櫃
   roomShell(0.3, 0.3, 6.0, 9.4, F1, C.yFloor, C.yWall, 'yunsidai', 2.3);
-  bed(0.9, 0.9, 1.6, 2.8, F1, C.yWood, C.quilt);
-  bed(3.4, 0.9, 1.6, 2.8, F1, C.yWood, C.quilt);
-  nightstand(2.7, 0.9, F1, C.yWood);
+  bed(0.8, 0.9, 2.2, 2.8, F1, C.yWood, C.quilt);
+  bed(3.9, 0.9, 1.4, 2.8, F1, C.yWood, C.quilt);
+  nightstand(3.1, 0.9, F1, C.yWood);
   tvUnit(0.9, 5.4, F1);
   slab(1.0, 4.4, 4.4, 1.6, C.rug, F1 + 0.05, 0.05);
   put(3.6, 6.6, 2.2, 1.0, 0.44, C.seat, F1, { r: 0.12 });
@@ -412,7 +412,7 @@ export function buildScene(canvas, opts = {}) {
 
   // ── 名稱標籤 ──
   layer = L1;
-  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '二人房・兩單人床', 'yunsidai');
+  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '三人房・一大床一小床', 'yunsidai');
   makeLabel(10.7, 6.4, F1 + 2.72, '水見曉逐', '獨棟木屋', 'cabin');
   layer = L2;
   makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
