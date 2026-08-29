@@ -3,13 +3,13 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shanyu2015.com/</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://shanyu2015.com/assets/hero.jpg</image:loc>
       <image:title>山遇莊園民宿 主棟外觀</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-yunsidai.jpg</image:loc>
-      <image:title>雲絲帶 二人房</image:title></image:image>
+      <image:title>雲絲帶 三人房</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-lihalai.jpg</image:loc>
       <image:title>里哈籟 二至四人房</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-zhenqing.jpg</image:loc>
@@ -18,5 +18,11 @@
       <image:title>山遇・水見曉逐 獨棟木屋</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/breakfast-dish.jpg</image:loc>
       <image:title>主人手做的家常早餐</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://shanyu2015.com/tour.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
