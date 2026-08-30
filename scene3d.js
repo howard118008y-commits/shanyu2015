@@ -412,11 +412,11 @@ export function buildScene(canvas, opts = {}) {
 
   // ── 名稱標籤 ──
   layer = L1;
-  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '三人房・一大床一小床', 'yunsidai');
+  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '三人房型，一大床一小床', 'yunsidai');
   makeLabel(10.7, 6.4, F1 + 2.72, '水見曉逐', '獨棟木屋', 'cabin');
   layer = L2;
-  makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房', 'lihalai');
-  makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房', 'zhenqing');
+  makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房型', 'lihalai');
+  makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房型', 'zhenqing');
 
 
   // ── 以實體模型取代幾何佔位（載入後才加入，載不到不影響場景）──
