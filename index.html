@@ -173,10 +173,12 @@ img{display:block}
 .hero-img img:nth-child(2){animation-delay:7s,7s}
 .hero-img img:nth-child(3){animation-delay:14s,14s}
 @media (prefers-reduced-motion:reduce){.hero-img img{animation:none}.hero-img img:first-child{opacity:1}}
-.hero-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(20,22,16,0) 45%,rgba(20,22,16,.42) 100%);pointer-events:none}
-.hero-title{position:absolute;top:50%;right:clamp(24px,8vw,110px);transform:translateY(-50%);display:flex;gap:26px;color:#f4f1e8;pointer-events:none;animation:slowRise 1.6s .5s ease both}
-.hero-title .sub{writing-mode:vertical-rl;font-size:clamp(14px,2.4vw,17px);letter-spacing:9px;font-weight:300;opacity:.85;padding-top:8px}
-.hero-title h1{margin:0;writing-mode:vertical-rl;font-size:clamp(52px,10vw,88px);font-weight:600;letter-spacing:26px;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(to bottom left,rgba(20,22,16,.5) 0%,rgba(20,22,16,.22) 30%,rgba(20,22,16,0) 52%),radial-gradient(ellipse at 50% 60%,rgba(20,22,16,0) 45%,rgba(20,22,16,.42) 100%);pointer-events:none}
+.hero-title{position:absolute;top:20%;right:clamp(24px,8vw,110px);transform:translateY(-50%);display:flex;gap:26px;color:#f4f1e8;pointer-events:none;animation:slowRise 1.6s .5s ease both}
+.hero-title::before{content:'';position:absolute;inset:-10% -16% -12% -18%;background:radial-gradient(ellipse at 62% 50%,rgba(18,20,14,.55) 0%,rgba(18,20,14,.28) 55%,rgba(18,20,14,0) 78%);z-index:-1}
+.hero-title .sub{writing-mode:vertical-rl;font-size:clamp(17px,3.1vw,23px);letter-spacing:11px;font-weight:300;opacity:.9;padding-top:10px;text-shadow:0 1px 3px rgba(0,0,0,.55),0 2px 22px rgba(0,0,0,.6)}
+.hero-title h1{margin:0;line-height:0}
+.hero-title h1 img{display:block;width:auto;height:clamp(230px,40vh,380px);filter:drop-shadow(0 1px 3px rgba(0,0,0,.5)) drop-shadow(0 3px 26px rgba(0,0,0,.5))}
 .scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);color:#f4f1e8;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none}
 .scroll-hint .word{font-family:'Noto Sans TC',sans-serif;font-size:10.5px;letter-spacing:5px;opacity:.75}
 .scroll-hint .line{width:1px;height:44px;background:linear-gradient(#f4f1e8,transparent);animation:scrollHint 2.6s ease-in-out infinite}
@@ -187,6 +189,7 @@ img{display:block}
   .hero-img img:nth-child(2),.hero-img img:nth-child(3){display:none}
   .hero-shade{display:none}
   .hero-title{position:static;transform:none;order:1;justify-content:center}
+  .hero-title h1 img{height:clamp(190px,32vh,270px)}
   .scroll-hint{position:static;transform:none;order:3;align-self:center;margin-top:6px}
 }
 
@@ -406,7 +409,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   <div class="hero-shade"></div>
   <div class="hero-title">
     <div class="sub">花蓮壽豐　山腳下的家園</div>
-    <h1>山遇</h1>
+    <h1><img src="assets/cal-shanyu.png" alt="山遇" width="377" height="634" fetchpriority="high"></h1>
   </div>
   <div class="scroll-hint">
     <div class="word">SCROLL</div>
