@@ -144,7 +144,7 @@ img{display:block}
 @keyframes heroFade{from{opacity:0}to{opacity:1}}
 @keyframes splashText{0%{opacity:0}35%{opacity:1}75%{opacity:1}100%{opacity:0}}
 @keyframes splashOut{to{opacity:0;visibility:hidden}}
-@keyframes slideFade{0%{opacity:0}6%{opacity:1}40%{opacity:1}52%{opacity:0}100%{opacity:0}}
+@keyframes slideFade{0%{opacity:0}5%{opacity:1}20%{opacity:1}25%{opacity:0}100%{opacity:0}}
 @keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
 @keyframes slowRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes scrollHint{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(10px);opacity:.25}}
@@ -166,10 +166,12 @@ img{display:block}
 /* ── Hero ── */
 .hero{position:relative;height:100vh;min-height:560px;background:#1c1e18;overflow:hidden}
 .hero-img{position:absolute;inset:0;animation:heroFade 2.4s ease both}
-.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:0;animation:slideFade 21s ease-in-out infinite,kenburns 21s linear infinite}
+.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:0;animation:slideFade 25s ease-in-out infinite,kenburns 25s linear infinite}
 .hero-img img:nth-child(1){animation-delay:0s,0s}
-.hero-img img:nth-child(2){animation-delay:7s,7s}
-.hero-img img:nth-child(3){animation-delay:14s,14s}
+.hero-img img:nth-child(2){animation-delay:5s,5s}
+.hero-img img:nth-child(3){animation-delay:10s,10s}
+.hero-img img:nth-child(4){animation-delay:15s,15s}
+.hero-img img:nth-child(5){animation-delay:20s,20s}
 @media (prefers-reduced-motion:reduce){.hero-img img{animation:none}.hero-img img:first-child{opacity:1}}
 .hero-shade{position:absolute;inset:0;background:linear-gradient(to bottom left,rgba(20,22,16,.5) 0%,rgba(20,22,16,.22) 30%,rgba(20,22,16,0) 52%),radial-gradient(ellipse at 50% 60%,rgba(20,22,16,0) 45%,rgba(20,22,16,.42) 100%);pointer-events:none}
 .hero-title{position:absolute;top:20%;right:clamp(24px,8vw,110px);transform:translateY(-50%);display:flex;gap:26px;color:#f4f1e8;pointer-events:none;animation:slowRise 1.6s .5s ease both}
@@ -184,7 +186,7 @@ img{display:block}
   .hero{height:auto;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:38px;padding:80px 0 34px}
   .hero-img{position:static;order:2;animation:heroFade 2.4s ease both}
   .hero-img img{position:static;width:100%;height:auto;object-fit:unset;opacity:1;animation:none}
-  .hero-img img:nth-child(2),.hero-img img:nth-child(3){display:none}
+  .hero-img img:nth-child(n+2){display:none}
   .hero-shade{display:none}
   .hero-title{position:static;transform:none;order:1;justify-content:center}
   .hero-title h1 img{height:clamp(190px,32vh,270px)}
@@ -247,6 +249,16 @@ img{display:block}
   .breakfast-imgs img{height:clamp(260px,72vw,400px)}
 }
 
+
+/* ── 莊園環境 ── */
+.garden{background:#efeade;padding:clamp(70px,10vw,120px) 0 clamp(56px,8vw,96px)}
+.garden .sec-head{padding:0 clamp(24px,6vw,72px);margin-bottom:clamp(28px,5vw,44px)}
+.garden-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px;padding:0 clamp(12px,3vw,40px)}
+.garden-grid button{padding:0;border:0;background:none;cursor:zoom-in;line-height:0;overflow:hidden}
+.garden-grid img{width:100%;height:clamp(190px,22vw,260px);object-fit:cover;display:block;transition:transform .6s ease,opacity .3s}
+.garden-grid button:hover img,.garden-grid button:focus-visible img{transform:scale(1.05);opacity:.92}
+.garden-note{text-align:center;font-family:'Noto Sans TC',sans-serif;font-size:12px;letter-spacing:2px;color:#a09a83;margin:clamp(20px,3vw,30px) 0 0;padding:0 24px;line-height:2}
+@media(max-width:640px){.garden-grid{gap:4px}.garden-grid img{height:clamp(150px,42vw,200px)}}
 /* ── 住客的話 ── */
 .voices{background:#26291f;color:#e6e1d1;padding:clamp(80px,12vw,140px) 28px}
 .voices-inner{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(40px,6vw,64px)}
@@ -403,6 +415,8 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     <img src="assets/hero.jpg" alt="山遇莊園庭園，池畔落羽松與草坪" fetchpriority="high" width="1785" height="1339">
     <img src="assets/hero-living.jpg" alt="挑高大廳，整面落地窗外是庭園綠意" loading="lazy" width="2000" height="1500">
     <img src="assets/hero-porch.jpg" alt="挑高木樑客廳，沙發、長桌與留聲機" loading="lazy" width="2000" height="1500">
+    <img src="assets/hero-lounge.jpg" alt="窗邊長桌與留聲機，窗外是草坪" loading="lazy" width="2000" height="1500">
+    <img src="assets/hero-walk.jpg" alt="玻璃頂木棧廊道，兩側綠意" loading="lazy" width="1339" height="1178">
   </div>
   <div class="hero-shade"></div>
   <div class="hero-title">
@@ -576,6 +590,24 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
     <h2>朝食</h2>
     <p>主人親手準備的家常早餐，選用花蓮在地食材。<br>配一杯熱茶，看山嵐慢慢散開。<br><small>早餐依季節調整，素食請提前告知。<br>木屋次日早餐提供以四人為基準，每增加一人酌收 150 元。</small></p>
   </div>
+</section>
+
+<section class="garden">
+  <div class="sec-head" data-reveal>
+    <div class="en">THE GROUNDS</div>
+    <h2>莊園環境</h2>
+  </div>
+  <div class="garden-grid" data-reveal>
+    <button type="button" data-src="assets/garden/gate.jpg" aria-label="放大檢視莊園入口木門與「山遇」手書招牌"><img src="assets/garden/gate.jpg" alt="莊園入口木門與「山遇」手書招牌" loading="lazy" width="709" height="945"></button>
+    <button type="button" data-src="assets/garden/walkway.jpg" aria-label="放大檢視玻璃頂木棧廊道，兩側綠意"><img src="assets/garden/walkway.jpg" alt="玻璃頂木棧廊道，兩側綠意" loading="lazy" width="1050" height="1400"></button>
+    <button type="button" data-src="assets/garden/redchair.jpg" aria-label="放大檢視草地上的紅色鏤空椅，樹下落果"><img src="assets/garden/redchair.jpg" alt="草地上的紅色鏤空椅，樹下落果" loading="lazy" width="756" height="567"></button>
+    <button type="button" data-src="assets/garden/entry.jpg" aria-label="放大檢視入口大廳與通往二樓的樓梯"><img src="assets/garden/entry.jpg" alt="入口大廳與通往二樓的樓梯" loading="lazy" width="1400" height="1050"></button>
+    <button type="button" data-src="assets/garden/hall.jpg" aria-label="放大檢視大廳一角，木櫃與落地窗外的草坪"><img src="assets/garden/hall.jpg" alt="大廳一角，木櫃與落地窗外的草坪" loading="lazy" width="1400" height="1050"></button>
+    <button type="button" data-src="assets/garden/atrium.jpg" aria-label="放大檢視挑高天井的吊燈與繩網"><img src="assets/garden/atrium.jpg" alt="挑高天井的吊燈與繩網" loading="lazy" width="1050" height="1400"></button>
+    <button type="button" data-src="assets/garden/dining.jpg" aria-label="放大檢視餐廳長桌與窗邊光線"><img src="assets/garden/dining.jpg" alt="餐廳長桌與窗邊光線" loading="lazy" width="1400" height="1050"></button>
+    <button type="button" data-src="assets/garden/bar.jpg" aria-label="放大檢視吧台備餐區與手沖器具"><img src="assets/garden/bar.jpg" alt="吧台備餐區與手沖器具" loading="lazy" width="765" height="574"></button>
+  </div>
+  <p class="garden-note">千坪腹地、生態池與草坪，公共空間全時開放住客使用。點照片可放大。</p>
 </section>
 
 <section class="voices">
@@ -785,7 +817,7 @@ footer .copy{font-family:'Noto Sans TC',sans-serif;font-size:11px;color:#5c5947}
   document.addEventListener('click', function(e){
     var btn = e.target.closest('[data-src]');
     if (btn) {
-      var gallery = btn.closest('.room-gallery');
+      var gallery = btn.closest('.room-gallery, .garden-grid');
       if (gallery) { e.preventDefault(); open(gallery, btn.getAttribute('data-src'), btn); }
       return;
     }
