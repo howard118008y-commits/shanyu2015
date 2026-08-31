@@ -28,7 +28,7 @@ export function buildScene(canvas, opts = {}) {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf4f1e8);
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 200);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio * 1.5, 3));   // 高 DPI 渲染
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -40,10 +40,10 @@ export function buildScene(canvas, opts = {}) {
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true; controls.dampingFactor = 0.08;
   controls.minPolarAngle = 0.62; controls.maxPolarAngle = Math.PI / 2.02;
-  controls.minDistance = 13; controls.maxDistance = 34;
+  controls.minDistance = 9; controls.maxDistance = 30;
   controls.enablePan = false;
-  camera.position.set(15, 6.6, 17);
-  controls.target.set(0, 3.0, 0);
+  camera.position.set(13.2, 5.9, 14.6);
+  controls.target.set(0, 2.7, 0);
 
   scene.add(new THREE.AmbientLight(0xfffbf2, 0.54));
   scene.add(new THREE.HemisphereLight(0xfff8ee, 0x9a9384, 0.42));
