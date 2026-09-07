@@ -1,493 +1,348 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+// Photo-based proportions; the shared scene is used by the home page and tour.html.
 export function buildScene(canvas, opts = {}) {
-  const U = 0.85, g = n => n * U, CX = g(7), CZ = g(5);
-  const C = {
-    shell:0xf4f1e8, shellSide:0xece8db, slab:0xe6ddc9, skirt:0xd8d2bf,
-    // 雲絲帶：灰褐木質
-    yFloor:0xded4bf, yWall:0xb5a894, yWood:0x4a4032, yAccent:0x8d886f,
-    // 木屋：暖木＋灰磚
-    cFloor:0xd6cab0, cWall:0xa08e72, cBrick:0x96705c, cBeam:0x3f382c,
-    // 里哈籟：灰綠（主頁 sage 的亮版）
-    lFloor:0xe0dece, lWall:0x7d8a68, lAccent:0xa8b391,
-    // 山遇真情：柔和磚紅（往灰褐收）
-    zFloor:0xe2d7c3, zWall:0xa07a63, zAccent:0xc0a184,
-    // 共用
-    sheet:0xf4f1e8, quilt:0xe6e1d1, pillow:0xefeade,
-    frame:0x55483a, glassWin:0x8fa07a, winFrame:0x26291f,
-    lampShade:0xefe4c6, lampMetal:0x26291f, tv:0x1c1e18,
-    rug:0xd8d2bf, rug2:0xc9cdb6, table:0xa08a68, seat:0x8d7f66, bar:0x8f7a5c,
-    stair:0xb5a68c, plant:0x6b7a55, pot:0x9a8870, art:0xa09a83,
-    mahjong:0x6b7a55, cup:0xf4f1e8,
-    hot:0xc9a86a,
-    skin:0xdcc3a6, host:0x55584a, hostHair:0x26291f, keeper:0x8d886f, keeperHair:0x3a352c,
-  };
-
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf4f1e8);
-  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 180);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio * 1.5, 3));   // 高 DPI 渲染
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMappingExposure = 1.18;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
   const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true; controls.dampingFactor = 0.08;
-  controls.minPolarAngle = 0.62; controls.maxPolarAngle = Math.PI / 2.02;
-  controls.minDistance = 9; controls.maxDistance = 30;
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.09;
   controls.enablePan = false;
-  camera.position.set(13.2, 5.9, 14.6);
-  controls.target.set(0, 2.7, 0);
-
-  scene.add(new THREE.AmbientLight(0xfffbf2, 0.54));
-  scene.add(new THREE.HemisphereLight(0xfff8ee, 0x9a9384, 0.42));
-  const key = new THREE.DirectionalLight(0xfff6e6, 1.32);
-  key.position.set(14, 19, 13); key.castShadow = true;
-  key.shadow.mapSize.set(4096, 4096);
-  Object.assign(key.shadow.camera, { left:-17, right:17, top:20, bottom:-12, far:52 });
-  key.shadow.bias = -0.0013;
-  scene.add(key);
-  [[0,1.6,2],[0,4.9,2],[-4,1.6,-1],[-4,4.9,-1]].forEach(p => {
-    const l = new THREE.PointLight(0xffeccd, 0.5, 17, 1.6);
-    l.position.set(p[0], p[1], p[2]); scene.add(l);
+  controls.minPolarAngle = 0.28;
+  controls.maxPolarAngle = Math.PI / 2.08;
+  controls.zoomSpeed = 0.75;
+  scene.add(new THREE.HemisphereLight(0xe6f3ff, 0x657747, 2.1));
+  const sun = new THREE.DirectionalLight(0xffefda, 3.3);
+  sun.position.set(-14, 24, 17); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left:-23, right:23, top:20, bottom:-20, near:0.5, far:80 });
+  sun.shadow.normalBias = 0.035; sun.shadow.bias = -0.00015;
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xd7eaff, 0.75);
+  fill.position.set(12, 12, -8); scene.add(fill);
+  const geometries = new Set(), materials = new Set(), textures = new Set();
+  const groups = new Map(), hitTargets = [];
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  let seed = 2015;
+  function random() { seed = (Math.imul(seed,1664525)+1013904223) >>> 0; return seed/4294967296; }
+  function geometry(g) { geometries.add(g); return g; }
+  function material(color, options = {}) {
+    const m = new THREE.MeshStandardMaterial({ color, roughness:0.82, ...options });
+    materials.add(m); return m;
+  }
+  function texture(kind) {
+    const cv=document.createElement('canvas'); cv.width=cv.height=256;
+    const ctx=cv.getContext('2d'); ctx.fillStyle='#b9b9b9'; ctx.fillRect(0,0,256,256);
+    for(let i=0;i<14000;i++) {
+      const v=Math.floor(140+random()*90); ctx.fillStyle=`rgb(${v},${v},${v})`;
+      ctx.fillRect(random()*256,random()*256,kind==='wood'?18+random()*55:1.5,1);
+    }
+    if(kind==='wood'||kind==='tile') {
+      ctx.strokeStyle='#646464'; ctx.lineWidth=1;
+      for(let y=0;y<256;y+=kind==='tile'?64:32) { ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(256,y);ctx.stroke(); }
+      if(kind==='tile') for(let x=0;x<256;x+=64) {ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,256);ctx.stroke();}
+    }
+    const t=new THREE.CanvasTexture(cv); t.wrapS=t.wrapT=THREE.RepeatWrapping;
+    t.repeat.set(kind==='grass'?12:2,kind==='grass'?12:2);t.colorSpace=THREE.SRGBColorSpace;
+    t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());textures.add(t);return t;
+  }
+  const grain=texture('wood'),stucco=texture('stucco'),tile=texture('tile'),grass=texture('grass');
+  const M={
+    plaster:material(0xe6dfc9,{map:stucco,bumpMap:stucco,bumpScale:0.035}),
+    green:material(0x215b46,{metalness:0.35,roughness:0.45}),
+    roof:material(0x37584a,{metalness:0.3,roughness:0.7}),
+    wood:material(0xb99052,{map:grain,bumpMap:grain,bumpScale:0.025}),
+    darkWood:material(0x60402c,{map:grain,roughness:0.62}),
+    frame:material(0x242e2a,{metalness:0.35,roughness:0.44}),
+    glass:material(0x91b8bd,{metalness:0.28,roughness:0.19,transparent:true,opacity:0.48,side:THREE.DoubleSide}),
+    canopy:material(0x77ae83,{roughness:0.3,transparent:true,opacity:0.6,side:THREE.DoubleSide}),
+    stone:material(0xa5a59b,{map:stucco,bumpMap:stucco,bumpScale:0.07}),
+    grass:material(0x7b9d4d,{map:grass,roughness:1}),earth:material(0x667057,{map:stucco}),
+    floor:material(0xdfdbc8,{map:tile,bumpMap:tile,bumpScale:0.018}),
+    linen:material(0xf0e8d6,{map:stucco,bumpMap:stucco,bumpScale:0.008}),
+    curtain:material(0xd1cbb9,{side:THREE.DoubleSide,roughness:1}),black:material(0x26282a),
+  };
+  const gardenPhoto = new THREE.TextureLoader().load('assets/hero.jpg');
+  gardenPhoto.colorSpace = THREE.SRGBColorSpace;
+  textures.add(gardenPhoto);
+  const gardenView = new THREE.MeshBasicMaterial({map:gardenPhoto,side:THREE.DoubleSide,toneMapped:false});
+  materials.add(gardenView);
+  const unitBox=geometry(new THREE.BoxGeometry(1,1,1));
+  const leafShape=new THREE.Shape();
+  leafShape.moveTo(0,-0.5);leafShape.bezierCurveTo(-0.55,-0.1,-0.38,0.35,0,0.5);
+  leafShape.bezierCurveTo(0.38,0.35,0.55,-0.1,0,-0.5);
+  const leafGeo=geometry(new THREE.ShapeGeometry(leafShape));
+  const leafMat=material(0xffffff,{side:THREE.DoubleSide,roughness:0.95});
+  function mesh(p,geo,mat,x,y,z) {
+    const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;p.add(m);return m;
+  }
+  function box(p,x,y,z,w,h,d,mat=M.plaster,round=0) {
+    const geo=round?geometry(new RoundedBoxGeometry(w,h,d,2,Math.min(round,w/3,h/3,d/3))):unitBox;
+    const m=mesh(p,geo,mat,x,y,z);if(!round)m.scale.set(w,h,d);return m;
+  }
+  function rod(p,a,b,radius,mat=M.darkWood,top=radius) {
+    const start=V(...a),end=V(...b),delta=end.clone().sub(start);
+    const m=mesh(p,geometry(new THREE.CylinderGeometry(top,radius,delta.length(),7)),mat,0,0,0);
+    m.position.copy(start.add(end).multiplyScalar(0.5));m.quaternion.setFromUnitVectors(V(0,1,0),delta.normalize());return m;
+  }
+  function leaves(p,count,locate,base=0x456d2c) {
+    const batch=new THREE.InstancedMesh(leafGeo,leafMat,count),o=new THREE.Object3D(),color=new THREE.Color(base);
+    for(let i=0;i<count;i++) {
+      const a=locate(i);o.position.set(a.x,a.y,a.z);
+      o.rotation.set(a.rx??random()*Math.PI,a.ry??random()*Math.PI,random()*Math.PI*2);
+      const s=a.size||0.18;o.scale.set(s,s*1.3,s);o.updateMatrix();batch.setMatrixAt(i,o.matrix);
+      batch.setColorAt(i,color.clone().multiplyScalar(0.62+random()*0.75));
+    }
+    batch.castShadow=true;batch.receiveShadow=true;p.add(batch);return batch;
+  }
+  function ivy(p,x,y,z,width,height,count=450) {
+    leaves(p,count,()=>({x:x+(random()-0.5)*width,y:y+random()*height,z:z+random()*0.18,
+      rx:(random()-0.5)*0.8,ry:(random()-0.5)*0.7,size:0.14+random()*0.16}),0x456231);
+    for(let i=0;i<5;i++){const xx=x+(random()-0.5)*width;rod(p,[xx,y,z],[xx+0.2,y+height,z],0.015);}
+  }
+  function tree(p,x,z,height=7) {
+    const t=new THREE.Group();t.position.set(x,0,z);p.add(t);
+    rod(t,[0,0,0],[0.13,height,0],0.18,M.darkWood,0.045);
+    const ends=[];
+    for(let i=0;i<15;i++) {
+      const a=i*2.4,y=height*(0.27+i*0.041),r=(1-i/20)*height*0.34;
+      const e=[Math.cos(a)*r,y+0.5,Math.sin(a)*r];ends.push(e);rod(t,[0,y,0],e,0.055,M.darkWood,0.013);
+    }
+    leaves(t,1400,i=>{const e=ends[i%ends.length],s=random();return {
+      x:e[0]*s+(random()-0.5)*1.2,y:e[1]+(random()-0.5)*0.85,z:e[2]*s+(random()-0.5)*1.2,size:0.18+random()*0.18};},0x658b39);
+  }
+  function shrub(p,x,y,z,scale=1) {
+    leaves(p,230,()=>{const a=random()*Math.PI*2,r=Math.sqrt(random())*scale;
+      return{x:x+Math.cos(a)*r,y:y+random()*scale*0.7,z:z+Math.sin(a)*r,size:0.2*scale};},0x507838);
+  }
+  function windowFrame(p,x,y,z,w,h,options={}) {
+    const f=new THREE.Group();f.position.set(x,y,z);f.rotation.y=options.rotation||0;p.add(f);
+    const mat=options.dark?M.frame:M.green;
+    box(f,0,0,0,w,h,0.025,M.glass).castShadow=false;
+    if(options.garden) {
+      const backdrop=mesh(f,geometry(new THREE.PlaneGeometry(w,h)),gardenView,0,0,-0.12);
+      backdrop.castShadow=false;backdrop.receiveShadow=false;
+    }
+    [-1,1].forEach(s=>{box(f,s*w/2,0,0.02,0.065,h+0.12,0.12,mat);box(f,0,s*h/2,0.02,w+0.12,0.065,0.12,mat);});
+    for(let i=1;i<(options.panes||3);i++)box(f,-w/2+w*i/(options.panes||3),0,0.02,0.05,h,0.09,mat);
+    box(f,0,-h*0.28,0.025,w,0.045,0.1,mat);
+    if(options.curtains)[-1,1].forEach(s=>{for(let i=0;i<6;i++)box(f,s*(w/2-i*0.07),0,-0.1-(i%2)*0.07,0.09,h-0.08,0.05,M.curtain,0.02);});
+    return f;
+  }
+  function panelWall(p,width,height,openings,mat=M.plaster) {
+    const shape=new THREE.Shape();shape.moveTo(-width/2,0);shape.lineTo(width/2,0);shape.lineTo(width/2,height);shape.lineTo(-width/2,height);shape.closePath();
+    for(const[x,y,w,h]of openings){const hole=new THREE.Path();hole.moveTo(x-w/2,y-h/2);hole.lineTo(x-w/2,y+h/2);hole.lineTo(x+w/2,y+h/2);hole.lineTo(x+w/2,y-h/2);hole.closePath();shape.holes.push(hole);}
+    return mesh(p,geometry(new THREE.ExtrudeGeometry(shape,{depth:0.16,bevelEnabled:false})),mat,0,0,0);
+  }
+  function roof(p,x,y,z,w,d,slope=-0.07,mat=M.roof) {
+    const r=new THREE.Group();r.position.set(x,y,z);r.rotation.x=slope;p.add(r);box(r,0,0,0,w,0.1,d,mat);
+    for(let a=-w/2;a<=w/2;a+=0.2)box(r,a,0.066,0,0.045,0.05,d,mat);return r;
+  }
+  function seat(p,x,y,z,color=0x82949b,width=1.8) {
+    const cushion=material(color,{roughness:0.95,map:stucco});
+    box(p,x,y+0.4,z,width,0.14,0.72,M.darkWood);box(p,x,y+0.54,z,width-0.14,0.19,0.64,cushion,0.07);
+    box(p,x,y+0.83,z-0.32,width,0.68,0.1,M.darkWood);box(p,x,y+0.86,z-0.22,width-0.16,0.4,0.13,cushion,0.05);
+    [-1,1].forEach(s=>[-1,1].forEach(t=>box(p,x+s*(width/2-0.09),y+0.24,z+t*0.26,0.07,0.48,0.07,M.darkWood)));
+  }
+  const estate=new THREE.Group();groups.set('estate',estate);scene.add(estate);
+  box(estate,0,-0.22,0,35,0.4,28,M.earth);box(estate,0,0,0,35,0.07,28,M.grass);
+  const main=new THREE.Group();main.position.set(-4.8,0.18,-1);estate.add(main);
+  const openings=[[-2.2,1.45,3.1,2.6],[2.05,1.45,3.35,2.6],[-2.1,4.66,3.3,2.2],[2.03,4.66,3.35,2.2]];
+  panelWall(main,9.3,6.1,openings).position.z=3.2;
+  openings.forEach(([x,y,w,h])=>windowFrame(main,x,y,3.3,w,h,{curtains:y<3}));
+  box(main,0,3.15,0,9.3,0.22,6.4);box(main,0,0,0,9.4,0.16,6.7,M.floor);box(main,0,3,-3.2,9.3,6,0.18);
+  [-1,1].forEach(s=>{
+    const wall=panelWall(main,6.4,6.1,[[0,1.55,3.8,2.55],[0,4.65,3.8,2.2]]);wall.rotation.y=s*Math.PI/2;wall.position.x=s*4.64;
+    [1.55,4.65].forEach(y=>windowFrame(main,s*4.75,y,0,3.8,y<3?2.55:2.2,{rotation:s*Math.PI/2}));
   });
+  roof(main,0,6.2,0,10.1,7.3,-0.035);box(main,-0.6,6.48,-1.5,3.1,0.48,2.3);roof(main,-0.6,6.81,-1.5,3.4,2.7,-0.05);
+  for(let x=-2;x<1.1;x+=0.7)box(main,x,6.98,-0.24,0.08,0.55,0.08,M.darkWood);
+  [6.9,7.12].forEach(y=>box(main,-0.5,y,-0.24,3.2,0.08,0.08,M.darkWood));
+  // Steel/glass verandah and vines follow assets/garden/facade.jpg.
+  box(main,1.3,0.02,4.2,12.4,0.14,2,M.stone);
+  const canopy=box(main,1.4,3.05,4.5,12.8,0.06,2.7,M.canopy);canopy.rotation.x=0.025;canopy.castShadow=false;
+  [-4.85,-0.2,4.7,7.8].forEach(x=>{box(main,x,1.48,5.8,0.11,3,0.11,M.frame);box(main,x,3.07,4.5,0.1,0.12,2.85,M.green);});
+  [3.17,4.5,5.84].forEach(z=>box(main,1.4,3.04,z,12.9,0.13,0.12,M.green));
+  for(let x=-4.5;x<7.8;x+=0.75)box(main,x,3.05,4.5,0.04,0.07,2.7,M.green);
+  [-4.5,-0.12,4.47].forEach(x=>ivy(main,x,0.2,3.46,0.85,5.9,850));
+  [3.03,5.95].forEach(y=>ivy(main,0,y,3.51,9.6,0.36,650));
+  ivy(main,-3.8,0,3.5,0.9,4.5,350);
+  seat(main,2.7,0.14,4.5,0x8d5d4e,1.6);seat(main,2.1,0.1,2,0x88a2a5,2.5);
+  box(main,-1.4,3.9,1.5,2.3,0.12,0.9,M.darkWood);[-2.3,-0.5].forEach(x=>seat(main,x,3.24,1.2,0xa59068,0.5));
+  box(main,-5.15,1.28,2.6,1.3,2.6,1.6);box(main,-5.15,1.12,3.43,0.86,2.15,0.09,M.darkWood);roof(main,-5.15,2.72,2.7,1.8,2.3,0.12);
+  for(let i=0;i<6;i++)shrub(main,-4.8+i*2.1,0.1,6,0.46);
 
-  const hot = [];
-  const L1 = new THREE.Group(), L2 = new THREE.Group();
-  L2.position.z = -3.1;                       // 二樓往後推，讓一樓前緣完全露出
-  scene.add(L1); scene.add(L2);
-  let layer = L1;                             // put/slab 目前掛載的層
-  const mat = c => new THREE.MeshLambertMaterial({ color: c });
-  const geoCache = new Map(), matCache = new Map();
-  const M = c => { if (!matCache.has(c)) matCache.set(c, mat(c)); return matCache.get(c); };
-  function rbox(w, h, d, r) {
-    const k = [w,h,d,r].map(n => n.toFixed(3)).join('|');
-    if (!geoCache.has(k)) geoCache.set(k, new RoundedBoxGeometry(w, h, d, 2, Math.min(r, w/2.2, h/2.2, d/2.2)));
-    return geoCache.get(k);
+  const cabin=new THREE.Group();cabin.position.set(8.5,0.4,-3.4);estate.add(cabin);
+  box(cabin,0,0,0,5.4,0.18,5.2,M.darkWood);
+  panelWall(cabin,5,3.8,[[0,1.7,3.2,2.9]],M.wood).position.z=2.1;
+  windowFrame(cabin,0,1.7,2.23,3.2,2.9,{dark:true,curtains:true});
+  box(cabin,-2.5,1.85,0,0.15,3.7,4.2,M.wood);box(cabin,0,1.85,-2.1,5,3.7,0.16,M.wood);
+  const side=panelWall(cabin,4.2,3.8,[[0.2,1.35,1.25,2.5]],M.wood);side.rotation.y=Math.PI/2;side.position.x=2.5;
+  box(cabin,2.6,1.35,-0.2,0.08,2.48,1.22,M.darkWood);roof(cabin,0,4.02,0,5.65,5.15,0.12,M.frame);
+  for(let y=0.25;y<3.8;y+=0.21)[-1,1].forEach(s=>box(cabin,s*2.13,y,2.24,0.7,0.022,0.022,M.darkWood));
+  for(let x=-2.35;x<=2.4;x+=1.17)box(cabin,x,0.62,2.52,0.04,1.15,0.04,M.frame);
+  [0.24,0.68,1.13].forEach(y=>box(cabin,0,y,2.52,4.75,0.035,0.035,M.frame));
+  [-2,2].forEach(x=>[-1.7,1.7].forEach(z=>box(cabin,x,-0.25,z,0.18,0.5,0.18,M.frame)));
+  const pond=mesh(estate,geometry(new THREE.CircleGeometry(1,72)),material(0x487e70,{metalness:0.35,roughness:0.24}),6.2,0.063,4.2);
+  pond.rotation.x=-Math.PI/2;pond.scale.set(5.1,3.25,1);pond.castShadow=false;
+  const rockGeo=geometry(new THREE.IcosahedronGeometry(1,1));
+  for(let i=0;i<53;i++) {
+    const a=i/53*Math.PI*2,r=mesh(estate,rockGeo,M.stone,6.2+Math.cos(a)*5.13,0.09,4.2+Math.sin(a)*3.26);
+    r.scale.set(0.3+random()*0.3,0.15+random()*0.25,0.25+random()*0.24);r.rotation.set(random(),random(),random());
   }
-  // gx,gz = 格座標；h = 世界高度
-  function put(gx, gz, gw, gd, h, color, y0 = 0, o = {}) {
-    const r = o.r === undefined ? 0.05 : o.r;
-    const m = new THREE.Mesh(o.flat ? new THREE.BoxGeometry(g(gw), h, g(gd)) : rbox(g(gw), h, g(gd), r), M(color));
-    m.position.set(g(gx + gw/2) - CX, y0 + h/2, g(gz + gd/2) - CZ);
-    m.castShadow = !o.flat; m.receiveShadow = true;
-    if (o.rot) m.rotation.y = o.rot;
-    layer.add(m); return m;
+  const padMat=material(0x588536);
+  for(let i=0;i<19;i++) {
+    const a=random()*Math.PI*2,r=Math.sqrt(random())*0.75;
+    const pad=mesh(estate,geometry(new THREE.CircleGeometry(0.13+random()*0.16,14,0.12,Math.PI*1.9)),padMat,6.2+Math.cos(a)*4.8*r,0.07+i*0.0002,4.2+Math.sin(a)*3*r);
+    pad.rotation.x=-Math.PI/2;pad.castShadow=false;
   }
-  const slab = (gx, gz, gw, gd, c, y, t = 0.14) => put(gx, gz, gw, gd, t, c, y - t/2, { flat: true });
-  const V = (gx, gz, y) => new THREE.Vector3(g(gx) - CX, y, g(gz) - CZ);
-
-  // ── 裝飾元件 ──
-  function pendant(gx, gz, ceilY, shade = C.lampShade, drop = 0.62) {
-    const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, drop, 6), M(C.lampMetal));
-    cord.position.copy(V(gx, gz, ceilY - drop/2)); layer.add(cord);
-    const s = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.3, 14, 1, true), M(shade));
-    s.material.side = THREE.DoubleSide;
-    s.position.copy(V(gx, gz, ceilY - drop - 0.13)); s.castShadow = true; layer.add(s);
-    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), M(0xfff0c4));
-    bulb.position.copy(V(gx, gz, ceilY - drop - 0.24)); layer.add(bulb);
+  for(let i=0;i<20;i++){const stone=box(estate,0.4+Math.sin(i*0.15)*0.8,0.075,7.8-i*0.54,0.72,0.07,0.46,M.stone,0.09);stone.rotation.y=Math.sin(i)*0.18;}
+  [[-12,-5,8],[-8,-8,9],[-1,-8,8],[5,-9,8],[13,-7,9],[14,0,7],[-13,5,7]].forEach(([x,z,h])=>tree(estate,x,z,h));
+  [[-12,-2],[-11,-7],[-4,-9],[1,-8],[11,-6],[14,-3],[13,3],[10,7],[-10,4]].forEach(([x,z])=>shrub(estate,x,0,z,1));
+  function addTarget(p,key){p.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.userData.view=key;hitTargets.push(o);}});}
+  addTarget(main,'estate');addTarget(cabin,'cabin');
+  function pillow(p,x,y,z,w,mat) {
+    const m=box(p,x,y,z,w,0.17,0.45,mat,0.09);m.rotation.x=-0.12;
   }
-  function windowOn(side, gx, gz, gw, y, h = 1.15, sill = 0.85) {
-    const t = 0.1, out = side === 'n' ? [gx, gz - 0.02, gw, t] : [gx - 0.02, gz, t, gw];
-    put(out[0], out[1], out[2], out[3], h, C.glassWin, y + sill, { r: 0.02 });
-    put(out[0] - 0.06, out[1] - 0.06, out[2] + (side === 'n' ? 0.12 : 0.05), out[3] + (side === 'n' ? 0.05 : 0.12), 0.1, C.winFrame, y + sill + h, { r: 0.02 });
-    put(out[0] - 0.06, out[1] - 0.06, out[2] + (side === 'n' ? 0.12 : 0.05), out[3] + (side === 'n' ? 0.05 : 0.12), 0.1, C.winFrame, y + sill - 0.1, { r: 0.02 });
+  function bed(p,x,z,width,accent,upholstered=false) {
+    const base=upholstered?material(0xc9bda8,{map:stucco}):M.darkWood;
+    box(p,x,0.28,z,width,0.32,2.1,base,0.035);
+    box(p,x,0.52,z,width-0.02,0.22,2.08,M.linen,0.09);
+    const quilt=box(p,x,0.66,z+0.2,width+0.03,0.12,1.58,M.linen,0.055);
+    const a=quilt.geometry.attributes.position;
+    for(let i=0;i<a.count;i++)if(a.getY(i)>0)a.setY(i,a.getY(i)+Math.sin(a.getX(i)*18+a.getZ(i)*4)*0.018);
+    a.needsUpdate=true;quilt.geometry.computeVertexNormals();
+    box(p,x,0.67,z+0.79,width+0.05,0.045,0.35,accent,0.02);
+    box(p,x,0.6,z-1.02,width+0.07,1.05,0.13,base,0.045);
+    const count=width>1.4?2:1;
+    for(let i=0;i<count;i++)pillow(p,x+(i-(count-1)/2)*width*0.44,0.74,z-0.72,width/count-0.15,accent);
+    [-1,1].forEach(s=>[-1,1].forEach(t=>box(p,x+s*(width/2-0.1),0.1,z+t*0.9,0.08,0.2,0.08,M.darkWood)));
   }
-  function picture(side, gx, gz, w, y, h = 0.5, col = C.art) {
-    const d = side === 'n' ? [gx, gz - 0.01, w, 0.07] : [gx - 0.01, gz, 0.07, w];
-    put(d[0], d[1], d[2], d[3], h, C.frame, y, { r: 0.02 });
-    put(d[0] + (side === 'n' ? 0.1 : 0.03), d[1] + (side === 'n' ? 0.03 : 0.1),
-        side === 'n' ? w - 0.2 : 0.04, side === 'n' ? 0.04 : w - 0.2, h - 0.14, col, y + 0.07, { r: 0.01 });
+  function fan(p,x,y,z) {
+    rod(p,[x,y,z],[x,y-0.28,z],0.035,M.black);
+    const f=new THREE.Group();f.position.set(x,y-0.29,z);p.add(f);
+    for(let i=0;i<3;i++) {
+      const b=new THREE.Group();b.rotation.y=i*Math.PI*2/3;f.add(b);
+      box(b,0.38,0,0,0.78,0.035,0.16,M.wood,0.035);
+    }
   }
-  function bed(gx, gz, gw, gd, y, frame, quilt) {
-    put(gx, gz, gw, gd, 0.34, frame, y, { r: 0.05 });
-    put(gx + 0.07, gz + 0.55, gw - 0.14, gd - 0.62, 0.17, C.sheet, y + 0.34, { r: 0.05 });
-    put(gx + 0.07, gz + 0.5, gw - 0.14, gd * 0.52, 0.2, quilt, y + 0.34, { r: 0.06 });
-    put(gx + 0.18, gz + 0.14, gw - 0.36, 0.42, 0.15, C.pillow, y + 0.5, { r: 0.06 });
-    put(gx, gz - 0.12, gw, 0.14, 0.72, frame, y, { r: 0.04 });   // 床頭板
+  function picture(p,x,y,z,width,color) {
+    box(p,x,y,z,width,0.74,0.07,M.darkWood);
+    box(p,x,y,z+0.045,width-0.1,0.64,0.02,material(color));
+    box(p,x,y-0.2,z+0.063,width-0.2,0.045,0.012,M.linen);
   }
-  function nightstand(gx, gz, y, col) {
-    put(gx, gz, 0.62, 0.62, 0.42, col, y, { r: 0.05 });
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 0.2, 8), M(C.lampMetal));
-    base.position.copy(V(gx + 0.31, gz + 0.31, y + 0.52)); layer.add(base);
-    const sh = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.22, 12), M(C.lampShade));
-    sh.position.copy(V(gx + 0.31, gz + 0.31, y + 0.72)); sh.castShadow = true; layer.add(sh);
-  }
-  function plant(gx, gz, y, s = 1) {
-    put(gx, gz, 0.5*s, 0.5*s, 0.26*s, C.pot, y, { r: 0.08 });
-    const leaf = new THREE.Mesh(new THREE.SphereGeometry(g(0.3*s), 10, 8), M(C.plant));
-    leaf.position.copy(V(gx + 0.25*s, gz + 0.25*s, y + 0.26*s + g(0.22*s)));
-    leaf.castShadow = true; leaf.visible = false; layer.add(leaf);   // 由 glb 盆栽取代
-  }
-  function tvUnit(gx, gz, y) {
-    put(gx, gz, 2.2, 0.55, 0.42, C.yWood, y, { r: 0.04 });
-    put(gx + 0.35, gz + 0.16, 1.5, 0.1, 0.7, C.tv, y + 0.42, { r: 0.03 });
-    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.13, 10), M(C.cup));
-    cup.position.copy(V(gx + 1.9, gz + 0.28, y + 0.49)); cup.castShadow = true; layer.add(cup);
-  }
-  function brickWall(gx, gz, gw, y, h) {          // 木屋紅磚牆（橫紋）
-    put(gx, gz, gw, 0.16, h, C.cBrick, y, { r: 0.02 });
-    for (let i = 0; i < 5; i++)
-      put(gx + 0.05, gz - 0.02, gw - 0.1, 0.05, 0.05, 0xc07a5c, y + 0.28 + i * 0.34, { r: 0.01 });
-  }
-  function woodWall(gx, gz, gw, y, h, col) {      // 木屋直紋木牆
-    put(gx, gz, gw, 0.16, h, col, y, { r: 0.02 });
-    for (let i = 0; i * 0.5 < gw - 0.3; i++)
-      put(gx + 0.2 + i * 0.5, gz - 0.03, 0.06, 0.05, h - 0.2, C.cBeam, y + 0.1, { r: 0.01 });
-  }
-
-
-  // ── 名稱標籤 ──
-  const labelSprites = [];
-  function makeLabel(gx, gz, y, text, sub, logoKey) {
-    const cv = document.createElement('canvas');
-    cv.width = 1120; cv.height = 340;   // 2x 供高 DPI
-    const ctx = cv.getContext('2d');
-    function paint(logoImg) {
-      ctx.clearRect(0, 0, cv.width, cv.height);
-      ctx.fillStyle = 'rgba(247,244,236,0.95)';
-      ctx.strokeStyle = '#26291f'; ctx.lineWidth = 4;
-      ctx.save(); ctx.scale(2, 2);
-      const r = 26, w = 560 - 8, h = 170 - 8;
-      ctx.beginPath(); ctx.moveTo(4 + r, 4);
-      ctx.arcTo(4 + w, 4, 4 + w, 4 + h, r); ctx.arcTo(4 + w, 4 + h, 4, 4 + h, r);
-      ctx.arcTo(4, 4 + h, 4, 4, r); ctx.arcTo(4, 4, 4 + w, 4, r); ctx.closePath();
-      ctx.fill(); ctx.stroke();
-      if (logoImg) ctx.drawImage(logoImg, 26, 34, 100, 100);
-      ctx.fillStyle = '#26291f';
-      ctx.font = '400 66px "Ma Shan Zheng", "Kaiti TC", "BiauKai", "DFKai-SB", "楷體", "Noto Serif TC", serif';
-      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-      ctx.fillText(text, 146, sub ? 88 : 108);
-      if (sub) {
-        ctx.fillStyle = '#7a7461';
-        ctx.font = '300 29px "Noto Sans TC", sans-serif';
-        ctx.fillText(sub, 148, 130);
+  const roomDefs={
+    yunsidai:{wall:0x8f7660,accent:0xdac7b5,wooden:false},
+    lihalai:{wall:0x98b52e,accent:0x93ba42,wooden:false},
+    zhenqing:{wall:0xa63532,accent:0xd7aaa5,wooden:false},
+    cabin:{wall:0xceab6b,accent:0xcbd04e,wooden:true},
+  };
+  for(const[key,def]of Object.entries(roomDefs)) {
+    const room=new THREE.Group();groups.set(key,room);scene.add(room);room.visible=false;
+    const wallMat=material(def.wall,{map:def.wooden?grain:stucco,bumpMap:def.wooden?grain:stucco,bumpScale:0.015});
+    const accent=material(def.accent,{map:stucco});
+    box(room,0,-0.09,0,6.5,0.18,5.7,def.wooden?M.wood:M.floor);
+    const backOpenings = key==='lihalai'?[[1.28,2.12,2.5,1.65]]:
+      key==='zhenqing'?[[2.61,1.94,0.64,2.05]]:key==='cabin'?[[-1.3,2.05,1.4,1.3]]:[];
+    panelWall(room,6.5,3.2,backOpenings,wallMat).position.z=-2.8;
+    const wall=panelWall(room,5.6,3.2,[[0,1.5,3.95,2.7]],def.wooden?M.wood:M.plaster);
+    wall.rotation.y=Math.PI/2;wall.position.x=-3.2;
+    windowFrame(room,-3.12,1.5,0,3.95,2.7,{rotation:Math.PI/2,dark:true,curtains:true,garden:true});
+    if(key==='lihalai') {
+      box(room,0,0.14,-1.3,5.15,0.27,2.8,M.darkWood);
+      bed(room,-1.18,-1.12,2.08,accent);bed(room,1.12,-1.12,2.08,accent);
+      windowFrame(room,1.28,2.12,-2.61,2.5,1.65,{dark:true,curtains:true,garden:true});
+    } else if(key==='yunsidai') {
+      bed(room,-1.3,-1.12,1.1,accent);bed(room,0.83,-1.12,1.9,accent,true);
+      picture(room,-1.32,1.99,-2.66,0.56,0xe7d7bb);
+      for(let i=0;i<3;i++) {
+        const x=1.1+i*0.45,y=2.6+(i%2)*0.2;rod(room,[x,3.2,0],[x,y,0],0.012,M.black);
+        const shade=mesh(room,geometry(new THREE.SphereGeometry(0.2,18,12)),i===1?M.darkWood:M.wood,x,y,0);shade.scale.y=1.13;
+        const bulb=material(0xffe0a0,{emissive:0xffc777,emissiveIntensity:0.6});
+        mesh(room,geometry(new THREE.SphereGeometry(0.065,10,8)),bulb,x,y-0.1,0);
       }
-      ctx.restore();
-      tex.needsUpdate = true;
+    } else if(key==='zhenqing') {
+      box(room,0,0.65,-2.65,5.9,1.3,0.09,M.wood);
+      bed(room,-1.35,-1.13,1.8,accent);bed(room,0.94,-1.13,1.8,accent);
+      picture(room,-0.85,2.02,-2.59,0.72,0x386776);picture(room,0.6,1.91,-2.59,0.92,0x688746);
+      windowFrame(room,2.61,1.94,-2.61,0.64,2.05,{dark:true,panes:1,garden:true});
+    } else {
+      bed(room,0.92,-1.2,1.9,accent);windowFrame(room,-1.3,2.05,-2.61,1.4,1.3,{dark:true,panes:2,garden:true});
+      box(room,-1.7,0.76,1.04,1.65,0.1,0.85,M.darkWood);
+      [-2.34,-1.06].forEach(x=>[-1,1].forEach(s=>box(room,x,0.37,1.04+s*0.32,0.065,0.74,0.065,M.darkWood)));
+      seat(room,-1.72,0,1.96,0x768087,0.6);
+      const bricks=[material(0x9c4e32),material(0x804b37),material(0xb6694c),material(0x594c42)];
+      box(room,2.95,0.42,0.75,0.14,0.84,2.4,M.stone);
+      for(let row=0;row<4;row++)for(let col=0;col<5;col++)[2.85,3.05].forEach(x=>box(room,x,0.12+row*0.176,-0.32+col*0.45+(row%2)*0.2,0.08,0.145,0.4,bricks[(row*3+col)%4]));
     }
-    const tex = new THREE.CanvasTexture(cv);
-    tex.anisotropy = 8;
-    tex.minFilter = THREE.LinearFilter;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-    sp.scale.set(3.5, 1.06, 1);
-    sp.position.copy(V(gx, gz, y));
-    sp.renderOrder = 999;
-    layer.add(sp); labelSprites.push(sp);
-    paint(null);
-    if (logoKey) {
-      const img = new Image();
-      img.onload = () => paint(img);
-      img.src = 'assets/logo/' + logoKey + '.svg';
-    }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => paint(null));
-    return sp;
+    for(let x=-2.5;x<3;x+=1.05)box(room,x,3.17,-1.4,0.11,0.18,2.8,def.wooden?M.frame:M.darkWood);
+    fan(room,-0.25,3.18,0.25);
+    box(room,2.3,0.42,1.7,1.28,0.72,0.46,M.darkWood);
+    box(room,2.3,1.18,1.6,1.06,0.67,0.06,M.black,0.025);box(room,2.3,0.84,1.61,0.2,0.16,0.07,M.black);
+    mesh(room,geometry(new THREE.CylinderGeometry(0.2,0.13,0.3,14)),material(0x8b7960),2.62,0.15,2.24);
+    shrub(room,2.62,0.3,2.24,0.35);box(room,-0.17,0.34,-2.15,0.38,0.64,0.42,M.darkWood);
+    addTarget(room,key);
   }
-
-
-  // 獨棟小木屋：牆體 + 斜屋頂 + 門窗
-  function cabinHouse(gx, gz, gw, gd, y) {
-    const wallH = 1.5;
-    woodWall(gx, gz, gw, y, wallH, C.cWall);                       // 正面木牆
-    put(gx, gz, 0.16, gd, wallH, C.cWall, y, { r: 0.02 });          // 側牆
-    put(gx + gw - 0.16, gz, 0.16, gd, wallH, C.cWall, y, { r: 0.02 });
-    put(gx, gz + gd - 0.16, gw, 0.16, wallH, C.cWall, y, { r: 0.02 });
-    put(gx + 0.2, gz + 0.2, gw - 0.4, gd - 0.4, 0.06, C.cFloor, y, { flat: true });
-    // 斜屋頂：兩片傾斜板
-    const rw = g(gw) * 0.62, rl = g(gd) + 0.3, pitch = 0.62;
-    [-1, 1].forEach(sgn => {
-      const p = new THREE.Mesh(rbox(rw, 0.14, rl, 0.05), M(C.cBeam));
-      p.position.set(g(gx + gw/2) - CX + sgn * rw * 0.42, y + wallH + 0.42, g(gz + gd/2) - CZ);
-      p.rotation.z = -sgn * pitch;
-      p.castShadow = true; layer.add(p);
-    });
-    put(gx + gw/2 - 0.1, gz, 0.2, gd, 0.12, C.cBeam, y + wallH + 0.86, { r: 0.03 });   // 屋脊
-    put(gx + gw/2 - 0.55, gz - 0.04, 1.1, 0.1, 1.05, 0x6b4a2c, y, { r: 0.03 });        // 門
-    put(gx + gw/2 + 0.62, gz - 0.04, 0.9, 0.1, 0.75, C.glassWin, y + 0.55, { r: 0.03 }); // 窗
-    put(gx + 0.35, gz - 0.04, 0.8, 0.1, 0.7, C.glassWin, y + 0.6, { r: 0.03 });
-    put(gx + gw - 1.3, gz + gd * 0.3, 0.5, 0.5, 1.9, C.cBrick, y, { r: 0.04 });         // 煙囪
+  const presets={
+    estate:{target:[0,0.7,0],offset:[17,15,25],span:40,min:12,max:90,background:0xe7efeb},
+    yunsidai:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
+    lihalai:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
+    zhenqing:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
+    cabin:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
+  };
+  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+  let active='estate',pointerStart=null,hovered=null,transition=null,visible=true,stopped=false;
+  function pick(event) {
+    const bounds=canvas.getBoundingClientRect();
+    pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
+    ray.setFromCamera(pointer,camera);
+    // Invisible ancestors must be filtered explicitly before raycasting.
+    const candidates=hitTargets.filter(o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;});
+    return ray.intersectObjects(candidates,false)[0]?.object.userData.view||null;
   }
-
-
-  // ── 取自實景照片的裝飾 ──
-  const DC = { brass:0xb99a52, brassDark:0x8a7440, duck:0xe3c05a, duckBill:0xc98f4e,
-               poster:0x5b7f8a, forest:0x6b7a55, mirror:0xe6e1d1, scroll:0xf4f1e8,
-               porcelain:0xf4f1e8, porcelainBlue:0x5b6f8a, redLamp:0xa8705a, wood:0x6b5a42 };
-
-  // 留聲機（木屋大廳紅磚牆前那台）
-  function gramophone(gx, gz, y) {
-    put(gx, gz, 0.95, 0.8, 0.5, DC.wood, y, { r: 0.05 });               // 木箱
-    const horn = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.62, 16, 1, true), M(DC.brass));
-    horn.material.side = THREE.DoubleSide;
-    horn.position.copy(V(gx + 0.48, gz + 0.4, y + 0.92));
-    horn.rotation.set(Math.PI * 0.12, 0, Math.PI * 0.14);
-    horn.castShadow = true; layer.add(horn);
-    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.4, 8), M(DC.brassDark));
-    arm.position.copy(V(gx + 0.48, gz + 0.4, y + 0.62));
-    arm.rotation.z = 0.3; layer.add(arm);
+  function move(e){
+    if(pointerStart&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)>=6)pointerStart.dragged=true;
+    if(e.buttons||e.pointerType==='touch')return;
+    const k=pick(e);if(k!==hovered){hovered=k;canvas.style.cursor=k?'pointer':'grab';opts.onHover?.(k);}
   }
-  // 小黃鴨（山遇真情床頭那隻）
-  function duck(gx, gz, y) {
-    const b = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 12), M(DC.duck));
-    b.position.copy(V(gx, gz, y + 0.17)); b.castShadow = true; layer.add(b);
-    const h = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 12), M(DC.duck));
-    h.position.copy(V(gx + 0.02, gz - 0.08, y + 0.36)); h.castShadow = true; layer.add(h);
-    const bill = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.11, 8), M(DC.duckBill));
-    bill.position.copy(V(gx + 0.02, gz - 0.2, y + 0.34)); bill.rotation.x = Math.PI / 2; layer.add(bill);
+  function leave(){hovered=null;canvas.style.cursor='grab';opts.onHover?.(null);}
+  function down(e){pointerStart=e.isPrimary?{x:e.clientX,y:e.clientY,id:e.pointerId,dragged:false}:null;transition=null;}
+  function up(e){if(pointerStart&&!pointerStart.dragged&&pointerStart.id===e.pointerId&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)<6){const k=pick(e);if(k)opts.onPick?.(k);}pointerStart=null;}
+  function cancel(){pointerStart=null;}
+  const events={pointermove:move,pointerleave:leave,pointerdown:down,pointerup:up,pointercancel:cancel};
+  for(const[name,fn]of Object.entries(events))canvas.addEventListener(name,fn);
+  function fit(animate=false) {
+    const p=presets[active],target=V(...p.target),direction=V(...p.offset).normalize();
+    const distance=Math.max(V(...p.offset).length(),p.span/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*Math.max(camera.aspect,0.4)));
+    const position=target.clone().addScaledVector(direction,distance);
+    controls.minDistance=p.min;controls.maxDistance=Math.max(p.max,distance*1.25);
+    if(animate&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)transition={start:performance.now(),from:camera.position.clone(),to:position,fromTarget:controls.target.clone(),target};
+    else{transition=null;camera.position.copy(position);controls.target.copy(target);controls.update();}
   }
-  // 青花瓷茶具（木屋窗邊那組）
-  function teaSet(gx, gz, y) {
-    put(gx, gz, 1.0, 0.62, 0.1, DC.wood, y, { r: 0.03 });                // 茶盤
-    [0, 1].forEach(i => {
-      const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.07, 0.11, 12), M(DC.porcelain));
-      cup.position.copy(V(gx + 0.28 + i * 0.34, gz + 0.3, y + 0.16)); cup.castShadow = true; layer.add(cup);
-      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.014, 6, 14), M(DC.porcelainBlue));
-      rim.position.copy(V(gx + 0.28 + i * 0.34, gz + 0.3, y + 0.21));
-      rim.rotation.x = Math.PI / 2; layer.add(rim);
-    });
-    put(gx + 0.06, gz + 0.12, 0.36, 0.36, 0.3, DC.porcelain, y + 0.1, { r: 0.05 });   // 面紙木盒
-  }
-  // 圓形掛鏡（紅磚牆上）
-  function roundMirror(gx, gz, y, r = 0.3) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.05, 8, 22), M(C.frame));
-    ring.position.copy(V(gx, gz, y)); ring.castShadow = true; layer.add(ring);
-    const face = new THREE.Mesh(new THREE.CircleGeometry(r - 0.03, 22), M(DC.mirror));
-    face.position.copy(V(gx, gz + 0.04, y)); layer.add(face);
-  }
-  // 書法直幅
-  function scroll(gx, gz, y, h = 1.3) {
-    put(gx, gz, 0.42, 0.05, h, DC.scroll, y, { r: 0.01 });
-    put(gx - 0.03, gz - 0.01, 0.48, 0.07, 0.07, C.frame, y + h, { r: 0.02 });
-    put(gx - 0.03, gz - 0.01, 0.48, 0.07, 0.07, C.frame, y - 0.07, { r: 0.02 });
-  }
-
-
-  // ── 外部模型（poly.pizza，CC0 公眾領域）──
-  const MODELS = {}, gltf = new GLTFLoader();
-  function loadModel(key) {
-    return new Promise(res => gltf.load('models/' + key + '.glb',
-      g => { MODELS[key] = g.scene; res(); },
-      undefined,
-      () => res()));                     // 載不到就跳過，場景照常
-  }
-  // 放置一份模型副本：以「格座標 + 目標高度」定位，並把材質換成場景色盤
-  function place(key, gx, gz, y, targetH, tint, rotY = 0) {
-    const src = MODELS[key];
-    if (!src) return null;
-    const o = src.clone(true);
-    o.traverse(m => {
-      if (!m.isMesh) return;
-      m.material = m.material.clone();
-      if (tint !== undefined) m.material.color.setHex(tint);
-      m.castShadow = true; m.receiveShadow = true;
-    });
-    const bb = new THREE.Box3().setFromObject(o);
-    const size = bb.getSize(new THREE.Vector3());
-    const sc = targetH / (size.y || 1);
-    o.scale.setScalar(sc);
-    const bb2 = new THREE.Box3().setFromObject(o);
-    const c2 = bb2.getCenter(new THREE.Vector3());
-    o.position.set(g(gx) - CX - c2.x, y - bb2.min.y, g(gz) - CZ - c2.z);
-    o.rotation.y = rotY;
-    layer.add(o);
-    return o;
-  }
-
-  const FH = 3.3, F1 = 0, F2 = FH;
-
-  // ── 外殼（兩面牆） ──
-  function shell(y, h) {
-    put(-0.3, -0.3, 14.6, 0.3, h, C.shell, y, { r: 0.02 });
-    put(-0.3, -0.3, 0.3, 10.6, h, C.shellSide, y, { r: 0.02 });
-    put(-0.3, -0.3, 14.6, 0.3, 0.1, C.skirt, y);
-    put(-0.3, -0.3, 0.3, 10.6, 0.1, C.skirt, y);
-  }
-
-  // 房間：地板 + 兩道內牆 + 可點熱區
-  function roomShell(gx, gz, gw, gd, y, floorCol, wallCol, key, wallH) {
-    slab(gx, gz, gw, gd, floorCol, y + 0.02, 0.08);
-    put(gx - 0.16, gz - 0.16, gw + 0.32, 0.16, wallH, wallCol, y, { r: 0.02 });
-    put(gx - 0.16, gz, 0.16, gd + 0.16, Math.min(wallH, 0.95), wallCol, y, { r: 0.02 });
-    const hit = put(gx, gz, gw, gd, wallH, floorCol, y, { r: 0.04 });
-    hit.material = new THREE.MeshLambertMaterial({ color: floorCol, transparent: true, opacity: 0.001 });
-    hit.castShadow = false;
-    hit.userData.room = key; hit.userData.base = floorCol;
-    hot.push(hit);
-  }
-
-  // ════════ 一樓 ════════
-  slab(-0.3, -0.3, 14.6, 10.6, C.slab, F1);
-  shell(F1, FH);
-
-  // 雲絲帶（左半層）：暖褐木質、一大床一小床、電視櫃
-  roomShell(0.3, 0.3, 6.0, 9.4, F1, C.yFloor, C.yWall, 'yunsidai', 2.3);
-  bed(0.8, 0.9, 2.2, 2.8, F1, C.yWood, C.quilt);
-  bed(3.9, 0.9, 1.4, 2.8, F1, C.yWood, C.quilt);
-  nightstand(3.1, 0.9, F1, C.yWood);
-  tvUnit(0.9, 5.4, F1);
-  slab(1.0, 4.4, 4.4, 1.6, C.rug, F1 + 0.05, 0.05);
-  put(3.6, 6.6, 2.2, 1.0, 0.44, C.seat, F1, { r: 0.12 });
-  windowOn('w', 0.3, 2.0, 3.0, F1);
-  windowOn('w', 0.3, 7.0, 2.2, F1);
-  picture('n', 3.6, 0.3, 1.4, F1 + 1.4);
-  scroll(1.5, 0.34, F1 + 0.85);
-  roundMirror(5.2, 0.36, F1 + 1.55, 0.26);
-  plant(5.5, 8.4, F1, 1.0); plant(0.9, 8.6, F1, 0.85);
-  pendant(3.2, 3.0, F1 + 2.25);
-  pendant(3.2, 7.2, F1 + 2.25);
-
-  // 木屋（右半層）：獨棟小木屋立在庭園地坪上
-  roomShell(7.7, 0.3, 6.0, 9.4, F1, C.cFloor, C.cWall, 'cabin', 0.95);
-  slab(7.9, 4.6, 5.6, 4.6, C.rug2, F1 + 0.05, 0.05);
-  cabinHouse(8.6, 1.2, 4.4, 3.4, F1);
-  put(9.0, 6.0, 1.8, 0.8, 0.4, C.table, F1, { r: 0.05 });
-  put(9.2, 7.0, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
-  put(11.4, 6.0, 0.6, 0.6, 0.42, C.seat, F1, { r: 0.06 });
-  plant(12.6, 5.4, F1, 1.1); plant(8.0, 8.6, F1, 0.95); plant(13.0, 8.4, F1, 1.0);
-  windowOn('n', 10.2, 0.3, 2.8, F1, 1.35, 0.9);
-  gramophone(12.5, 0.5, F1);
-  roundMirror(11.9, 0.36, F1 + 1.7, 0.3);
-  scroll(13.2, 0.34, F1 + 1.1, 1.1);
-  [0, 1, 2].forEach(i => picture('n', 8.1 + i * 0.75, 0.32, 0.66, F1 + 1.75, 0.5, [DC.forest, C.art, DC.forest][i]));
-  teaSet(9.4, 6.2, F1 + 0.4);
-  pendant(10.8, 2.6, F1 + 2.25, DC.redLamp, 0.7);
-
-  // 中央走道：吧台、樓梯、程先生
-  put(6.45, 3.4, 1.2, 2.6, 0.66, C.bar, F1, { r: 0.06 });
-  for (let i = 0; i < 2; i++) {
-    const st = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.55, 12), M(C.seat));
-    st.position.copy(V(6.35, 4.2 + i * 1.2, F1 + 0.28)); st.castShadow = true; layer.add(st);
-  }
-  for (let i = 0; i < 11; i++) put(6.5, 0.5 + i * 0.22, 1.1, 0.22, 0.3 + i * 0.27, C.stair, F1, { r: 0.02 });
-
-  // ════════ 二樓 loft ════════
-  layer = L2;
-  slab(-0.3, -0.3, 14.6, 10.6, C.slab, F2);
-  shell(F2, FH * 0.94);
-
-  // 里哈籟（左半層）：萊姆綠
-  roomShell(0.3, 0.3, 6.0, 9.4, F2, C.lFloor, C.lWall, 'lihalai', 2.2);
-  bed(0.9, 0.9, 2.0, 2.9, F2, C.frame, C.lAccent);
-  bed(3.6, 0.9, 2.0, 2.9, F2, C.frame, C.lAccent);
-  nightstand(3.0, 0.9, F2, C.frame);
-  windowOn('n', 1.2, 0.3, 3.2, F2, 1.3, 0.9);
-  windowOn('w', 0.3, 4.4, 2.6, F2);
-  slab(1.2, 4.6, 4.0, 1.4, C.rug2, F2 + 0.05, 0.05);
-  put(1.4, 6.6, 2.6, 1.0, 0.44, C.seat, F2, { r: 0.12 });
-  put(4.4, 6.8, 0.7, 0.7, 0.4, C.table, F2, { r: 0.05 });
-  picture('w', 0.3, 7.6, 1.2, F2 + 1.35, 0.55, C.lAccent);
-  roundMirror(2.6, 0.36, F2 + 1.6, 0.26);
-  scroll(5.4, 0.34, F2 + 0.9, 1.2);
-  plant(5.4, 8.6, F2, 1.0);
-  pendant(3.2, 3.6, F2 + 2.15, 0xdfe8c4);
-  pendant(3.2, 7.6, F2 + 2.15, 0xdfe8c4);
-
-  // 山遇真情（右半層）：磚紅暖色
-  roomShell(7.7, 0.3, 6.0, 9.4, F2, C.zFloor, C.zWall, 'zhenqing', 2.2);
-  bed(8.3, 0.9, 2.0, 2.9, F2, C.frame, C.zAccent);
-  bed(11.0, 0.9, 2.0, 2.9, F2, C.frame, C.zAccent);
-  nightstand(10.4, 0.9, F2, C.frame);
-  windowOn('n', 8.8, 0.3, 2.6, F2, 1.3, 0.9);
-  picture('n', 9.2, 0.3, 1.05, F2 + 1.35, 0.78, DC.poster);      // THE BIG BLUE 海報
-  picture('n', 11.4, 0.3, 1.15, F2 + 1.3, 0.62, DC.forest);      // 森林畫
-  duck(10.55, 0.55, F2 + 1.15);                                  // 床頭小黃鴨
-  slab(8.4, 4.6, 4.4, 1.4, C.rug, F2 + 0.05, 0.05);
-  put(8.5, 6.6, 3.0, 1.0, 0.44, C.seat, F2, { r: 0.12 });
-  put(12.0, 6.6, 0.8, 0.8, 0.4, C.table, F2, { r: 0.05 });
-  plant(13.0, 8.6, F2, 1.05);
-  pendant(10.4, 3.6, F2 + 2.15, 0xf0cfa8);
-  pendant(10.4, 7.6, F2 + 2.15, 0xf0cfa8);
-
-  // 中央 loft 走道：麻將桌、藝術牆、夏先生
-  put(6.4, 0.8, 1.3, 1.3, 0.42, C.mahjong, F2, { r: 0.05 });
-  [0, 1, 2].forEach(i => picture('w', 6.4, 2.9 + i * 1.35, 1.1, F2 + 0.3, 0.55, [C.art, C.zAccent, C.lAccent][i]));
-  put(6.42, 2.6, 1.16, 4.2, 1.15, C.shell, F2, { r: 0.02 });
-  for (let i = 0; i < 11; i++) put(6.5, 0.5 + i * 0.22, 1.1, 0.22, 3.3 - i * 0.27, C.stair, F2 - 3.3 + 0.3, { r: 0.02 });
-
-  // ── 名稱標籤 ──
-  layer = L1;
-  makeLabel(3.3, 6.4, F1 + 2.72, '雲絲帶', '三人房型，一大床一小床', 'yunsidai');
-  makeLabel(10.7, 6.4, F1 + 2.72, '水見曉逐', '獨棟木屋', 'cabin');
-  layer = L2;
-  makeLabel(3.3, 6.4, F2 + 2.62, '里哈籟', '二至四人房型', 'lihalai');
-  makeLabel(10.7, 6.4, F2 + 2.62, '山遇真情', '四人房型', 'zhenqing');
-
-
-  // ── 以實體模型取代幾何佔位（載入後才加入，載不到不影響場景）──
-  Promise.all(['plant','chair','table'].map(loadModel)).then(() => {
-    const P90 = Math.PI / 2;
-    // 雲絲帶
-    layer = L1;
-    place('plant', 5.5, 8.6, F1, 0.72, C.plant);
-    place('plant', 0.8, 8.8, F1, 0.62, C.plant);
-    place('chair', 3.9, 6.9, F1, 0.9,  C.seat, P90);
-    // 木屋庭園
-    place('plant', 13.1, 5.2, F1, 0.75, C.plant);
-    place('plant', 13.1, 8.6, F1, 0.68, C.plant);
-    place('chair', 9.3, 7.0, F1, 0.9, C.seat, -0.4);
-    place('chair', 11.5, 6.0, F1, 0.9, C.seat, 2.6);
-    place('table', 9.0, 6.0, F1, 0.62, C.table, P90);
-    // 中央走道
-    place('chair', 6.4, 4.4, F1, 0.9, C.seat, P90);
-    place('chair', 6.4, 5.6, F1, 0.9, C.seat, P90);
-    // 二樓
-    layer = L2;
-    place('plant', 5.4, 8.8, F2, 0.68, C.plant);
-    place('plant', 13.1, 8.8, F2, 0.72, C.plant);
-    place('chair', 4.6, 6.9, F2, 0.9, C.seat, 0.3);
-    place('chair', 12.2, 6.7, F2, 0.9, C.seat, -0.3);
-    place('table', 1.4, 7.0, F2, 0.6, C.mahjong, P90);
-    layer = L1;
+  function setView(key){if(!presets[key])return;active=key;for(const[name,g]of groups)g.visible=name===key;scene.background=new THREE.Color(presets[key].background);leave();fit();opts.onViewChange?.(key);}
+  function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();fit();}
+  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(canvas);
+  const visibilityObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;});visibilityObserver.observe(canvas);
+  function zoom(factor){transition=null;const d=camera.position.clone().sub(controls.target);d.setLength(THREE.MathUtils.clamp(d.length()*factor,controls.minDistance,controls.maxDistance));camera.position.copy(controls.target).add(d);controls.update();}
+  renderer.setAnimationLoop(time=>{
+    if(stopped||!visible||document.hidden)return;
+    if(transition){const t=Math.min(1,(time-transition.start)/650),ease=1-Math.pow(1-t,3);camera.position.lerpVectors(transition.from,transition.to,ease);controls.target.lerpVectors(transition.fromTarget,transition.target,ease);if(t===1)transition=null;}
+    controls.update();renderer.render(scene,camera);
   });
-
-  // ── 互動 ──
-  const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
-  let hovered = null;
-  function pick(cx, cy) {
-    const r = canvas.getBoundingClientRect();
-    ptr.x = ((cx - r.left) / r.width) * 2 - 1;
-    ptr.y = -((cy - r.top) / r.height) * 2 + 1;
-    ray.setFromCamera(ptr, camera);
-    const h = ray.intersectObjects(hot, false)[0];
-    return h ? h.object : null;
-  }
-  function setHover(o) {
-    if (hovered === o) return;
-    if (hovered) { hovered.material.opacity = 0.001; hovered.material.color.setHex(hovered.userData.base); }
-    if (o) { o.material.opacity = 0.3; o.material.color.setHex(C.hot); }
-    hovered = o;
-    canvas.style.cursor = o ? 'pointer' : 'grab';
-    if (opts.onHover) opts.onHover(o ? o.userData.room : null);
-  }
-  canvas.addEventListener('pointermove', e => setHover(pick(e.clientX, e.clientY)));
-  canvas.addEventListener('pointerleave', () => setHover(null));
-  canvas.addEventListener('click', e => {
-    const o = pick(e.clientX, e.clientY);
-    if (o && opts.onPick) opts.onPick(o.userData.room);
-  });
-
-  function resize() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (!w || !h) return;
-    const pr = renderer.getPixelRatio();
-    if (canvas.width !== Math.round(w*pr) || canvas.height !== Math.round(h*pr)) {
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h; camera.updateProjectionMatrix();
-    }
-  }
-  let running = true;
-  (function loop(){
-    if (!running) return;
-    requestAnimationFrame(loop);
-    resize();
-    controls.update();
-    renderer.render(scene, camera);
-  })();
-  return { stop(){ running = false; } };
+  resize();setView('estate');
+  return{setView,reset(){fit(true);},zoom,stop(){
+    if(stopped)return;stopped=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();
+    for(const[name,fn]of Object.entries(events))canvas.removeEventListener(name,fn);
+    geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
+    scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});renderer.dispose();
+  }};
 }

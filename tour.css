@@ -1,0 +1,71 @@
+.hero3d{position:relative;display:flex;flex-direction:column;height:820px;min-height:0;max-height:96svh;background:#e7efeb;overflow:hidden;scroll-margin-top:0}
+.tour-head{padding:34px 48px 22px;display:flex;align-items:end;justify-content:space-between;gap:20px;flex:none}
+.hero3d.home-tour{max-height:calc(100svh - 64px - env(safe-area-inset-bottom))}
+.home-tour .tour-head{padding-top:96px}
+.nav.on-tour{mix-blend-mode:normal;background:#e7efeb;color:#263a30;box-sizing:border-box;height:80px;padding:18px 28px}
+.nav.on-tour a{color:#263a30;border-color:#758b76;box-sizing:border-box;height:44px;min-height:44px;display:inline-flex;align-items:center;padding:8px 20px}
+.nav.on-tour::before{opacity:0}
+.tour-head .en{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:0;color:#52695e;margin-bottom:10px}
+.tour-head h2,.tour-head h1{font-size:29px;line-height:1.4;font-weight:500;margin:0;letter-spacing:0;color:#263a30}
+.tour-head p{font-family:'Noto Sans TC',sans-serif;font-size:12px;line-height:1.7;letter-spacing:0;color:#52695e;margin:0}
+.tour-tabs{display:flex;gap:24px;margin:0 48px;border-bottom:1px solid #bfcfc5;min-height:48px;flex:none;overflow-x:auto;scrollbar-width:thin}
+.tour-tabs button{position:relative;flex:none;border:0;border-bottom:2px solid transparent;background:none;padding:12px 0;min-height:48px;font:400 13px 'Noto Sans TC',sans-serif;letter-spacing:0;color:#637368;cursor:pointer;white-space:nowrap}
+.tour-tabs button[aria-selected=true]{border-bottom-color:#315b45;color:#254934;font-weight:500}
+.hero3d button:focus-visible,.hero3d canvas:focus-visible{outline:2px solid #286044;outline-offset:4px}
+.tour-stage{position:relative;flex:1;min-height:0;isolation:isolate}
+.hero3d .tour-stage canvas{display:block;width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
+.tour-tools{position:absolute;right:24px;bottom:24px;display:flex;gap:1px;background:#bdccc1;border:1px solid #b7c7bc;border-radius:4px;z-index:2}
+.tour-tools button{position:relative;background:#f8faf6;border:0;color:#354a3c;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
+.tour-tools button:hover{background:#e0ebdf}
+.tour-tooltip{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);background:#263c2e;color:#fff;font:12px 'Noto Sans TC',sans-serif;padding:6px 8px;white-space:nowrap;opacity:0;pointer-events:none;border-radius:3px}
+.tour-tools button:hover .tour-tooltip,.tour-tools button:focus-visible .tour-tooltip{opacity:1}
+.tour-reference{position:absolute;left:26px;bottom:24px;z-index:2;display:flex;flex-direction:column;padding:0;border:0;background:#f8faf6;cursor:pointer;color:#344d3d;box-shadow:0 3px 15px #253c281a}
+.tour-reference img{display:block;width:132px;height:88px;object-fit:cover}
+.tour-reference span{font:11px 'Noto Sans TC',sans-serif;padding:8px 12px;letter-spacing:0}
+.tour-reference:hover span{background:#dae7d9}
+.tour-footer{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:20px;padding:16px 48px 22px;flex:none;border-top:1px solid #cbd6cd;background:#e7efeb;text-align:left;color:#435849;font:12px/1.7 'Noto Sans TC',sans-serif;letter-spacing:0}
+.tour-footer>div{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.tour-current{font-size:14px;font-weight:500}
+.tour-detail{color:#637569}
+.tour-footer p{margin:0;font-size:11px;color:#6d7c72}
+.hero3d .hero3d-load{position:absolute;inset:0;background:#e7efeb;z-index:4;display:flex;align-items:center;justify-content:center;gap:12px}
+.hero3d-load>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0.85}
+.hero3d .hero3d-load button{position:relative;font:14px 'Noto Sans TC',sans-serif;letter-spacing:0;min-height:48px;padding:14px 24px;background:#f8faf6f2;border:1px solid #758b76;border-radius:4px;color:#263e2f;cursor:pointer}
+.hero3d .hero3d-load button:hover{background:#263e2f;color:#fff}
+.hero3d .hero3d-load button:disabled{cursor:default;background:#f8faf6f2;color:#263e2f}
+.hero3d.ready .hero3d-load{display:none}
+.hero3d:not(.ready) .tour-reference,.hero3d:not(.ready) .tour-tools{visibility:hidden}
+.hero3d .r3d-card{right:24px;bottom:84px;max-height:calc(100% - 100px);overflow:auto;border-radius:4px}
+.hero3d .r3d-card h3{letter-spacing:0}
+.tour-photo-dialog{border:0;padding:0;background:#17251e;color:#f7faf6;width:min(1080px,92vw);max-width:92vw;max-height:92svh;overflow:auto;border-radius:4px}
+.tour-photo-dialog::backdrop{background:#0b1713d9}
+.tour-photo-dialog figure{margin:0}
+.tour-photo-dialog figure img{display:block;width:100%;height:calc(88svh - 60px);object-fit:contain}
+.tour-photo-dialog figcaption{padding:14px 20px;font:13px 'Noto Sans TC',sans-serif;letter-spacing:0}
+.tour-dialog-close{position:absolute;right:12px;top:12px;width:44px;height:44px;display:grid;place-items:center;border:1px solid #ffffff55;background:#16251dd9;color:white;border-radius:4px;cursor:pointer}
+.tour-standalone{margin:0;background:#e7efeb;font-family:'Noto Serif TC',serif}
+.tour-standalone .hero3d{height:100svh;max-height:none}
+.tour-back{color:#42634b;font:13px 'Noto Sans TC',sans-serif;text-decoration:none;padding:12px 0}
+@media(max-width:640px){
+  .hero3d{height:700px;max-height:94svh;min-height:570px}
+  .tour-head{padding:26px 20px 14px;align-items:start;gap:10px}
+  .tour-head h2,.tour-head h1{font-size:24px}
+  .tour-head p{max-width:8em;font-size:11px}
+  .tour-head .en{margin-bottom:7px;font-size:10px}
+  .tour-tabs{margin:0 20px;gap:20px;min-height:48px}
+  .tour-tabs button{font-size:12px}
+  .tour-reference{left:16px;bottom:16px}
+  .tour-reference img{width:96px;height:64px}
+  .tour-reference span{padding:6px 10px;font-size:10px}
+  .tour-tools{right:16px;bottom:16px}
+  .tour-footer{padding:13px 20px 18px;gap:10px;align-items:start}
+  .tour-footer>div{flex-direction:column;gap:1px}
+  .tour-detail{font-size:10px;max-width:20em}
+  .tour-footer p{font-size:10px;max-width:9em;text-align:right}
+  .hero3d .r3d-card{bottom:76px;left:16px;right:16px;width:auto;max-height:calc(100% - 80px)}
+  .hero3d .r3d-card img.shot{height:105px}
+  .hero3d .r3d-card .body{padding:12px;gap:6px}
+  .tour-photo-dialog{width:94vw;max-width:94vw}
+  .tour-photo-dialog figure img{height:78svh}
+}
+@media(prefers-reduced-motion:reduce){.hero3d *{scroll-behavior:auto!important;transition:none!important}}

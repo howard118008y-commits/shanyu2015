@@ -395,6 +395,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   .hero3d-head p{display:none}
 }
 </style>
+<link rel="stylesheet" href="tour.css?v=20260906">
 <script type="importmap">
 {"imports":{
   "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
@@ -430,15 +431,15 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   </div>
 </header>
 
-<section class="hero3d" id="hero3d">
-  <canvas></canvas>
-  <div class="hero3d-head">
-    <div class="en">THE ESTATE</div>
-    <h2>立體導覽</h2>
-    <p>四間房的立體剖面。拖曳轉一圈，點房間看房型與房價。</p>
-  </div>
-  <div class="hero3d-tip">拖曳旋轉　滾輪縮放　點房間看照片</div>
-  <div class="r3d-card" id="r3dCard">
+<section class="hero3d home-tour" id="hero3d" aria-label="山遇莊園立體導覽">
+  <header class="tour-head">
+    <div><div class="en">SHANYU · THE ESTATE</div><h2>山遇・立體導覽</h2></div>
+    <p>山腳下的家園<br>主棟與房間風景</p>
+  </header>
+  <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
+  <div class="tour-stage" id="tour-stage" role="tabpanel">
+  <canvas tabindex="0" aria-label="山遇莊園立體模型"></canvas>
+  <div class="r3d-card" id="r3dCard" hidden>
     <button class="close" type="button" aria-label="關閉">×</button>
     <img class="shot" alt="">
     <div class="body">
@@ -449,9 +450,11 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     </div>
   </div>
   <div class="hero3d-load">
-    <span>互動式 3D　約 700 KB</span>
+    <img src="assets/hero-house.jpg" alt="山遇莊園主棟實景" loading="lazy">
     <button type="button">載入立體導覽</button>
   </div>
+  </div>
+  <footer class="tour-footer"><div><strong class="tour-current">莊園全景</strong><span class="tour-detail">主棟・庭園・池畔木屋</span></div><p>依實景照片重現<br>建築與配置為示意</p></footer>
 </section>
 
 <section class="intro" data-reveal>
@@ -763,6 +766,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   var nav = document.querySelector('.nav');
   if (!nav) return;
   var zones = [].slice.call(document.querySelectorAll('.hero, .breakfast'));
+  var tour = document.querySelector('.home-tour');
   function navShade() {
     var mid = nav.offsetHeight * 0.55;
     var over = zones.some(function (el) {
@@ -770,6 +774,8 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
       return r.top < mid && r.bottom > mid;
     });
     nav.classList.toggle('on-photo', over);
+    var bounds = tour && tour.getBoundingClientRect();
+    nav.classList.toggle('on-tour', !!bounds && bounds.top < mid && bounds.bottom > mid);
   }
   window.addEventListener('scroll', navShade, { passive: true });
   window.addEventListener('resize', navShade);
@@ -859,8 +865,6 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   function supported(){
     try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; }
   }
-  var tip = sec.querySelector('.hero3d-tip');
-  var TIP0 = tip.textContent;
   var card = document.getElementById('r3dCard');
   var ROOMS = {
     yunsidai: { name:'雲絲帶', cap:'三人房型，一大床一小床<br>位於一樓無障礙空間，冬暖夏涼舒適禪風',
@@ -874,10 +878,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   };
   var PEOPLE = { host:'民宿主人・程先生', keeper:'管家・夏先生' };
   var current = null;
-  function onHover(key){
-    tip.textContent = (key && ROOMS[key]) ? ROOMS[key].name : (key && PEOPLE[key]) ? PEOPLE[key] : TIP0;
-  }
-  function hideCard(){ card.classList.remove('show'); current = null; }
+  function hideCard(){ card.classList.remove('show'); card.hidden = true; current = null; }
   function showCard(key){
     if (PEOPLE[key]) {
       var v = document.querySelector('.voices');
@@ -895,6 +896,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     card.querySelector('.cap').innerHTML = r.cap;
     card.querySelector('.price b').textContent = r.wk;
     card.querySelector('.price span').textContent = r.cny;
+    card.hidden = false;
     card.classList.add('show');
   }
   card.querySelector('.close').addEventListener('click', hideCard);
@@ -909,9 +911,9 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     if (started) return;
     started = true;
     btn.textContent = '載入中…';
-    import('./scene3d.js')
-      .then(function(m){ m.buildScene(canvas, { onPick: showCard, onHover: onHover }); sec.classList.add('ready'); })
-      .catch(function(){ btn.textContent = '載入失敗，請重試'; started = false; });
+    import('./tour-ui.js?v=20260906-3')
+      .then(function(m){ m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
+      .catch(function(error){ btn.textContent = '載入失敗，請重試'; started = false; console.error(error); });
   }
   btn.addEventListener('click', start);
 
