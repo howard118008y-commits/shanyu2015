@@ -1,2 +1,3 @@
 .DS_Store
 assets_orig_backup/
+__pycache__/

@@ -1,6 +1,6 @@
-.hero3d{position:relative;display:flex;flex-direction:column;height:820px;min-height:0;max-height:96svh;background:#e7efeb;overflow:hidden;scroll-margin-top:0}
+.hero3d{position:relative;display:flex;flex-direction:column;height:860px;min-height:760px;max-height:none;background:#e7efeb;overflow:hidden;scroll-margin-top:0}
 .tour-head{padding:34px 48px 22px;display:flex;align-items:end;justify-content:space-between;gap:20px;flex:none}
-.hero3d.home-tour{max-height:calc(100svh - 64px - env(safe-area-inset-bottom))}
+.hero3d.home-tour{height:880px;min-height:800px}
 .home-tour .tour-head{padding-top:96px}
 .nav.on-tour{mix-blend-mode:normal;background:#e7efeb;color:#263a30;box-sizing:border-box;height:80px;padding:18px 28px}
 .nav.on-tour a{color:#263a30;border-color:#758b76;box-sizing:border-box;height:44px;min-height:44px;display:inline-flex;align-items:center;padding:8px 20px}
@@ -12,7 +12,37 @@
 .tour-tabs button{position:relative;flex:none;border:0;border-bottom:2px solid transparent;background:none;padding:12px 0;min-height:48px;font:400 13px 'Noto Sans TC',sans-serif;letter-spacing:0;color:#637368;cursor:pointer;white-space:nowrap}
 .tour-tabs button[aria-selected=true]{border-bottom-color:#315b45;color:#254934;font-weight:500}
 .hero3d button:focus-visible,.hero3d canvas:focus-visible{outline:2px solid #286044;outline-offset:4px}
-.tour-stage{position:relative;flex:1;min-height:0;isolation:isolate}
+.tour-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;flex:1;min-height:440px}
+.tour-stage{position:relative;min-width:0;min-height:0;isolation:isolate}
+.tour-levels{position:absolute;top:18px;left:26px;z-index:3;display:flex;border:1px solid #91a294;border-radius:4px;overflow:hidden;background:#f8faf6}
+.tour-levels[hidden]{display:none}
+.tour-levels button{box-sizing:border-box;min-width:64px;height:40px;border:0;border-right:1px solid #bdccc1;background:none;color:#38513f;font:13px 'Noto Sans TC',sans-serif;letter-spacing:0;cursor:pointer}
+.tour-levels button:last-child{border-right:0}
+.tour-levels button[aria-pressed=true]{background:#315b45;color:#fff}
+.tour-prices{box-sizing:border-box;border-left:1px solid #c3cfc5;padding:24px 24px 18px;font:13px/1.5 'Noto Sans TC',sans-serif;color:#304839;letter-spacing:0}
+.tour-price-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px}
+.tour-price-heading h3{font:500 21px/1.4 'Noto Serif TC',serif;margin:0;letter-spacing:0}
+.tour-price-heading>span{font-size:11px;color:#5a6c5e;white-space:nowrap}
+.tour-prices table{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
+.tour-prices thead th{font-size:11px;font-weight:400;color:#67766b;text-align:right;padding:0 0 9px;border-bottom:1px solid #c3cfc5}
+.tour-prices thead th:first-child{width:41%;text-align:left}
+.tour-prices tbody th{padding:12px 0;text-align:left;font-weight:400;border-bottom:1px solid #d0d9d1}
+.tour-prices tbody th>span{display:block;font-size:10px;color:#657469;margin-top:3px}
+.tour-prices tbody button{border:0;padding:0;background:none;color:inherit;font:500 13px/1.6 'Noto Sans TC',sans-serif;letter-spacing:0;cursor:pointer;text-align:left;min-height:28px}
+.tour-prices tbody button:disabled{cursor:default;opacity:1}
+.tour-prices tbody td{padding:12px 0;text-align:right;font-size:16px;border-bottom:1px solid #d0d9d1;white-space:nowrap}
+.tour-prices tbody td:last-child{font-size:14px;color:#657469}
+.tour-prices tr.is-current{background:#d9e5da;color:#204e34}
+.tour-prices tr.is-current button{text-decoration:underline;text-underline-offset:5px}
+.tour-whole-house{margin-top:18px}
+.tour-whole-house h4{font-size:13px;font-weight:500;margin:0 0 10px;letter-spacing:0}
+.tour-whole-house h4>span{font-size:11px;font-weight:400;color:#657469;margin-left:7px}
+.tour-whole-house dl{display:flex;justify-content:space-between;gap:12px;margin:0;font-variant-numeric:tabular-nums}
+.tour-whole-house dl>div{display:flex;flex-direction:column;gap:3px}
+.tour-whole-house dt{font-size:10px;color:#657469}
+.tour-whole-house dd{font-size:15px;margin:0;white-space:nowrap}
+.tour-prices .tour-rate-note{font-size:10px;color:#657469;margin:18px 0 0;line-height:1.6}
+.tour-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .hero3d .tour-stage canvas{display:block;width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
 .tour-tools{position:absolute;right:24px;bottom:24px;display:flex;gap:1px;background:#bdccc1;border:1px solid #b7c7bc;border-radius:4px;z-index:2}
 .tour-tools button{position:relative;background:#f8faf6;border:0;color:#354a3c;width:44px;height:44px;display:grid;place-items:center;cursor:pointer}
@@ -47,7 +77,6 @@
 .tour-standalone .hero3d{height:100svh;max-height:none}
 .tour-back{color:#42634b;font:13px 'Noto Sans TC',sans-serif;text-decoration:none;padding:12px 0}
 @media(max-width:640px){
-  .hero3d{height:700px;max-height:94svh;min-height:570px}
   .tour-head{padding:26px 20px 14px;align-items:start;gap:10px}
   .tour-head h2,.tour-head h1{font-size:24px}
   .tour-head p{max-width:8em;font-size:11px}
@@ -55,6 +84,8 @@
   .tour-tabs{margin:0 20px;gap:20px;min-height:48px}
   .tour-tabs button{font-size:12px}
   .tour-reference{left:16px;bottom:16px}
+  .tour-levels{left:16px;top:14px}
+  .tour-levels button{height:44px}
   .tour-reference img{width:96px;height:64px}
   .tour-reference span{padding:6px 10px;font-size:10px}
   .tour-tools{right:16px;bottom:16px}
@@ -67,5 +98,20 @@
   .hero3d .r3d-card .body{padding:12px;gap:6px}
   .tour-photo-dialog{width:94vw;max-width:94vw}
   .tour-photo-dialog figure img{height:78svh}
+}
+@media(max-width:800px){
+  .hero3d,.hero3d.home-tour,.tour-standalone .hero3d{height:auto;max-height:none;min-height:0}
+  .tour-layout{display:flex;flex-direction:column;flex:none;min-height:0}
+  .tour-stage{height:440px;flex:none}
+  .tour-prices{border-left:0;border-top:1px solid #c3cfc5;padding:20px}
+  .tour-price-heading{margin-bottom:14px}
+  .tour-prices tbody th,.tour-prices tbody td{padding:7px 0}
+  .tour-prices tbody th>span{display:inline;margin-left:8px}
+  .tour-prices thead th:first-child{width:48%}
+  .tour-prices tbody button{min-height:44px}
+  .tour-whole-house{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:16px}
+  .tour-whole-house h4{margin:0}
+  .tour-whole-house dl{gap:20px}
+  .tour-prices .tour-rate-note{margin-top:12px}
 }
 @media(prefers-reduced-motion:reduce){.hero3d *{scroll-behavior:auto!important;transition:none!important}}
