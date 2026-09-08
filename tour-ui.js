@@ -1,4 +1,4 @@
-import { buildScene } from './scene3d.js?v=20260909-1';
+import { buildScene } from './scene3d.js?v=20260909-2';
 
 const VIEWS = {
   estate: { name:'莊園全景', photo:'assets/hero-house.jpg', detail:'主棟・庭園・池畔木屋' },

@@ -168,7 +168,7 @@ class CabinContentTests(unittest.TestCase):
             versions = re.findall(r"(tour\.css|tour-ui\.js|scene3d\.js)\?v=([\d-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260909-1")
+                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260909-2")
 
 
 if __name__ == "__main__":

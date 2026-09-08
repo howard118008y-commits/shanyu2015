@@ -206,6 +206,15 @@ export function buildScene(canvas, opts = {}) {
   [-3.35,-0.1].forEach(z=>box(verandah,6.225,3.04,z,3.25,0.13,0.12,M.green));
   [4.65,6.225,7.8].forEach(x=>box(verandah,x,3.04,-0.1,0.1,0.13,6.5,M.green));
   for(let z=-2.6;z<3.15;z+=0.75)box(verandah,6.225,3.05,z,3.15,0.07,0.04,M.green);
+  const swings=new THREE.Group();swings.name='main-verandah-swings';verandah.add(swings);
+  [1.4,-0.85].forEach((z,i)=>{
+    const swing=new THREE.Group();swing.name=`main-verandah-swing-${i+1}`;swing.position.set(6.225,0,z);swings.add(swing);
+    box(swing,0,0.76,0,0.52,0.08,0.86,M.wood).name=`${swing.name}-seat`;
+    // Both suspension ends meet the underside of the existing right-side longitudinal beam.
+    [-1,1].forEach((s,j)=>{
+      rod(swing,[0,0.8,s*0.35],[0,2.975,s*0.35],0.018,M.frame).name=`${swing.name}-suspension-${j+1}`;
+    });
+  });
   [-4.5,-0.12,4.47].forEach(x=>ivy(main,x,3.2,3.46,0.85,2.9,420));
   [3.03,5.95].forEach(y=>ivy(main,0,y,3.51,9.6,0.36,650));
   ivy(main,-4.45,0.26,3.5,0.5,2.7,180);
