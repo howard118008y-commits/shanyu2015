@@ -168,12 +168,19 @@ export function buildScene(canvas, opts = {}) {
   roof(main,0,6.2,0,10.1,7.3,-0.035);box(main,-0.6,6.48,-1.5,3.1,0.48,2.3);roof(main,-0.6,6.81,-1.5,3.4,2.7,-0.05);
   for(let x=-2;x<1.1;x+=0.7)box(main,x,6.98,-0.24,0.08,0.55,0.08,M.darkWood);
   [6.9,7.12].forEach(y=>box(main,-0.5,y,-0.24,3.2,0.08,0.08,M.darkWood));
-  // Steel/glass verandah and vines follow assets/garden/facade.jpg.
-  box(main,1.3,0.02,4.2,12.4,0.14,2,M.stone);
-  const canopy=box(main,1.4,3.05,4.5,12.8,0.06,2.7,M.canopy);canopy.rotation.x=0.025;canopy.castShadow=false;
-  [-4.85,-0.2,4.7,7.8].forEach(x=>{box(main,x,1.48,5.8,0.11,3,0.11,M.frame);box(main,x,3.07,4.5,0.1,0.12,2.85,M.green);});
-  [3.17,4.5,5.84].forEach(z=>box(main,1.4,3.04,z,12.9,0.13,0.12,M.green));
-  for(let x=-4.5;x<7.8;x+=0.75)box(main,x,3.05,4.5,0.04,0.07,2.7,M.green);
+  // The glass verandah turns from the front around the right wall to the rear.
+  const verandah=new THREE.Group();verandah.name='main-verandah';main.add(verandah);
+  box(verandah,1.3,0.02,4.2,12.4,0.14,2,M.stone);
+  box(verandah,6.075,0.02,0,2.85,0.14,6.4,M.stone);
+  box(verandah,1.4,3.05,4.5,12.8,0.06,2.7,M.canopy).castShadow=false;
+  box(verandah,6.225,3.05,-0.1,3.15,0.06,6.5,M.canopy).castShadow=false;
+  [-4.85,-0.2,4.7,7.8].forEach(x=>{box(verandah,x,1.48,5.8,0.11,3,0.11,M.frame);box(verandah,x,3.07,4.5,0.1,0.12,2.85,M.green);});
+  [3.15,4.5,5.84].forEach(z=>box(verandah,1.4,3.04,z,12.9,0.13,0.12,M.green));
+  for(let x=-4.5;x<7.8;x+=0.75)box(verandah,x,3.05,4.5,0.04,0.07,2.7,M.green);
+  [-3.35,-0.1,3.15].forEach(z=>box(verandah,7.8,1.48,z,0.11,3,0.11,M.frame));
+  [-3.35,-0.1].forEach(z=>box(verandah,6.225,3.04,z,3.25,0.13,0.12,M.green));
+  [4.65,6.225,7.8].forEach(x=>box(verandah,x,3.04,-0.1,0.1,0.13,6.5,M.green));
+  for(let z=-2.6;z<3.15;z+=0.75)box(verandah,6.225,3.05,z,3.15,0.07,0.04,M.green);
   [-4.5,-0.12,4.47].forEach(x=>ivy(main,x,0.2,3.46,0.85,5.9,850));
   [3.03,5.95].forEach(y=>ivy(main,0,y,3.51,9.6,0.36,650));
   ivy(main,-3.8,0,3.5,0.9,4.5,350);
@@ -195,22 +202,27 @@ export function buildScene(canvas, opts = {}) {
   for(let x=-2.35;x<=2.4;x+=1.17)box(cabin,x,0.62,2.52,0.04,1.15,0.04,M.frame);
   [0.24,0.68,1.13].forEach(y=>box(cabin,0,y,2.52,4.75,0.035,0.035,M.frame));
   [-2,2].forEach(x=>[-1.7,1.7].forEach(z=>box(cabin,x,-0.25,z,0.18,0.5,0.18,M.frame)));
-  const pond=mesh(estate,geometry(new THREE.CircleGeometry(1,72)),material(0x487e70,{metalness:0.35,roughness:0.24}),6.2,0.063,4.2);
+  // Keep water, stones and lilies together, in front of the main-house verandah.
+  const pondGarden=new THREE.Group();pondGarden.name='estate-pond';pondGarden.position.set(-3.8,0,9.2);estate.add(pondGarden);
+  const pond=mesh(pondGarden,geometry(new THREE.CircleGeometry(1,72)),material(0x487e70,{metalness:0.35,roughness:0.24}),0,0.063,0);
   pond.rotation.x=-Math.PI/2;pond.scale.set(5.1,3.25,1);pond.castShadow=false;
   const rockGeo=geometry(new THREE.IcosahedronGeometry(1,1));
   for(let i=0;i<53;i++) {
-    const a=i/53*Math.PI*2,r=mesh(estate,rockGeo,M.stone,6.2+Math.cos(a)*5.13,0.09,4.2+Math.sin(a)*3.26);
+    const a=i/53*Math.PI*2,r=mesh(pondGarden,rockGeo,M.stone,Math.cos(a)*5.13,0.09,Math.sin(a)*3.26);
     r.scale.set(0.3+random()*0.3,0.15+random()*0.25,0.25+random()*0.24);r.rotation.set(random(),random(),random());
   }
   const padMat=material(0x588536);
   for(let i=0;i<19;i++) {
     const a=random()*Math.PI*2,r=Math.sqrt(random())*0.75;
-    const pad=mesh(estate,geometry(new THREE.CircleGeometry(0.13+random()*0.16,14,0.12,Math.PI*1.9)),padMat,6.2+Math.cos(a)*4.8*r,0.07+i*0.0002,4.2+Math.sin(a)*3*r);
+    const pad=mesh(pondGarden,geometry(new THREE.CircleGeometry(0.13+random()*0.16,14,0.12,Math.PI*1.9)),padMat,Math.cos(a)*4.8*r,0.07+i*0.0002,Math.sin(a)*3*r);
     pad.rotation.x=-Math.PI/2;pad.castShadow=false;
   }
-  for(let i=0;i<20;i++){const stone=box(estate,0.4+Math.sin(i*0.15)*0.8,0.075,7.8-i*0.54,0.72,0.07,0.46,M.stone,0.09);stone.rotation.y=Math.sin(i)*0.18;}
+  for(let i=0;i<13;i++){
+    const t=i/12,stone=box(estate,3.4-1.15*t+Math.sin(t*Math.PI)*0.4,0.075,10.8-6.35*t,0.72,0.07,0.46,M.stone,0.09);
+    stone.rotation.y=Math.sin(i)*0.18;
+  }
   [[-12,-5,8],[-8,-8,9],[-1,-8,8],[5,-9,8],[13,-7,9],[14,0,7],[-13,5,7]].forEach(([x,z,h])=>tree(estate,x,z,h));
-  [[-12,-2],[-11,-7],[-4,-9],[1,-8],[11,-6],[14,-3],[13,3],[10,7],[-10,4]].forEach(([x,z])=>shrub(estate,x,0,z,1));
+  [[-12,-2],[-11,-7],[-4,-9],[1,-8],[11,-6],[14,-3],[13,3],[1.8,11.4],[-10,4]].forEach(([x,z])=>shrub(estate,x,0,z,1));
   function addTarget(p,key){p.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.userData.view=key;hitTargets.push(o);}});}
   addTarget(main,'estate');addTarget(cabin,'cabin');
   function pillow(p,x,y,z,w,mat) {

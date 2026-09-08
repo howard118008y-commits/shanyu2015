@@ -46,7 +46,7 @@
     let loading=false;
     async function start(){
       if(loading)return;loading=true;button.textContent='載入中…';
-      try{const {mountTour}=await import('./tour-ui.js?v=20260907-2');mountTour(section);}
+      try{const {mountTour}=await import('./tour-ui.js?v=20260908-1');mountTour(section);}
       catch(error){button.textContent='載入失敗，請重試';loading=false;console.error(error);}
     }
     button.addEventListener('click',start);start();
