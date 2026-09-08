@@ -65,7 +65,6 @@ export function buildScene(canvas, opts = {}) {
     darkWood:material(0x60402c,{map:grain,roughness:0.62}),
     frame:material(0x242e2a,{metalness:0.35,roughness:0.44}),
     glass:material(0x91b8bd,{metalness:0.28,roughness:0.19,transparent:true,opacity:0.48,side:THREE.DoubleSide}),
-    canopy:material(0x77ae83,{roughness:0.3,transparent:true,opacity:0.6,side:THREE.DoubleSide}),
     stone:material(0xa5a59b,{map:stucco,bumpMap:stucco,bumpScale:0.07}),
     grass:material(0x7b9d4d,{map:grass,roughness:1}),earth:material(0x667057,{map:stucco}),
     floor:material(0xdfdbc8,{map:tile,bumpMap:tile,bumpScale:0.018}),
@@ -127,16 +126,17 @@ export function buildScene(canvas, opts = {}) {
   }
   function windowFrame(p,x,y,z,w,h,options={}) {
     const f=new THREE.Group();f.position.set(x,y,z);f.rotation.y=options.rotation||0;p.add(f);
-    const mat=options.dark?M.frame:M.green;
-    box(f,0,0,0,w,h,0.025,M.glass).castShadow=false;
+    const mat=options.frame||(options.dark?M.frame:M.green);
+    box(f,0,0,0,w,h,0.025,options.glass||M.glass).castShadow=false;
     if(options.garden) {
       const backdrop=mesh(f,geometry(new THREE.PlaneGeometry(w,h)),gardenView,0,0,-0.12);
       backdrop.castShadow=false;backdrop.receiveShadow=false;
     }
     [-1,1].forEach(s=>{box(f,s*w/2,0,0.02,0.065,h+0.12,0.12,mat);box(f,0,s*h/2,0.02,w+0.12,0.065,0.12,mat);});
     for(let i=1;i<(options.panes||3);i++)box(f,-w/2+w*i/(options.panes||3),0,0.02,0.05,h,0.09,mat);
-    box(f,0,-h*0.28,0.025,w,0.045,0.1,mat);
-    if(options.curtains)[-1,1].forEach(s=>{for(let i=0;i<6;i++)box(f,s*(w/2-i*0.07),0,-0.1-(i%2)*0.07,0.09,h-0.08,0.05,M.curtain,0.02);});
+    if(options.transom)box(f,0,h/2-options.transom,0.025,w,0.065,0.1,mat);
+    else if(!options.fullHeight)box(f,0,-h*0.28,0.025,w,0.045,0.1,mat);
+    if(options.curtains)[-1,1].forEach(s=>{for(let i=0;i<6;i++)box(f,s*(w/2-i*0.07),0,-0.1-(i%2)*0.07,0.09,h-0.08,0.05,options.curtainMaterial||M.curtain,0.02);});
     return f;
   }
   function panelWall(p,width,height,openings,mat=M.plaster) {
@@ -156,38 +156,78 @@ export function buildScene(canvas, opts = {}) {
   }
   const estate=new THREE.Group();groups.set('estate',estate);scene.add(estate);
   box(estate,0,-0.22,0,35,0.4,28,M.earth);box(estate,0,0,0,35,0.07,28,M.grass);
-  const main=new THREE.Group();main.position.set(-4.8,0.18,-1);estate.add(main);
-  const openings=[[-2.2,1.45,3.1,2.6],[2.05,1.45,3.35,2.6],[-2.1,4.66,3.3,2.2],[2.03,4.66,3.35,2.2]];
-  panelWall(main,9.3,6.1,openings).position.z=3.2;
-  openings.forEach(([x,y,w,h])=>windowFrame(main,x,y,3.3,w,h,{curtains:y<3}));
+  const main=new THREE.Group();main.name='main';main.position.set(-4.8,0.18,-1);estate.add(main);
+  const exterior={
+    stucco:material(0xcac5b8,{map:stucco,bumpMap:stucco,bumpScale:0.085,roughness:1}),
+    frame:material(0x193e30,{metalness:0.25,roughness:0.48}),
+    glass:material(0x547669,{metalness:0.32,roughness:0.18,transparent:true,opacity:0.58,side:THREE.DoubleSide}),
+    curtain:material(0xeee6ce,{roughness:1}),post:material(0x4b342b,{map:grain}),
+    canopy:material(0xa7d6ad,{roughness:0.24,transparent:true,opacity:0.43,depthWrite:false,side:THREE.DoubleSide}),
+    tile:material(0xc88e80,{map:tile,bumpMap:tile,bumpScale:0.025}),
+    yellow:material(0xe4b13a,{roughness:0.7}),cloth:material(0xefc8d5,{map:tile,roughness:1}),
+  };
+  const facade=new THREE.Group();facade.name='main-ground-facade';main.add(facade);
+  const openings=[[-2.2,1.56,3.1,2.6],[2.05,1.56,3.35,2.6]];
+  panelWall(facade,9.3,3.05,openings,exterior.stucco).position.z=3.2;
+  const upper=panelWall(main,9.3,3.05,[[-2.1,1.61,3.3,2.2],[2.03,1.61,3.35,2.2]]);upper.position.set(0,3.05,3.2);
+  openings.forEach(([x,y,w,h],i)=>windowFrame(facade,x,y,3.4,w,h,{frame:exterior.frame,glass:exterior.glass,curtains:true,curtainMaterial:exterior.curtain,fullHeight:true,transom:i===0?0.38:0,panes:i===0?4:3}));
+  [[-2.1,4.66,3.3,2.2],[2.03,4.66,3.35,2.2]].forEach(([x,y,w,h])=>windowFrame(main,x,y,3.3,w,h));
+  box(facade,0,0.13,3.4,9.3,0.26,0.11,exterior.tile);
   box(main,0,3.15,0,9.3,0.22,6.4);box(main,0,0,0,9.4,0.16,6.7,M.floor);box(main,0,3,-3.2,9.3,6,0.18);
   [-1,1].forEach(s=>{
-    const wall=panelWall(main,6.4,6.1,[[0,1.55,3.8,2.55],[0,4.65,3.8,2.2]]);wall.rotation.y=s*Math.PI/2;wall.position.x=s*4.64;
-    [1.55,4.65].forEach(y=>windowFrame(main,s*4.75,y,0,3.8,y<3?2.55:2.2,{rotation:s*Math.PI/2}));
+    const wall=panelWall(facade,6.4,3.05,[[0,1.56,3.8,2.6]],exterior.stucco);wall.rotation.y=s*Math.PI/2;wall.position.x=s*4.64;
+    const high=panelWall(main,6.4,3.05,[[0,1.6,3.8,2.2]]);high.rotation.y=s*Math.PI/2;high.position.set(s*4.64,3.05,0);
+    windowFrame(facade,s*4.85,1.56,0,3.8,2.6,{rotation:s*Math.PI/2,frame:exterior.frame,glass:exterior.glass,curtains:true,curtainMaterial:exterior.curtain,fullHeight:true});
+    windowFrame(main,s*4.75,4.65,0,3.8,2.2,{rotation:s*Math.PI/2});
+    box(facade,s*4.75,0.13,0,0.11,0.26,6.4,exterior.tile);
   });
   roof(main,0,6.2,0,10.1,7.3,-0.035);box(main,-0.6,6.48,-1.5,3.1,0.48,2.3);roof(main,-0.6,6.81,-1.5,3.4,2.7,-0.05);
   for(let x=-2;x<1.1;x+=0.7)box(main,x,6.98,-0.24,0.08,0.55,0.08,M.darkWood);
   [6.9,7.12].forEach(y=>box(main,-0.5,y,-0.24,3.2,0.08,0.08,M.darkWood));
   // The glass verandah turns from the front around the right wall to the rear.
   const verandah=new THREE.Group();verandah.name='main-verandah';main.add(verandah);
-  box(verandah,1.3,0.02,4.2,12.4,0.14,2,M.stone);
-  box(verandah,6.075,0.02,0,2.85,0.14,6.4,M.stone);
-  box(verandah,1.4,3.05,4.5,12.8,0.06,2.7,M.canopy).castShadow=false;
-  box(verandah,6.225,3.05,-0.1,3.15,0.06,6.5,M.canopy).castShadow=false;
-  [-4.85,-0.2,4.7,7.8].forEach(x=>{box(verandah,x,1.48,5.8,0.11,3,0.11,M.frame);box(verandah,x,3.07,4.5,0.1,0.12,2.85,M.green);});
+  const porch=new THREE.Group();porch.name='main-porch';verandah.add(porch);
+  [[1.3,4.5,12.4,2.6,'front'],[6.075,0,2.85,6.4,'right']].forEach(([x,z,w,d,name])=>{
+    const map=tile.clone();map.repeat.set(w/2,d/2);textures.add(map);
+    box(porch,x,0.06,z,w,0.4,d,material(0xc88e80,{map,bumpMap:map,bumpScale:0.025})).name=`main-porch-${name}`;
+  });
+  const steps=new THREE.Group();steps.name='main-porch-steps';porch.add(steps);
+  box(steps,-2.2,-0.01,6.01,1.85,0.26,0.42,exterior.tile);
+  box(steps,-2.2,-0.075,6.43,1.85,0.13,0.42,exterior.tile);
+  const frontGlass=box(verandah,1.4,3.05,4.5,12.8,0.035,2.7,exterior.canopy);frontGlass.name='main-canopy-front';frontGlass.castShadow=false;
+  const sideGlass=box(verandah,6.225,3.05,-0.1,3.15,0.035,6.5,exterior.canopy);sideGlass.name='main-canopy-right';sideGlass.castShadow=false;
+  const posts=new THREE.Group();posts.name='main-canopy-posts';verandah.add(posts);
+  [-4.82,-0.2,4.7,7.42].forEach(x=>{box(posts,x,1.63,5.68,0.1,2.74,0.1,exterior.post);box(verandah,x,2.98,4.5,0.08,0.12,2.7,M.green);});
+  box(verandah,1.3,2.93,5.68,12.4,0.18,0.12,exterior.post);
   [3.15,4.5,5.84].forEach(z=>box(verandah,1.4,3.04,z,12.9,0.13,0.12,M.green));
   for(let x=-4.5;x<7.8;x+=0.75)box(verandah,x,3.05,4.5,0.04,0.07,2.7,M.green);
-  [-3.35,-0.1,3.15].forEach(z=>box(verandah,7.8,1.48,z,0.11,3,0.11,M.frame));
+  [-3.1,-0.1,3.15].forEach(z=>box(posts,7.42,1.63,z,0.1,2.74,0.1,exterior.post));
+  box(verandah,7.42,2.93,0,0.12,0.18,6.4,exterior.post);
   [-3.35,-0.1].forEach(z=>box(verandah,6.225,3.04,z,3.25,0.13,0.12,M.green));
   [4.65,6.225,7.8].forEach(x=>box(verandah,x,3.04,-0.1,0.1,0.13,6.5,M.green));
   for(let z=-2.6;z<3.15;z+=0.75)box(verandah,6.225,3.05,z,3.15,0.07,0.04,M.green);
-  [-4.5,-0.12,4.47].forEach(x=>ivy(main,x,0.2,3.46,0.85,5.9,850));
+  [-4.5,-0.12,4.47].forEach(x=>ivy(main,x,3.2,3.46,0.85,2.9,420));
   [3.03,5.95].forEach(y=>ivy(main,0,y,3.51,9.6,0.36,650));
-  ivy(main,-3.8,0,3.5,0.9,4.5,350);
-  seat(main,2.7,0.14,4.5,0x8d5d4e,1.6);seat(main,2.1,0.1,2,0x88a2a5,2.5);
+  ivy(main,-4.45,0.26,3.5,0.5,2.7,180);
+  const furniture=new THREE.Group();furniture.name='main-porch-furniture';furniture.position.y=0.26;porch.add(furniture);
+  [0.1,2.15,4.75].forEach((x,i)=>{
+    const chair=new THREE.Group();chair.name=`main-yellow-chair-${i+1}`;chair.position.set(x,0,4.05);chair.rotation.y=[-0.2,0.2,-0.3][i];furniture.add(chair);
+    box(chair,0,0.43,0,0.55,0.065,0.52,exterior.yellow,0.025);
+    [-1,1].forEach(s=>{rod(chair,[s*0.23,0,0.2],[s*0.23,0.45,0.2],0.025,exterior.yellow);rod(chair,[s*0.23,0,-0.2],[s*0.25,0.99,-0.27],0.025,exterior.yellow);});
+    for(let i=-2;i<=2;i++)rod(chair,[i*0.1,0.49,-0.21],[i*0.11,0.96,-0.27],0.015,exterior.yellow);
+    box(chair,0,0.98,-0.27,0.57,0.06,0.06,exterior.yellow,0.025);
+  });
+  const patioTable=new THREE.Group();patioTable.name='main-clothed-table';patioTable.position.set(1.12,0,4.1);furniture.add(patioTable);
+  [-1,1].forEach(s=>[-1,1].forEach(t=>rod(patioTable,[s*0.25,0,t*0.25],[s*0.17,0.68,t*0.17],0.022,M.linen)));
+  mesh(patioTable,geometry(new THREE.CylinderGeometry(0.44,0.49,0.24,24)),exterior.cloth,0,0.64,0);
+  const bbq=new THREE.Group();bbq.name='main-bbq-cart';bbq.position.set(3.43,0,4.02);furniture.add(bbq);
+  box(bbq,0,0.67,0,0.75,0.25,0.48,M.black,0.035);box(bbq,0,0.2,0,0.66,0.05,0.43,M.frame);
+  [-1,1].forEach(s=>[-1,1].forEach(t=>rod(bbq,[s*0.29,0.08,t*0.18],[s*0.29,0.6,t*0.18],0.025,M.frame)));
+  [-1,1].forEach(s=>{const wheel=mesh(bbq,geometry(new THREE.CylinderGeometry(0.09,0.09,0.045,12)),M.black,0.3,0.09,s*0.23);wheel.rotation.x=Math.PI/2;});
+  for(let x=-0.3;x<0.35;x+=0.1)box(bbq,x,0.8,0,0.024,0.025,0.4,M.frame);
+  seat(main,2.1,0.1,2,0x88a2a5,2.5);
   box(main,-1.4,3.9,1.5,2.3,0.12,0.9,M.darkWood);[-2.3,-0.5].forEach(x=>seat(main,x,3.24,1.2,0xa59068,0.5));
   box(main,-5.15,1.28,2.6,1.3,2.6,1.6);box(main,-5.15,1.12,3.43,0.86,2.15,0.09,M.darkWood);roof(main,-5.15,2.72,2.7,1.8,2.3,0.12);
-  for(let i=0;i<6;i++)shrub(main,-4.8+i*2.1,0.1,6,0.46);
 
   const cabin=new THREE.Group();cabin.position.set(8.5,0.4,-3.4);estate.add(cabin);
   box(cabin,0,0,0,5.4,0.18,5.2,M.darkWood);
@@ -202,25 +242,48 @@ export function buildScene(canvas, opts = {}) {
   for(let x=-2.35;x<=2.4;x+=1.17)box(cabin,x,0.62,2.52,0.04,1.15,0.04,M.frame);
   [0.24,0.68,1.13].forEach(y=>box(cabin,0,y,2.52,4.75,0.035,0.035,M.frame));
   [-2,2].forEach(x=>[-1.7,1.7].forEach(z=>box(cabin,x,-0.25,z,0.18,0.5,0.18,M.frame)));
-  // Keep water, stones and lilies together, in front of the main-house verandah.
-  const pondGarden=new THREE.Group();pondGarden.name='estate-pond';pondGarden.position.set(-3.8,0,9.2);estate.add(pondGarden);
-  const pond=mesh(pondGarden,geometry(new THREE.CircleGeometry(1,72)),material(0x487e70,{metalness:0.35,roughness:0.24}),0,0.063,0);
-  pond.rotation.x=-Math.PI/2;pond.scale.set(5.1,3.25,1);pond.castShadow=false;
+  // The back bank follows the porch; the front bank leaves dry ground for tree roots.
+  const pondGarden=new THREE.Group();pondGarden.name='estate-pond';pondGarden.position.set(-2.4,0,6.1);estate.add(pondGarden);
+  const pondOutline=[[-3.2,-0.25],[-2.95,-0.78],[-2.25,-1.02],[-1.1,-1.05],[0.15,-0.98],[1.4,-1.06],[2.6,-0.91],[3.2,-0.58],[3.35,-0.05],[3.05,0.57],[2.25,0.88],[1.25,1.02],[0.1,0.92],[-1.1,1.06],[-2.25,0.84],[-3,0.42]];
+  const pondShape=new THREE.Shape();pondOutline.forEach(([x,z],i)=>i?pondShape.lineTo(x,-z):pondShape.moveTo(x,-z));pondShape.closePath();
+  const pondBed=mesh(pondGarden,geometry(new THREE.ExtrudeGeometry(pondShape,{depth:0.035,bevelEnabled:false})),material(0x596552,{map:stucco}),0,0.045,0);pondBed.rotation.x=-Math.PI/2;pondBed.name='pond-bed';
+  const pond=mesh(pondGarden,geometry(new THREE.ShapeGeometry(pondShape)),material(0x497e71,{metalness:0.32,roughness:0.22,transparent:true,opacity:0.92,depthWrite:false}),0,0.105,0);
+  pond.name='pond-water';pond.rotation.x=-Math.PI/2;pond.castShadow=false;
+  const bank=new THREE.Group();bank.name='pond-stone-bank';pondGarden.add(bank);
   const rockGeo=geometry(new THREE.IcosahedronGeometry(1,1));
-  for(let i=0;i<53;i++) {
-    const a=i/53*Math.PI*2,r=mesh(pondGarden,rockGeo,M.stone,Math.cos(a)*5.13,0.09,Math.sin(a)*3.26);
-    r.scale.set(0.3+random()*0.3,0.15+random()*0.25,0.25+random()*0.24);r.rotation.set(random(),random(),random());
-  }
+  pondOutline.forEach(([x,z],i)=>{
+    const [nx,nz]=pondOutline[(i+1)%pondOutline.length],dx=nx-x,dz=nz-z,count=Math.ceil(Math.hypot(dx,dz)/0.4);
+    for(let j=0;j<count;j++){
+      const t=(j+0.5)/count,r=mesh(bank,rockGeo,M.stone,x+dx*t,0.16,z+dz*t);
+      r.scale.set(0.26+random()*0.08,0.16+random()*0.09,0.2+random()*0.04);r.rotation.y=-Math.atan2(dz,dx);
+    }
+  });
   const padMat=material(0x588536);
-  for(let i=0;i<19;i++) {
-    const a=random()*Math.PI*2,r=Math.sqrt(random())*0.75;
-    const pad=mesh(pondGarden,geometry(new THREE.CircleGeometry(0.13+random()*0.16,14,0.12,Math.PI*1.9)),padMat,Math.cos(a)*4.8*r,0.07+i*0.0002,Math.sin(a)*3*r);
+  for(let i=0;i<7;i++) {
+    const pad=mesh(pondGarden,geometry(new THREE.CircleGeometry(0.12+random()*0.08,14,0.12,Math.PI*1.9)),padMat,-1.9+i*0.62,0.112+i*0.0002,0.23+Math.sin(i*2.4)*0.32);
     pad.rotation.x=-Math.PI/2;pad.castShadow=false;
   }
-  for(let i=0;i<13;i++){
-    const t=i/12,stone=box(estate,3.4-1.15*t+Math.sin(t*Math.PI)*0.4,0.075,10.8-6.35*t,0.72,0.07,0.46,M.stone,0.09);
-    stone.rotation.y=Math.sin(i)*0.18;
+  const approach=new THREE.Group();approach.name='main-porch-approach';estate.add(approach);
+  for(let i=0;i<12;i++){
+    const t=i/11,stone=box(approach,-7.6+0.6*t,0.0675,11.9-5.95*t,0.92,0.065,0.38,exterior.tile,0.035);
+    stone.rotation.y=Math.sin(i)*0.12;
   }
+  const hedge=new THREE.Group();hedge.name='main-clipped-hedge';hedge.position.set(1.95,0,6.1);estate.add(hedge);
+  [-0.55,0,0.55].forEach(z=>rod(hedge,[0,0,z],[0,0.9,z],0.045,exterior.post,0.02));
+  leaves(hedge,580,()=>({x:(random()-0.5),y:0.65+random()*0.8,z:(random()-0.5)*1.6,size:0.16}),0x526f2b);
+  const foregroundTree=new THREE.Group();foregroundTree.name='main-pond-tree';foregroundTree.position.set(-4.35,0,8.2);estate.add(foregroundTree);
+  const roots=new THREE.Group();roots.name='main-tree-roots';foregroundTree.add(roots);
+  for(let i=0;i<7;i++){const a=i/7*Math.PI*2;rod(roots,[0,0.3,0],[Math.cos(a)*0.62,0.055,Math.sin(a)*0.62],0.095,exterior.post,0.035);}
+  rod(foregroundTree,[0,0.08,0],[0.12,7.7,0],0.27,exterior.post,0.07);
+  const branchEnds=[];
+  for(let i=0;i<10;i++){
+    const a=i*2.4,r=1.35+(i%3)*0.3,y=5.8+i*0.21,end=[Math.cos(a)*r,y,Math.sin(a)*r];branchEnds.push(end);
+    rod(foregroundTree,[0.1,y-0.85,0],end,0.065,exterior.post,0.012);
+  }
+  leaves(foregroundTree,620,i=>{const e=branchEnds[i%10],t=0.45+random()*0.6;return{x:e[0]*t+(random()-0.5)*0.55,y:e[1]-random()*0.65,z:e[2]*t+(random()-0.5)*0.55,size:0.2+random()*0.16};},0x65843d).name='main-tree-open-foliage';
+  const fern=new THREE.Group();fern.name='main-hanging-fern';fern.position.set(0,2.9,0.28);foregroundTree.add(fern);
+  const mount=mesh(fern,rockGeo,exterior.post,0,0,0);mount.scale.set(0.22,0.27,0.13);
+  leaves(fern,85,i=>{const a=i*2.4,t=random();return{x:Math.cos(a)*0.43*t,y:0.13-t*0.95,z:0.12+Math.sin(a)*0.18+t*0.2,size:0.18+t*0.2,rx:0.12,ry:a};},0x628952);
   [[-12,-5,8],[-8,-8,9],[-1,-8,8],[5,-9,8],[13,-7,9],[14,0,7],[-13,5,7]].forEach(([x,z,h])=>tree(estate,x,z,h));
   [[-12,-2],[-11,-7],[-4,-9],[1,-8],[11,-6],[14,-3],[13,3],[1.8,11.4],[-10,4]].forEach(([x,z])=>shrub(estate,x,0,z,1));
   function addTarget(p,key){p.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.userData.view=key;hitTargets.push(o);}});}
