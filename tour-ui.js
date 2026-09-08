@@ -1,14 +1,14 @@
-import { buildScene } from './scene3d.js?v=20260908-3';
+import { buildScene } from './scene3d.js?v=20260908-4';
 
 const VIEWS = {
   estate: { name:'莊園全景', photo:'assets/hero-house.jpg', detail:'主棟・庭園・池畔木屋' },
   yunsidai: { name:'雲絲帶', photo:'assets/room-yunsidai.jpg', detail:'一大床一小床・三人房' },
   lihalai: { name:'里哈籟', photo:'assets/room-lihalai.jpg', detail:'兩雙人床・二至四人房' },
   zhenqing: { name:'山遇真情', photo:'assets/room-zhenqing.jpg', detail:'兩雙人床・四人房' },
-  cabin: { name:'水見曉逐', photo:'assets/cabin-3.jpg', detail:'獨棟木屋・一樓大廳・上下樓臥室' },
+  cabin: { name:'水見曉逐', photo:'assets/cabin-exterior-pond.jpg', detail:'獨棟木屋・一樓大廳・上下樓臥室' },
 };
 const CABIN_LEVELS = {
-  all:{name:'整棟',photo:'assets/cabin-3.jpg',detail:'一樓大廳・上下樓臥室'},
+  all:{name:'整棟',photo:'assets/cabin-exterior-pond.jpg',detail:'一樓大廳・上下樓臥室'},
   ground:{name:'一樓',photo:'assets/cabin-1.jpg',detail:'一樓臥室・大廳・窗邊座位'},
   upper:{name:'二樓',photo:'assets/cabin-2.jpg',detail:'二樓臥室・書桌・挑空欄杆'},
 };

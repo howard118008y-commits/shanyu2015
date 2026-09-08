@@ -110,4 +110,18 @@
   .tour-prices tbody button{min-height:44px}
   .tour-prices .tour-rate-note{margin-top:12px}
 }
+.intro.intro-story{flex-direction:column;align-items:center;gap:48px}
+.naming-story{width:min(100%,880px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,240px);gap:32px 56px;border-top:1px solid #d8d2bf;padding-top:32px}
+.naming-copy{display:flex;flex-direction:column;gap:16px;min-width:0}
+.naming-story h3{margin:0;font-size:22px;font-weight:600;line-height:1.6;letter-spacing:0;color:#26291f}
+.intro .naming-story p{writing-mode:horizontal-tb;max-height:none;font-size:15px;line-height:2;letter-spacing:0;overflow-wrap:anywhere}
+.intro .naming-story .naming-poem{line-height:2.2}
+.room-cabin{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:center}
+.room-cabin>*{min-width:0}
+.room-cabin .ph-main img{max-height:620px;object-fit:contain}
+.cabin-story{display:flex;flex-direction:column;gap:10px;border-top:1px solid #d8d2bf;padding-top:16px}
+.cabin-story h4{margin:0;font-size:18px;font-weight:600;line-height:1.7;letter-spacing:0;overflow-wrap:anywhere}
+.cabin-story p{margin:0;font-size:15px;font-weight:300;line-height:2.1;letter-spacing:0;color:#55584a;overflow-wrap:anywhere}
+.cabin-story .naming-origin{font-family:'Noto Sans TC',sans-serif;font-size:13px}
+@media(max-width:640px){.naming-story{grid-template-columns:minmax(0,1fr);gap:24px}.naming-story h3{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.hero3d *{scroll-behavior:auto!important;transition:none!important}}

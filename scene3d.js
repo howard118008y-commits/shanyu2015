@@ -229,19 +229,77 @@ export function buildScene(canvas, opts = {}) {
   box(main,-1.4,3.9,1.5,2.3,0.12,0.9,M.darkWood);[-2.3,-0.5].forEach(x=>seat(main,x,3.24,1.2,0xa59068,0.5));
   box(main,-5.15,1.28,2.6,1.3,2.6,1.6);box(main,-5.15,1.12,3.43,0.86,2.15,0.09,M.darkWood);roof(main,-5.15,2.72,2.7,1.8,2.3,0.12);
 
-  const cabin=new THREE.Group();cabin.position.set(8.5,0.4,-3.4);estate.add(cabin);
+  const cabin=new THREE.Group();cabin.name='estate-cabin';cabin.position.set(8.5,0.4,-3.4);estate.add(cabin);
+  const sidingCanvas=document.createElement('canvas');sidingCanvas.width=sidingCanvas.height=512;
+  const sidingCtx=sidingCanvas.getContext('2d');sidingCtx.drawImage(grain.image,0,0,512,512);
+  for(let row=0;row<24;row++) {
+    const y=row*512/24,joint=(row*173+97)%512;
+    sidingCtx.fillStyle=row%3?'#e0d6bd66':'#f4e4bf66';sidingCtx.fillRect(0,y,512,512/24);
+    sidingCtx.fillStyle='#796348';sidingCtx.fillRect(0,y,512,1.5);sidingCtx.fillRect(joint,y,1.2,512/24);
+    for(let k=0;k<2;k++){sidingCtx.beginPath();sidingCtx.ellipse((joint+79+k*213)%512,y+11,3.6,1.6,0,0,Math.PI*2);sidingCtx.fill();}
+  }
+  const sidingMap=new THREE.CanvasTexture(sidingCanvas);sidingMap.wrapS=sidingMap.wrapT=THREE.RepeatWrapping;
+  sidingMap.repeat.set(0.2,0.2);sidingMap.colorSpace=THREE.SRGBColorSpace;sidingMap.anisotropy=grain.anisotropy;textures.add(sidingMap);
+  const timber=material(0xd6ad6d,{map:sidingMap,bumpMap:sidingMap,bumpScale:0.025});
+  const cabinGlass=material(0xadc4ba,{transparent:true,opacity:0.32,depthWrite:false,roughness:0.2,side:THREE.DoubleSide});
+  const cabinScreen=material(0x384039,{transparent:true,opacity:0.7,depthWrite:false,roughness:1,side:THREE.DoubleSide});
+  const cabinTile=material(0x51403a,{roughness:0.84}),tileEdge=material(0x6b5144);
   box(cabin,0,0,0,5.4,0.18,5.2,M.darkWood);
-  panelWall(cabin,5,5.5,[[0,2.55,3.2,4.7]],M.wood).position.z=2.1;
-  windowFrame(cabin,0,2.55,2.23,3.2,4.7,{dark:true,curtains:true});
-  box(cabin,0,3.12,2.3,3.2,0.1,0.12,M.frame);
-  box(cabin,-2.5,2.72,0,0.15,5.45,4.2,M.wood);box(cabin,0,2.72,-2.1,5,5.45,0.16,M.wood);
-  const side=panelWall(cabin,4.2,5.5,[[0.2,1.35,1.25,2.5],[0.2,4.25,1.4,1.35]],M.wood);side.rotation.y=Math.PI/2;side.position.x=2.5;
-  windowFrame(cabin,2.61,4.25,-0.2,1.4,1.35,{rotation:Math.PI/2,dark:true,panes:2});
-  box(cabin,2.6,1.35,-0.2,0.08,2.48,1.22,M.darkWood);roof(cabin,0,5.72,0,5.65,5.15,0.12,M.frame);
-  for(let y=0.25;y<5.5;y+=0.21)[-1,1].forEach(s=>box(cabin,s*2.13,y,2.24,0.7,0.022,0.022,M.darkWood));
+  panelWall(cabin,5,5.5,[[0.42,2.7,2.55,5],[-1.82,4.14,0.95,1.78],[-1.82,1.45,0.95,2.4]],timber).position.z=2.1;
+  windowFrame(cabin,0.42,2.7,2.27,2.55,5,{dark:true,glass:cabinGlass,transom:2.05}).name='cabin-tall-glass';
+  windowFrame(cabin,-1.82,1.45,2.27,0.95,2.4,{dark:true,panes:2,fullHeight:true});
+  windowFrame(cabin,-1.82,4.14,2.27,0.95,1.78,{dark:true,glass:cabinScreen,panes:2,fullHeight:true});
+  box(cabin,-1.82,3.15,2.37,1.22,0.12,0.62,M.darkWood);
+  for(const x of [-2.39,-1.25])box(cabin,x,3.64,2.65,0.04,0.94,0.04,M.frame);
+  for(const y of [3.43,3.76,4.1])box(cabin,-1.82,y,2.65,1.18,0.035,0.035,M.frame);
+  for(const x of [-2.39,-1.25])box(cabin,x,4.1,2.46,0.035,0.035,0.38,M.frame);
+  [-1.9,-1.74].forEach(x=>rod(cabin,[x,3.91,2.36],[x,4.05,2.36],0.016,M.frame));
+  const loftRail=new THREE.Group();loftRail.name='cabin-exterior-loft-rail';cabin.add(loftRail);
+  box(loftRail,0.42,3.1,1.2,2.55,0.1,1.7,M.darkWood);
+  for(let x=-0.79;x<1.7;x+=0.22)box(loftRail,x,3.65,1.91,0.045,1,0.045,M.wood);
+  [3.29,4.15].forEach(y=>box(loftRail,0.42,y,1.91,2.55,0.07,0.075,M.wood));
+  const left=panelWall(cabin,4.2,5.5,[],timber);left.rotation.y=-Math.PI/2;left.position.x=-2.5;
+  const back=panelWall(cabin,5,5.5,[],timber);back.rotation.y=Math.PI;back.position.z=-2.1;
+  const side=panelWall(cabin,4.2,5.5,[[-0.62,1.41,1.06,2.62],[0.55,1.45,0.64,2.7],[0,4.25,1.4,1.35]],timber);side.rotation.y=Math.PI/2;side.position.x=2.5;
+  windowFrame(cabin,2.68,4.25,0,1.4,1.35,{rotation:Math.PI/2,dark:true,panes:2});
+  const entry=new THREE.Group();entry.name='cabin-side-entry';entry.position.x=2.67;entry.rotation.y=Math.PI/2;cabin.add(entry);
+  windowFrame(entry,0.55,1.45,0,0.64,2.7,{dark:true,panes:1,fullHeight:true});
+  for(let y=0.75;y<2.8;y+=0.24)box(entry,0.55,y,-0.04,0.59,0.12,0.025,M.curtain);
+  const door=new THREE.Group();door.position.set(-0.62,0.1,0);entry.add(door);
+  panelWall(door,1.02,2.62,[[0,1.84,0.38,0.35]],M.wood);
+  [-0.53,0.53].forEach(x=>box(door,x,1.31,0.08,0.055,2.68,0.18,M.frame));
+  box(door,0,2.64,0.08,1.12,0.065,0.18,M.frame);
+  windowFrame(door,0,1.84,0.18,0.38,0.35,{dark:true,panes:1,fullHeight:true});
+  rod(door,[0.34,1.02,0.18],[0.34,1.02,0.25],0.025,M.frame);rod(door,[0.34,1.02,0.25],[0.18,1.02,0.25],0.018,M.frame);
+  const lantern=material(0xffdb9b,{emissive:0xffbc65,emissiveIntensity:0.85});
+  box(entry,-0.02,2.61,0.1,0.12,0.32,0.1,M.frame);box(entry,-0.02,2.62,0.22,0.13,0.21,0.13,lantern);
+  [2.48,2.76].forEach(y=>box(entry,-0.02,y,0.22,0.21,0.055,0.21,M.frame));
+  for(const [x,w,rise] of [[-1.95,1.7,0.19],[0.85,3.9,-0.19]]) {
+    const r=roof(cabin,x,5.705,0,Math.hypot(w,rise),4.95,0,cabinTile);r.rotation.z=Math.atan2(rise,w);r.name=x<0?'cabin-roof-left':'cabin-roof-main';
+    for(let z=-2.4;z<2.5;z+=0.34)box(r,0,0.072,z,w,0.025,0.025,tileEdge);
+    [-2.475,2.475].forEach(z=>box(r,0,-0.045,z,w,0.15,0.065,M.frame));
+  }
+  const gable=new THREE.Shape();[[-2.5,5.5],[2.5,5.5],[2.5,5.57],[-1.1,5.745],[-2.5,5.588]].forEach(([x,y],i)=>i?gable.lineTo(x,y):gable.moveTo(x,y));gable.closePath();
+  const gableGeo=geometry(new THREE.ExtrudeGeometry(gable,{depth:0.16,bevelEnabled:false}));
+  mesh(cabin,gableGeo,timber,0,0,2.1);mesh(cabin,gableGeo,timber,0,0,-2.26);
+  box(cabin,-2.5,5.544,0,0.16,0.088,4.2,timber);box(cabin,2.5,5.535,0,0.16,0.07,4.2,timber);
+  box(cabin,-1.1,5.825,0,0.13,0.09,5.02,cabinTile);
   for(let x=-2.35;x<=2.4;x+=1.17)box(cabin,x,0.62,2.52,0.04,1.15,0.04,M.frame);
   [0.24,0.68,1.13].forEach(y=>box(cabin,0,y,2.52,4.75,0.035,0.035,M.frame));
   [-2,2].forEach(x=>[-1.7,1.7].forEach(z=>box(cabin,x,-0.25,z,0.18,0.5,0.18,M.frame)));
+  box(cabin,3,0.03,0.18,0.9,0.22,2.4,M.darkWood);
+  for(const z of [-1,0.18,1.36])box(cabin,3.43,0.6,z,0.045,1.08,0.045,M.frame);
+  [0.3,0.98].forEach(y=>box(cabin,3.43,y,0.18,0.045,0.045,2.4,M.frame));
+  rod(cabin,[3.43,0.3,-1],[3.43,0.98,0.18],0.02,M.frame);rod(cabin,[3.43,0.3,0.18],[3.43,0.98,1.36],0.02,M.frame);
+  box(cabin,3,0.98,-1,0.9,0.045,0.045,M.frame);
+  for(const z of [-0.9,1.25])box(cabin,3.35,-0.23,z,0.12,0.46,0.12,M.frame);
+  box(cabin,3.05,-0.05,1.61,0.8,0.22,0.46,M.stone);box(cabin,3.05,-0.22,2.04,0.8,0.28,0.4,M.stone);
+  const cabinGarden=new THREE.Group();cabinGarden.name='cabin-entry-garden';cabinGarden.position.set(8.5,0,-3.4);estate.add(cabinGarden);
+  for(let i=0;i<6;i++){const stone=mesh(cabinGarden,geometry(new THREE.CylinderGeometry(0.42,0.46,0.08,5)),M.stone,3.05-Math.max(0,i-2)*0.2,0.08,2.67+i*0.68);stone.scale.z=0.6;stone.rotation.y=(i%3-1)*0.12;}
+  // Keep new planting from changing the shared random sequence used by the estate and rooms.
+  const gardenSeed=seed;
+  [[1.8,3.25,0.48],[1.25,4.15,0.55],[4.2,3.5,0.42],[4,4.7,0.4]].forEach(([x,z,s])=>shrub(cabinGarden,x,0.06,z,s));
+  seed=gardenSeed;
   // The back bank follows the porch; the front bank leaves dry ground for tree roots.
   const pondGarden=new THREE.Group();pondGarden.name='estate-pond';pondGarden.position.set(-2.4,0,6.1);estate.add(pondGarden);
   const pondOutline=[[-3.2,-0.25],[-2.95,-0.78],[-2.25,-1.02],[-1.1,-1.05],[0.15,-0.98],[1.4,-1.06],[2.6,-0.91],[3.2,-0.58],[3.35,-0.05],[3.05,0.57],[2.25,0.88],[1.25,1.02],[0.1,0.92],[-1.1,1.06],[-2.25,0.84],[-3,0.42]];
