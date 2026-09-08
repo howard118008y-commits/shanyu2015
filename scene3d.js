@@ -284,8 +284,37 @@ export function buildScene(canvas, opts = {}) {
   mesh(cabin,gableGeo,timber,0,0,2.1);mesh(cabin,gableGeo,timber,0,0,-2.26);
   box(cabin,-2.5,5.544,0,0.16,0.088,4.2,timber);box(cabin,2.5,5.535,0,0.16,0.07,4.2,timber);
   box(cabin,-1.1,5.825,0,0.13,0.09,5.02,cabinTile);
-  for(let x=-2.35;x<=2.4;x+=1.17)box(cabin,x,0.62,2.52,0.04,1.15,0.04,M.frame);
-  [0.24,0.68,1.13].forEach(y=>box(cabin,0,y,2.52,4.75,0.035,0.035,M.frame));
+  // Keep the shallow strip's end guards; the glazed bay opens onto the projecting rest deck.
+  for(const [x,w] of [[-1.775,1.2],[2.2,0.35]]) {
+    [-1,1].forEach(s=>box(cabin,x+s*w/2,0.62,2.52,0.04,1.15,0.04,M.frame));
+    [0.24,0.68,1.13].forEach(y=>box(cabin,x,y,2.52,w,0.035,0.035,M.frame));
+  }
+  const waterfrontDeck=new THREE.Group();waterfrontDeck.name='cabin-waterfront-deck';waterfrontDeck.position.set(0.42,0.13,3.37);
+  for(let i=0;i<11;i++)box(waterfrontDeck,0,-0.035,-1.05+(i+0.5)*2.1/11,3.2,0.07,2.1/11-0.012,M.wood);
+  [-1.025,1.025].forEach(z=>box(waterfrontDeck,0,-0.105,z,3.2,0.11,0.12,M.frame));
+  [-1.54,1.54].forEach(x=>box(waterfrontDeck,x,-0.105,0,0.12,0.11,2.1,M.frame));
+  const deckSupports=new THREE.Group();deckSupports.name='cabin-deck-supports';waterfrontDeck.add(deckSupports);
+  [-1.42,1.42].forEach(x=>[-0.86,0.86].forEach(z=>box(deckSupports,x,-0.34,z,0.13,0.55,0.13,M.frame)));
+  const deckRails=new THREE.Group();deckRails.name='cabin-deck-railings';waterfrontDeck.add(deckRails);
+  [-1.55,-0.78,0,0.78,1.55].forEach(x=>box(deckRails,x,0.5,1,0.035,1,0.035,M.frame));
+  [-1.55,1.55].forEach(x=>[-0.99,0].forEach(z=>box(deckRails,x,0.5,z,0.035,1,0.035,M.frame)));
+  [0.25,0.62,1].forEach(y=>{
+    box(deckRails,0,y,1,3.14,0.035,0.035,M.frame);
+    [-1.55,1.55].forEach(x=>box(deckRails,x,y,0,0.035,0.035,2.03,M.frame));
+  });
+  const deckTable=new THREE.Group();deckTable.name='cabin-deck-table';deckTable.position.z=0.34;waterfrontDeck.add(deckTable);
+  box(deckTable,0,0.67,0,0.6,0.04,0.58,M.frame);
+  [-0.19,0.19].forEach(z=>[-1,1].forEach(s=>rod(deckTable,[s*0.22,0.02,z],[-s*0.22,0.65,z],0.018,M.frame)));
+  const deckChairSeat=material(0x626862);
+  [-1,1].forEach(s=>{
+    const chair=new THREE.Group();chair.name=s<0?'cabin-deck-chair-left':'cabin-deck-chair-right';chair.position.set(s*0.99,0,0.36);chair.rotation.y=-s*Math.PI/2;waterfrontDeck.add(chair);
+    box(chair,0,0.43,0,0.47,0.035,0.48,deckChairSeat);box(chair,0,0.76,-0.25,0.47,0.28,0.035,deckChairSeat);
+    [-0.215,0.215].forEach(x=>{
+      [-1,1].forEach(t=>rod(chair,[x,0.02,t*0.27],[x,0.45,-t*0.19],0.016,M.frame));
+      rod(chair,[x,0.43,-0.23],[x,0.93,-0.27],0.016,M.frame);
+    });
+  });
+  cabin.add(waterfrontDeck);
   [-2,2].forEach(x=>[-1.7,1.7].forEach(z=>box(cabin,x,-0.25,z,0.18,0.5,0.18,M.frame)));
   box(cabin,3,0.03,0.18,0.9,0.22,2.4,M.darkWood);
   for(const z of [-1,0.18,1.36])box(cabin,3.43,0.6,z,0.045,1.08,0.045,M.frame);
@@ -348,7 +377,7 @@ export function buildScene(canvas, opts = {}) {
   });
   const reedMat=material(0x658541,{side:THREE.DoubleSide}),irisMats=[material(0x7779bc,{side:THREE.DoubleSide}),material(0x718dc2,{side:THREE.DoubleSide})];
   const cabinReeds=new THREE.Group();cabinReeds.name='cabin-pond-reeds-and-irises';cabinPond.add(cabinReeds);
-  [[-1.6,-3.55,0.45,0],[0.8,-3.45,0.4,1],[1.5,-1.45,0.65,1],[2.9,1.6,0.42,0],[1.5,3.55,0.48,0],[-2.55,2.8,0.45,0],[-2.55,-0.55,0.35,0]].forEach(([x,z,r,flowers])=>{
+  [[-1.6,-3.55,0.45,0],[0.6,-2.05,0.4,1],[1.5,-1.45,0.65,1],[2.9,1.6,0.42,0],[1.5,3.55,0.48,0],[-2.55,2.8,0.45,0],[-2.55,-0.55,0.35,0]].forEach(([x,z,r,flowers])=>{
     const blades=new THREE.InstancedMesh(leafGeo,reedMat,64),o=new THREE.Object3D();
     for(let i=0;i<64;i++){
       const a=random()*Math.PI*2,d=Math.sqrt(random())*r,h=0.4+random()*0.5;
@@ -486,6 +515,9 @@ export function buildScene(canvas, opts = {}) {
   cabinGround.name='cabin-ground';cabinUpper.name='cabin-upper';
   const cabinFloor={floor:'wood',floorColor:[141,111,88]};
   roomFloor(cabinGround,cabinFloor,3,7.6,8.6);
+  // Share deck geometry/materials; parenting to the ground floor also handles upper-only visibility.
+  const groundWaterfrontDeck=waterfrontDeck.clone(true);groundWaterfrontDeck.name='cabin-ground-waterfront-deck';
+  groundWaterfrontDeck.position.set(0.64,0,5.34);cabinGround.add(groundWaterfrontDeck);
   const loftFloor=new THREE.Group();loftFloor.position.set(0,0,-2.4);cabinUpper.add(loftFloor);
   roomFloor(loftFloor,cabinFloor,4,7.6,3.8);
   cabinUpper.position.y=3.15;
@@ -621,8 +653,8 @@ export function buildScene(canvas, opts = {}) {
   addTarget(cabinInside,'cabin');
   let cabinLevel='all';
   const cabinPresets={
-    all:{target:[0,2.2,0],offset:[11.5,10,15],span:15.5,min:7,max:42,background:0xecece6},
-    ground:{target:[0,1.1,0],offset:[3.8,10.2,15],span:13.5,min:6,max:38,background:0xecece6},
+    all:{target:[-0.6,2.1,2.2],offset:[12.4,10.8,16.2],span:16.5,min:7,max:42,background:0xecece6},
+    ground:{target:[0,1,2],offset:[4.4,11.9,17.5],span:15.2,min:6,max:38,background:0xecece6},
     upper:{target:[0,1.25,-2.4],offset:[8,5.7,10],span:11.8,min:5,max:34,background:0xecece6},
   };
   const presets={

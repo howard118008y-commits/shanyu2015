@@ -139,13 +139,36 @@ class CabinContentTests(unittest.TestCase):
             # Conservative path radius 0.46 + bank/rock allowance 0.4 + dry margin.
             self.assertGreater(min(distance(point, a, b) for a, b in edges) - 0.46 - 0.4, 0.25)
 
+    def test_waterfront_deck_projects_from_glazed_bay_and_belongs_to_ground(self):
+        source = (ROOT / "scene3d.js").read_text(encoding="utf-8")
+        deck = source.split("const waterfrontDeck=", 1)[1].split("cabin.add(waterfrontDeck);", 1)[0]
+        x, y, z = map(float, re.search(r"waterfrontDeck\.position\.set\(([^)]+)\)", deck).group(1).split(","))
+        self.assertEqual(x, 0.42)  # Centered on the existing tall glazed bay.
+        self.assertIn("3.2,0.07,2.1/11-0.012,M.wood", deck)
+        self.assertGreater(z + 1.05 - 2.6, 1.5)  # Beyond the original shallow strip.
+        self.assertLess(x + 1.6, 2.5)
+        self.assertGreater(3.05 - 0.46 - (x + 1.6), 0.5)  # Side-entry path remains dry.
+        self.assertGreater(0.4 + y - 0.16, 0.12)  # Lowest deck beam stays above pond water.
+        self.assertIn("box(deckSupports,x,-0.34,z,0.13,0.55,0.13,M.frame)", deck)
+        self.assertIn("[0.25,0.62,1].forEach", deck)
+        for name in ("cabin-deck-table", "cabin-deck-chair-left", "cabin-deck-chair-right"):
+            self.assertIn(name, deck)
+        self.assertNotIn("random()", deck)
+        self.assertNotIn("seed=", deck)
+        self.assertIn("groundWaterfrontDeck=waterfrontDeck.clone(true)", source)
+        self.assertIn("groundWaterfrontDeck.position.set(0.64,0,5.34);cabinGround.add(groundWaterfrontDeck)", source)
+        self.assertAlmostEqual(5.34 - 1.05, 8.6 / 2 - 0.01)  # Joins the interior floor edge.
+        self.assertIn("cabinGround.visible=level!=='upper'", source)
+        self.assertNotIn("cabinUpper.add(groundWaterfrontDeck)", source)
+        self.assertNotIn("box(cabin,0,y,2.52,4.75", source)  # No old rail across the doorway.
+
     def test_stylesheet_and_entry_module_versions_match_their_assets(self):
         for filename in ("index.html", "tour.html", "tour-ui.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
             versions = re.findall(r"(tour\.css|tour-ui\.js|scene3d\.js)\?v=([\d-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260908-5")
+                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260909-1")
 
 
 if __name__ == "__main__":
