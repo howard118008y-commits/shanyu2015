@@ -1,4 +1,6 @@
 from html.parser import HTMLParser
+import json
+from math import hypot
 from pathlib import Path
 import re
 import unittest
@@ -98,12 +100,52 @@ class CabinContentTests(unittest.TestCase):
         self.assertRegex(ui, r"upper:\{name:'二樓',photo:'assets/cabin-2.jpg'")
         self.assertRegex(ui, r"all:\{name:'整棟',photo:'assets/cabin-exterior-pond.jpg'")
 
-    def test_stylesheet_and_entry_module_versions_are_uniform(self):
+    def test_cabin_pond_is_larger_separate_and_leaves_entry_route_dry(self):
+        source = (ROOT / "scene3d.js").read_text(encoding="utf-8")
+
+        def outline(name, group):
+            points = json.loads(re.search(rf"const {name}=(\[.*?\]);", source).group(1))
+            x, _, z = map(float, re.search(rf"{group}\.position\.set\(([^)]+)\)", source).group(1).split(","))
+            return [(px + x, pz + z) for px, pz in points]
+
+        def area(points):
+            return abs(sum(x * nz - z * nx for (x, z), (nx, nz) in zip(points, points[1:] + points[:1]))) / 2
+
+        def distance(point, a, b):
+            x, z = point
+            ax, az = a
+            dx, dz = b[0] - ax, b[1] - az
+            t = max(0, min(1, ((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz)))
+            return hypot(x - ax - t * dx, z - az - t * dz)
+
+        main = outline("pondOutline", "pondGarden")
+        cabin = outline("cabinPondOutline", "cabinPond")
+        ratio = area(cabin) / area(main)
+        self.assertGreater(ratio, 2.5)
+        self.assertLess(ratio, 4)
+        self.assertAlmostEqual(area(main), 11.6625)
+        self.assertGreater(min(x for x, _ in cabin) - max(x for x, _ in main), 2.5)
+        self.assertGreater(min(z for _, z in cabin), -0.4)  # Balcony ends at -0.8.
+        self.assertLess(min(z for _, z in cabin), 0)
+        self.assertTrue(all(abs(x) + 0.4 < 17.5 and abs(z) + 0.4 < 14 for x, z in cabin))
+        # Follow the existing six stepping stones, including the spaces between them.
+        self.assertIn("3.05-Math.max(0,i-2)*0.2,0.08,2.67+i*0.68", source)
+        edges = list(zip(cabin, cabin[1:] + cabin[:1]))
+        for step in range(101):
+            i = step / 20
+            point = (11.55 - max(0, i - 2) * 0.2, -0.73 + i * 0.68)
+            self.assertLess(sum((az > point[1]) != (bz > point[1]) and point[0] < ax + (bx - ax) * (point[1] - az) / (bz - az)
+                                for (ax, az), (bx, bz) in edges) % 2, 1)
+            # Conservative path radius 0.46 + bank/rock allowance 0.4 + dry margin.
+            self.assertGreater(min(distance(point, a, b) for a, b in edges) - 0.46 - 0.4, 0.25)
+
+    def test_stylesheet_and_entry_module_versions_match_their_assets(self):
         for filename in ("index.html", "tour.html", "tour-ui.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
-            versions = re.findall(r"(?:tour\.css|tour-ui\.js|scene3d\.js)\?v=([\d-]+)", source)
+            versions = re.findall(r"(tour\.css|tour-ui\.js|scene3d\.js)\?v=([\d-]+)", source)
             self.assertTrue(versions)
-            self.assertEqual(set(versions), {"20260908-4"})
+            for asset, version in versions:
+                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260908-5")
 
 
 if __name__ == "__main__":

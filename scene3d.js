@@ -321,6 +321,51 @@ export function buildScene(canvas, opts = {}) {
     const pad=mesh(pondGarden,geometry(new THREE.CircleGeometry(0.12+random()*0.08,14,0.12,Math.PI*1.9)),padMat,-1.9+i*0.62,0.112+i*0.0002,0.23+Math.sin(i*2.4)*0.32);
     pad.rotation.x=-Math.PI/2;pad.castShadow=false;
   }
+  // Photo: cabin-exterior-pond.jpg. Illustrative area; the east bank leaves the side-entry route dry.
+  const cabinPond=new THREE.Group();cabinPond.name='cabin-ecological-pond';cabinPond.position.set(7.4,0,3.7);estate.add(cabinPond);
+  const cabinPondOutline=[[-2,-3.55],[-1.4,-3.92],[-0.1,-4],[1.1,-3.88],[1.5,-3.6],[1.45,-2.85],[1.7,-2],[2.3,-1.05],[2.6,-0.2],[3.25,0.7],[3.5,1.95],[3,3.1],[2,3.95],[0.65,4.2],[-0.6,3.9],[-1.9,4],[-2.85,3.35],[-3.4,2.35],[-3.3,1.25],[-2.85,0.4],[-3.05,-0.55],[-2.8,-2.05]];
+  const cabinPondShape=new THREE.Shape(),cabinBankShape=new THREE.Shape();
+  cabinPondOutline.forEach(([x,z],i)=>{
+    const spread=1.035+(i%3)*0.01;
+    if(i){cabinPondShape.lineTo(x,-z);cabinBankShape.lineTo(x*spread,-z*spread);}
+    else{cabinPondShape.moveTo(x,-z);cabinBankShape.moveTo(x*spread,-z*spread);}
+  });
+  cabinPondShape.closePath();cabinBankShape.closePath();cabinBankShape.holes.push(cabinPondShape);
+  const cabinPondBed=mesh(cabinPond,geometry(new THREE.ExtrudeGeometry(cabinPondShape,{depth:0.03,bevelEnabled:false})),M.earth,0,0.05,0);
+  cabinPondBed.name='cabin-pond-bed';cabinPondBed.rotation.x=-Math.PI/2;
+  // Opaque water above the lawn and bed, below the bank; all horizontal faces point up.
+  const cabinWater=mesh(cabinPond,geometry(new THREE.ShapeGeometry(cabinPondShape)),material(0x567c67,{metalness:0.22,roughness:0.29}),0,0.12,0);
+  cabinWater.name='cabin-pond-water';cabinWater.rotation.x=-Math.PI/2;cabinWater.castShadow=false;
+  const cabinBank=mesh(cabinPond,geometry(new THREE.ExtrudeGeometry(cabinBankShape,{depth:0.12,bevelEnabled:false})),M.earth,0,0.045,0);
+  cabinBank.name='cabin-pond-bank';cabinBank.rotation.x=-Math.PI/2;
+  const cabinPondSeed=seed;seed=9082015;
+  cabinPondOutline.forEach(([x,z],i)=>{
+    const [nx,nz]=cabinPondOutline[(i+1)%cabinPondOutline.length],dx=nx-x,dz=nz-z,count=Math.ceil(Math.hypot(dx,dz)/0.48);
+    for(let j=0;j<count;j++){
+      const t=(j+0.5)/count,r=mesh(cabinPond,rockGeo,i%4?M.stone:M.earth,x+dx*t,0.15,z+dz*t);
+      r.scale.set(0.22+random()*0.15,0.11+random()*0.1,0.12+random()*0.08);r.rotation.y=-Math.atan2(dz,dx);
+    }
+  });
+  const reedMat=material(0x658541,{side:THREE.DoubleSide}),irisMats=[material(0x7779bc,{side:THREE.DoubleSide}),material(0x718dc2,{side:THREE.DoubleSide})];
+  const cabinReeds=new THREE.Group();cabinReeds.name='cabin-pond-reeds-and-irises';cabinPond.add(cabinReeds);
+  [[-1.6,-3.55,0.45,0],[0.8,-3.45,0.4,1],[1.5,-1.45,0.65,1],[2.9,1.6,0.42,0],[1.5,3.55,0.48,0],[-2.55,2.8,0.45,0],[-2.55,-0.55,0.35,0]].forEach(([x,z,r,flowers])=>{
+    const blades=new THREE.InstancedMesh(leafGeo,reedMat,64),o=new THREE.Object3D();
+    for(let i=0;i<64;i++){
+      const a=random()*Math.PI*2,d=Math.sqrt(random())*r,h=0.4+random()*0.5;
+      o.position.set(x+Math.cos(a)*d,0.1+h/2,z+Math.sin(a)*d);o.rotation.set(0,a,(random()-0.5)*0.35);o.scale.set(0.045+random()*0.04,h,1);o.updateMatrix();blades.setMatrixAt(i,o.matrix);
+    }
+    blades.castShadow=true;blades.receiveShadow=true;cabinReeds.add(blades);
+    for(let i=0;i<(flowers?5:2);i++){
+      const a=random()*Math.PI*2,d=random()*r,xx=x+Math.cos(a)*d,zz=z+Math.sin(a)*d,h=0.8+random()*0.25;
+      box(cabinReeds,xx,0.1+h/2,zz,0.015,h,0.015,reedMat);
+      if(flowers)for(let k=0;k<3;k++){
+        const angle=a+k*Math.PI*2/3,petal=mesh(cabinReeds,leafGeo,irisMats[i%2],xx+Math.cos(angle)*0.06,0.1+h,zz+Math.sin(angle)*0.06);
+        petal.rotation.set(-Math.PI/2,0,-angle);petal.scale.set(0.1,0.19,1);
+      }
+      else box(cabinReeds,xx,0.1+h,zz,0.045,0.13,0.045,M.darkWood);
+    }
+  });
+  seed=cabinPondSeed;
   const approach=new THREE.Group();approach.name='main-porch-approach';estate.add(approach);
   for(let i=0;i<12;i++){
     const t=i/11,stone=box(approach,-7.6+0.6*t,0.0675,11.9-5.95*t,0.92,0.065,0.38,exterior.tile,0.035);

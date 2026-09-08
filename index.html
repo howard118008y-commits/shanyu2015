@@ -961,7 +961,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     if (started) return;
     started = true;
     btn.textContent = '載入中…';
-    import('./tour-ui.js?v=20260908-4')
+    import('./tour-ui.js?v=20260908-5')
       .then(function(m){ m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
       .catch(function(error){ btn.textContent = '載入失敗，請重試'; started = false; console.error(error); });
   }
