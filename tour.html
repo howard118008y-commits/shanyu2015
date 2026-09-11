@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>立體導覽｜山遇莊園民宿</title>
+  <title>360° 立體模型｜山遇莊園民宿</title>
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260911-hd2">
+  <link rel="stylesheet" href="tour.css?v=20260911-mesh1">
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
   </script>
@@ -46,15 +46,12 @@
   </section>
   <script type="module">
     const section=document.querySelector('.hero3d'),button=section.querySelector('.hero3d-load button');
-    const params=new URLSearchParams(location.search),interactive=params.get('mode')==='interactive';
     let loading=false;
     async function start(){
-      if(loading)return;loading=true;button.textContent='載入中…';
+      if(loading)return;loading=true;button.textContent='建立可旋轉模型…';
       try{
-        const {mountTour}=await import(interactive?'./tour-ui.js?v=20260909-2':'./tour-hd-ui.js?v=20260911-hd2');
-        const api=mountTour(section),view=params.get('view');
-        if(['estate','yunsidai','lihalai','zhenqing','cabin'].includes(view))api.setView(view);
-        if(interactive){const link=document.createElement('a');link.className='tour-mode-toggle';link.href='tour.html';link.textContent='高清模型圖';section.querySelector('.tour-stage').append(link);}
+        const {mountTour}=await import('./tour-loader.js?v=20260911-mesh1');
+        await mountTour(section);
       }
       catch(error){button.textContent='載入失敗，請重試';loading=false;console.error(error);}
     }

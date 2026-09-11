@@ -1,4 +1,4 @@
-import { buildScene } from './scene3d.js?v=20260909-2';
+import { buildScene } from './scene3d.js?v=20260911-mesh1';
 
 const VIEWS = {
   estate: { name:'莊園全景', photo:'assets/hero-house.jpg', detail:'主棟・庭園・池畔木屋' },
@@ -29,6 +29,12 @@ export function mountTour(section, opts = {}) {
   const stage = section.querySelector('.tour-stage');
   const prices = section.querySelector('.tour-prices');
   let current = 'estate',cabinLevel = 'all';
+  const controls=document.createElement('div');controls.className='tour-mesh-actions';
+  controls.innerHTML='<button type="button" data-action="rotate" aria-pressed="false">自動旋轉</button><button type="button" data-action="export">下載 3D 模型</button><a href="tour-hd.html">高清原圖</a>';
+  stage.append(controls);
+  const status=document.createElement('p');status.className='tour-mesh-status';status.setAttribute('role','status');status.textContent='拖曳旋轉 360° · 滾輪／雙指縮放';stage.append(status);
+  canvas.setAttribute('aria-description','拖曳或方向鍵旋轉，加減鍵縮放，Home 重設視角');
+  section.querySelector('.tour-footer>p').textContent='參考圖重建・非實測模型，隱藏面為推估';
   tabs.innerHTML = Object.entries(VIEWS).map(([key,v]) =>
     `<button type="button" role="tab" id="tour-tab-${key}" aria-controls="tour-stage" aria-selected="${key==='estate'}" tabindex="${key==='estate'?0:-1}" data-view="${key}">${v.name}</button>`).join('');
   const photo = document.createElement('button');
@@ -77,12 +83,27 @@ export function mountTour(section, opts = {}) {
   }
   const api = buildScene(canvas, {
     onViewChange:updateView,
+    onAutoRotateChange:enabled=>{
+      const button=controls.querySelector('[data-action="rotate"]');button.setAttribute('aria-pressed',String(enabled));button.textContent=enabled?'停止旋轉':'自動旋轉';
+    },
     onCabinLevelChange:level=>{
       cabinLevel=level;levels.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.level===level)));
       if(current==='cabin')updateView('cabin');
     },
     onHover:opts.onHover,
     onPick:key=>{if(key==='cabin'&&current!=='cabin')api.setView('cabin');else if(key==='cabin'||key==='estate'||!opts.onPick)openPhoto(key);else opts.onPick(key);},
+  });
+  controls.querySelector('[data-action="rotate"]').addEventListener('click',event=>api.setAutoRotate(event.currentTarget.getAttribute('aria-pressed')!=='true'));
+  controls.querySelector('[data-action="export"]').addEventListener('click',async event=>{
+    const button=event.currentTarget;button.disabled=true;button.textContent='正在製作…';
+    status.textContent='正在打包目前房型與樓層的幾何及材質，請稍候。';
+    try{
+      const {data,filename}=await api.exportModel();
+      const url=URL.createObjectURL(new Blob([data],{type:'model/gltf-binary'}));
+      const link=document.createElement('a');link.href=url;link.download=filename;document.body.append(link);link.click();link.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='已產生 GLB 立體模型，可匯入 Blender 等 3D 軟體。';
+    }catch(error){status.textContent='模型下載失敗，請再試一次。';console.error(error);}
+    finally{button.disabled=false;button.textContent='下載 3D 模型';}
   });
   levels.addEventListener('click',e=>{const button=e.target.closest('[data-level]');if(button)api.setCabinLevel(button.dataset.level);});
   tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)api.setView(b.dataset.view);});

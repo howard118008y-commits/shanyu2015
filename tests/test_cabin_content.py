@@ -163,12 +163,12 @@ class CabinContentTests(unittest.TestCase):
         self.assertNotIn("box(cabin,0,y,2.52,4.75", source)  # No old rail across the doorway.
 
     def test_stylesheet_and_entry_module_versions_match_their_assets(self):
-        for filename in ("index.html", "tour.html", "tour-ui.js"):
+        for filename in ("index.html", "tour.html", "tour-ui.js", "tour-loader.js", "scene3d.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
-            versions = re.findall(r"(tour\.css|tour-ui\.js|scene3d\.js)\?v=([\d-]+)", source)
+            versions = re.findall(r"(tour\.css|tour-loader\.js|tour-ui\.js|scene3d\.js|model-export\.js)\?v=([\w-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                self.assertEqual(version, "20260908-4" if asset == "tour.css" else "20260909-2")
+                self.assertEqual(version, "20260911-mesh1")
 
 
 if __name__ == "__main__":

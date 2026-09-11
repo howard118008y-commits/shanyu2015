@@ -395,7 +395,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   .hero3d-head p{display:none}
 }
 </style>
-<link rel="stylesheet" href="tour.css?v=20260911-hd2">
+<link rel="stylesheet" href="tour.css?v=20260911-mesh1">
 <script type="importmap">
 {"imports":{
   "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
@@ -957,9 +957,9 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   function start(){
     if (started) return;
     started = true;
-    btn.textContent = '載入中…';
-    import('./tour-hd-ui.js?v=20260911-hd2')
-      .then(function(m){ m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
+    btn.textContent = '建立可旋轉模型…';
+    import('./tour-loader.js?v=20260911-mesh1')
+      .then(function(m){ return m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
       .catch(function(error){ btn.textContent = '載入失敗，請重試'; started = false; console.error(error); });
   }
   btn.addEventListener('click', start);

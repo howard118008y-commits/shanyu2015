@@ -26,6 +26,7 @@ h2{font-size:26px}
 .model-copy>p:not(.eyebrow),.estate .model-copy>div>p:not(.eyebrow){color:var(--muted);margin:10px 0 18px}
 .actions{display:flex;gap:12px 24px;flex-wrap:wrap;font-size:14px}
 .actions a{display:inline-flex;align-items:center;min-height:44px}
+.actions .rotate-model{padding:0 14px;background:var(--green);color:white;border-radius:4px;text-decoration:none}
 .estate{margin-bottom:32px}
 .estate .model-copy{display:flex;gap:20px;justify-content:space-between;align-items:center}
 .room-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}

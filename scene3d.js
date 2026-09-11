@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { exportModel } from './model-export.js?v=20260911-mesh1';
 import { createFloorTextures } from './floor-textures.js?v=20260907-1';
 
 // Photo-based proportions; the shared scene is used by the home page and tour.html.
@@ -8,12 +10,19 @@ export function buildScene(canvas, opts = {}) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 180);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.18;
+  renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const environmentScene = new RoomEnvironment();
+  const environmentGenerator = new THREE.PMREMGenerator(renderer);
+  const environmentTarget = environmentGenerator.fromScene(environmentScene, 0.06);
+  scene.environment = environmentTarget.texture;
+  scene.environmentIntensity = 0.45;
+  environmentScene.dispose();
+  environmentGenerator.dispose();
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
@@ -21,7 +30,8 @@ export function buildScene(canvas, opts = {}) {
   controls.minPolarAngle = 0.28;
   controls.maxPolarAngle = Math.PI / 2.08;
   controls.zoomSpeed = 0.75;
-  scene.add(new THREE.HemisphereLight(0xe6f3ff, 0x657747, 2.1));
+  controls.autoRotateSpeed = 0.7;
+  scene.add(new THREE.HemisphereLight(0xe6f3ff, 0x657747, 1.35));
   const sun = new THREE.DirectionalLight(0xffefda, 3.3);
   sun.position.set(-14, 24, 17); sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -37,7 +47,8 @@ export function buildScene(canvas, opts = {}) {
   function random() { seed = (Math.imul(seed,1664525)+1013904223) >>> 0; return seed/4294967296; }
   function geometry(g) { geometries.add(g); return g; }
   function material(color, options = {}) {
-    const m = new THREE.MeshStandardMaterial({ color, roughness:0.82, ...options });
+    const Material = options.sheen || options.clearcoat || options.transmission ? THREE.MeshPhysicalMaterial : THREE.MeshStandardMaterial;
+    const m = new Material({ color, roughness:0.82, ...options });
     materials.add(m); return m;
   }
   function texture(kind) {
@@ -64,11 +75,11 @@ export function buildScene(canvas, opts = {}) {
     wood:material(0xb99052,{map:grain,bumpMap:grain,bumpScale:0.025}),
     darkWood:material(0x60402c,{map:grain,roughness:0.62}),
     frame:material(0x242e2a,{metalness:0.35,roughness:0.44}),
-    glass:material(0x91b8bd,{metalness:0.28,roughness:0.19,transparent:true,opacity:0.48,side:THREE.DoubleSide}),
+    glass:material(0xcadfd8,{metalness:0,roughness:0.12,clearcoat:1,transparent:true,opacity:0.32,depthWrite:false,side:THREE.DoubleSide}),
     stone:material(0xa5a59b,{map:stucco,bumpMap:stucco,bumpScale:0.07}),
     grass:material(0x7b9d4d,{map:grass,roughness:1}),earth:material(0x667057,{map:stucco}),
     floor:material(0xdfdbc8,{map:tile,bumpMap:tile,bumpScale:0.018}),
-    linen:material(0xf0e8d6,{map:stucco,bumpMap:stucco,bumpScale:0.008}),
+    linen:material(0xf0e8d6,{map:stucco,bumpMap:stucco,bumpScale:0.008,sheen:0.6,sheenColor:new THREE.Color(0xffedda),sheenRoughness:0.9}),
     curtain:material(0xd1cbb9,{side:THREE.DoubleSide,roughness:1}),black:material(0x26282a),
   };
   const gardenPhoto = new THREE.TextureLoader().load('assets/hero.jpg');
@@ -91,7 +102,7 @@ export function buildScene(canvas, opts = {}) {
   }
   function rod(p,a,b,radius,mat=M.darkWood,top=radius) {
     const start=V(...a),end=V(...b),delta=end.clone().sub(start);
-    const m=mesh(p,geometry(new THREE.CylinderGeometry(top,radius,delta.length(),7)),mat,0,0,0);
+    const m=mesh(p,geometry(new THREE.CylinderGeometry(top,radius,delta.length(),12)),mat,0,0,0);
     m.position.copy(start.add(end).multiplyScalar(0.5));m.quaternion.setFromUnitVectors(V(0,1,0),delta.normalize());return m;
   }
   function leaves(p,count,locate,base=0x456d2c) {
@@ -162,7 +173,7 @@ export function buildScene(canvas, opts = {}) {
     frame:material(0x193e30,{metalness:0.25,roughness:0.48}),
     glass:material(0x547669,{metalness:0.32,roughness:0.18,transparent:true,opacity:0.58,side:THREE.DoubleSide}),
     curtain:material(0xeee6ce,{roughness:1}),post:material(0x4b342b,{map:grain}),
-    canopy:material(0xa7d6ad,{roughness:0.24,transparent:true,opacity:0.43,depthWrite:false,side:THREE.DoubleSide}),
+    canopy:material(0xd7e9dc,{roughness:0.1,clearcoat:1,transparent:true,opacity:0.3,depthWrite:false,side:THREE.DoubleSide}),
     tile:material(0xc88e80,{map:tile,bumpMap:tile,bumpScale:0.025}),
     yellow:material(0xe4b13a,{roughness:0.7}),cloth:material(0xefc8d5,{map:tile,roughness:1}),
   };
@@ -346,7 +357,14 @@ export function buildScene(canvas, opts = {}) {
   const pond=mesh(pondGarden,geometry(new THREE.ShapeGeometry(pondShape)),material(0x497e71,{metalness:0.32,roughness:0.22,transparent:true,opacity:0.92,depthWrite:false}),0,0.105,0);
   pond.name='pond-water';pond.rotation.x=-Math.PI/2;pond.castShadow=false;
   const bank=new THREE.Group();bank.name='pond-stone-bank';pondGarden.add(bank);
-  const rockGeo=geometry(new THREE.IcosahedronGeometry(1,1));
+  const rockGeo=geometry(new THREE.IcosahedronGeometry(1,3));
+  const rockPositions=rockGeo.attributes.position;
+  for(let index=0;index<rockPositions.count;index++){
+    const xx=rockPositions.getX(index),yy=rockPositions.getY(index),zz=rockPositions.getZ(index);
+    const scale=1+0.08*Math.sin(xx*9+zz*4)*Math.cos(yy*7-xx*3);
+    rockPositions.setXYZ(index,xx*scale,yy*scale,zz*scale);
+  }
+  rockGeo.computeVertexNormals();
   pondOutline.forEach(([x,z],i)=>{
     const [nx,nz]=pondOutline[(i+1)%pondOutline.length],dx=nx-x,dz=nz-z,count=Math.ceil(Math.hypot(dx,dz)/0.4);
     for(let j=0;j<count;j++){
@@ -374,6 +392,23 @@ export function buildScene(canvas, opts = {}) {
   // Opaque water above the lawn and bed, below the bank; all horizontal faces point up.
   const cabinWater=mesh(cabinPond,geometry(new THREE.ShapeGeometry(cabinPondShape)),material(0x567c67,{metalness:0.22,roughness:0.29}),0,0.12,0);
   cabinWater.name='cabin-pond-water';cabinWater.rotation.x=-Math.PI/2;cabinWater.castShadow=false;
+  const waterCanvas=document.createElement('canvas');waterCanvas.width=waterCanvas.height=256;
+  const waterContext=waterCanvas.getContext('2d'),waterPixels=waterContext.createImageData(256,256);
+  for(let row=0;row<256;row++)for(let column=0;column<256;column++){
+    const offset=(row*256+column)*4,phase=2*Math.PI/256;
+    waterPixels.data[offset]=128+20*Math.cos(column*phase*7+Math.sin(row*phase*3));
+    waterPixels.data[offset+1]=128+20*Math.sin(row*phase*9+Math.cos(column*phase*4));
+    waterPixels.data[offset+2]=252;waterPixels.data[offset+3]=255;
+  }
+  waterContext.putImageData(waterPixels,0,0);
+  const waterNormal=new THREE.CanvasTexture(waterCanvas);waterNormal.wrapS=waterNormal.wrapT=THREE.RepeatWrapping;waterNormal.repeat.set(3,3);textures.add(waterNormal);
+  const waterMaterial=material(0x426f60,{normalMap:waterNormal,normalScale:new THREE.Vector2(0.22,0.22),metalness:0.3,roughness:0.16,clearcoat:1});
+  pond.material=waterMaterial;cabinWater.material=waterMaterial;
+  for(let index=0;index<24;index++){
+    const angle=index*2.39996,radius=0.7+(index%5)*0.32;
+    const pad=mesh(cabinPond,geometry(new THREE.CircleGeometry(0.14+(index%3)*0.04,24,0.12,Math.PI*1.92)),padMat,Math.cos(angle)*radius,0.128,1.2+Math.sin(angle)*radius);
+    pad.name='water-lily-'+index;pad.rotation.x=-Math.PI/2;pad.rotation.z=angle;pad.castShadow=false;
+  }
   const cabinBank=mesh(cabinPond,geometry(new THREE.ExtrudeGeometry(cabinBankShape,{depth:0.12,bevelEnabled:false})),M.earth,0,0.045,0);
   cabinBank.name='cabin-pond-bank';cabinBank.rotation.x=-Math.PI/2;
   const cabinPondSeed=seed;seed=9082015;
@@ -483,24 +518,37 @@ export function buildScene(canvas, opts = {}) {
   for(const[key,def]of Object.entries(roomDefs)) {
     const room=new THREE.Group();groups.set(key,room);scene.add(room);room.visible=false;
     const wallMat=material(def.wall,{map:def.wooden?grain:stucco,bumpMap:def.wooden?grain:stucco,bumpScale:0.015});
-    const accent=material(def.accent,{map:stucco});
+    const accent=material(def.accent,{map:stucco,bumpMap:stucco,bumpScale:0.008,sheen:0.8,sheenColor:new THREE.Color(0xffeee0),sheenRoughness:0.85});
     roomFloor(room,def,floorIndex++);
     const backOpenings = key==='lihalai'?[[1.28,2.12,2.5,1.65]]:
-      key==='zhenqing'?[[2.61,1.94,0.64,2.05]]:[];
+      key==='zhenqing'?[[2.61,1.94,0.64,2.05]]:[[-1.9,2.05,0.85,1.95]];
     panelWall(room,6.5,3.2,backOpenings,wallMat).position.z=-2.8;
     const wall=panelWall(room,5.6,3.2,[[0,1.5,3.95,2.7]],def.wooden?M.wood:M.plaster);
-    wall.rotation.y=Math.PI/2;wall.position.x=-3.2;
-    windowFrame(room,-3.12,1.5,0,3.95,2.7,{rotation:Math.PI/2,dark:true,curtains:true,garden:true});
+    const windowSide=key==='yunsidai'?1:-1;
+    wall.rotation.y=-windowSide*Math.PI/2;wall.position.x=windowSide*3.2;
+    windowFrame(room,windowSide*3.12,1.5,0,3.95,2.7,{rotation:-windowSide*Math.PI/2,dark:true,curtains:true,garden:true});
     if(key==='lihalai') {
       box(room,0,0.14,-1.3,5.15,0.27,2.8,M.darkWood);
       bed(room,-1.18,-1.12,2.08,accent);bed(room,1.12,-1.12,2.08,accent);
       windowFrame(room,1.28,2.12,-2.61,2.5,1.65,{dark:true,curtains:true,garden:true});
     } else if(key==='yunsidai') {
       bed(room,-1.3,-1.12,1.1,accent);bed(room,0.83,-1.12,1.9,accent,true);
-      picture(room,-1.32,1.99,-2.66,0.56,0xe7d7bb);
+      windowFrame(room,-1.9,2.05,-2.61,0.85,1.95,{dark:true,panes:1,garden:true});
+      picture(room,0.15,2.12,-2.66,0.56,0xe7d7bb);
+      for(const end of [-2.12,-0.12]){
+        box(room,-1.3,0.65,end,1.16,0.075,0.085,M.wood,0.025);
+        for(let slat=0;slat<7;slat++)box(room,-1.78+slat*0.16,0.49,end,0.065,0.29,0.055,M.wood);
+      }
       for(let i=0;i<3;i++) {
-        const x=1.1+i*0.45,y=2.6+(i%2)*0.2;rod(room,[x,3.2,0],[x,y,0],0.012,M.black);
-        const shade=mesh(room,geometry(new THREE.SphereGeometry(0.2,18,12)),i===1?M.darkWood:M.wood,x,y,0);shade.scale.y=1.13;
+        const x=2.05+i*0.34,y=[2.55,2.82,2.19][i];rod(room,[x,3.2,0],[x,y+0.23,0],0.012,M.black);
+        const shade=new THREE.Group();shade.name='woven-pendant-'+i;shade.position.set(x,y,0);room.add(shade);
+        const strandGeo=geometry(new THREE.TorusGeometry(0.24,0.006,4,40));
+        for(let strand=0;strand<18;strand++){
+          const ring=mesh(shade,strandGeo,i===1?M.darkWood:M.wood,0,0,0);ring.rotation.y=strand*Math.PI/18;ring.scale.y=1.12;
+        }
+        for(let band=-3;band<=3;band++){
+          const ring=mesh(shade,strandGeo,i===1?M.darkWood:M.wood,0,band*0.06,0);ring.rotation.x=Math.PI/2;ring.scale.setScalar(Math.sqrt(1-(band*0.06/0.27)**2));
+        }
         const bulb=material(0xffe0a0,{emissive:0xffc777,emissiveIntensity:0.6});
         mesh(room,geometry(new THREE.SphereGeometry(0.065,10,8)),bulb,x,y-0.1,0);
       }
@@ -668,7 +716,7 @@ export function buildScene(canvas, opts = {}) {
   };
   const presets={
     estate:{target:[0,0.7,0],offset:[17,15,25],span:40,min:12,max:90,background:0xe7efeb},
-    yunsidai:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
+    yunsidai:{target:[0,1.35,0],offset:[-6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
     lihalai:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
     zhenqing:{target:[0,1.35,0],offset:[6.8,4.6,8.5],span:10.4,min:5,max:30,background:0xecece6},
     cabin:cabinPresets.all,
@@ -689,7 +737,7 @@ export function buildScene(canvas, opts = {}) {
     const k=pick(e);if(k!==hovered){hovered=k;canvas.style.cursor=k?'pointer':'grab';opts.onHover?.(k);}
   }
   function leave(){hovered=null;canvas.style.cursor='grab';opts.onHover?.(null);}
-  function down(e){pointerStart=e.isPrimary?{x:e.clientX,y:e.clientY,id:e.pointerId,dragged:false}:null;transition=null;}
+  function down(e){pointerStart=e.isPrimary?{x:e.clientX,y:e.clientY,id:e.pointerId,dragged:false}:null;transition=null;setAutoRotate(false);}
   function up(e){if(pointerStart&&!pointerStart.dragged&&pointerStart.id===e.pointerId&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)<6){const k=pick(e);if(k)opts.onPick?.(k);}pointerStart=null;}
   function cancel(){pointerStart=null;}
   const events={pointermove:move,pointerleave:leave,pointerdown:down,pointerup:up,pointercancel:cancel};
@@ -714,15 +762,32 @@ export function buildScene(canvas, opts = {}) {
   const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(canvas);
   const visibilityObserver=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;});visibilityObserver.observe(canvas);
   function zoom(factor){transition=null;const d=camera.position.clone().sub(controls.target);d.setLength(THREE.MathUtils.clamp(d.length()*factor,controls.minDistance,controls.maxDistance));camera.position.copy(controls.target).add(d);controls.update();}
+  function setAutoRotate(enabled){controls.autoRotate=Boolean(enabled);opts.onAutoRotateChange?.(controls.autoRotate);}
+  function orbit(horizontal,vertical=0){
+    transition=null;setAutoRotate(false);
+    const spherical=new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+    spherical.theta+=horizontal;spherical.phi=THREE.MathUtils.clamp(spherical.phi+vertical,controls.minPolarAngle,controls.maxPolarAngle);
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
+  }
+  function keyboard(event){
+    const angles={ArrowLeft:[-0.18,0],ArrowRight:[0.18,0],ArrowUp:[0,-0.12],ArrowDown:[0,0.12]};
+    if(angles[event.key]){event.preventDefault();orbit(...angles[event.key]);}
+    else if(event.key==='+'||event.key==='='){event.preventDefault();zoom(0.8);}
+    else if(event.key==='-'){event.preventDefault();zoom(1.25);}
+    else if(event.key==='Home'){event.preventDefault();fit(true);}
+  }
+  canvas.addEventListener('keydown',keyboard);
+  let previousTime=0;
   renderer.setAnimationLoop(time=>{
     if(stopped||!visible||document.hidden)return;
     if(transition){const t=Math.min(1,(time-transition.start)/650),ease=1-Math.pow(1-t,3);camera.position.lerpVectors(transition.from,transition.to,ease);controls.target.lerpVectors(transition.fromTarget,transition.target,ease);if(t===1)transition=null;}
-    controls.update();renderer.render(scene,camera);
+    controls.update(Math.min((time-previousTime)/1000,0.1));previousTime=time;renderer.render(scene,camera);
   });
   resize();setView('estate');
-  return{setView,setCabinLevel,reset(){fit(true);},zoom,stop(){
+  return{setView,setCabinLevel,setAutoRotate,orbit,exportModel(){return exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active);},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
     if(stopped)return;stopped=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();
     for(const[name,fn]of Object.entries(events))canvas.removeEventListener(name,fn);
+    canvas.removeEventListener('keydown',keyboard);environmentTarget.dispose();
     geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
     scene.traverse(o=>{if(o.isInstancedMesh)o.dispose();});renderer.dispose();
   }};
