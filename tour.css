@@ -139,12 +139,13 @@
 @media(max-width:640px){.naming-story{grid-template-columns:minmax(0,1fr);gap:24px}.naming-story h3{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.hero3d *{scroll-behavior:auto!important;transition:none!important}}
 .tour-hd-active .tour-stage canvas{display:none}
-.tour-hd-viewer{position:absolute;inset:52px 12px 116px}
-.tour-hd-viewer>a{display:block;width:100%;height:100%}
+.tour-hd-viewer{position:absolute;inset:16px 18px 82px}
+.tour-stage[data-view=cabin] .tour-hd-viewer{top:72px}
+.tour-hd-zoom{display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:zoom-in}
 .tour-hd-viewer img{display:block;width:100%;height:100%;object-fit:contain}
 .tour-mode-toggle{position:absolute;right:24px;top:18px;z-index:3;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:1px solid #91a294;border-radius:4px;background:#f8faf6;color:#31543d;font:14px 'Noto Sans TC',sans-serif;text-decoration:none;letter-spacing:0}
 .tour-hd-actions{position:absolute;right:24px;bottom:24px;z-index:2;display:flex;gap:1px;border:1px solid #b7c7bc;border-radius:4px;background:#bdccc1}
-.tour-hd-actions a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;background:#f8faf6;color:#31543d;font:14px 'Noto Sans TC',sans-serif;letter-spacing:0;text-decoration:none}
-.tour-hd-actions a:hover,.tour-mode-toggle:hover{background:#e0ebdf}
+.tour-hd-actions a,.tour-hd-actions button{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border:0;background:#f8faf6;color:#31543d;font:14px 'Noto Sans TC',sans-serif;letter-spacing:0;text-decoration:none;cursor:pointer}
+.tour-hd-actions a:hover,.tour-hd-actions button:hover{background:#e0ebdf}
 .tour-hd-active a:focus-visible{outline:2px solid #286044;outline-offset:4px}
-@media(max-width:640px){.tour-hd-active .tour-stage{height:480px}.tour-hd-viewer{inset:64px 4px 105px}.tour-mode-toggle{right:16px;top:14px;padding:0 12px}.tour-hd-actions{right:16px;bottom:16px}.tour-hd-actions a{padding:0 10px;font-size:13px}}
+@media(max-width:640px){.tour-hd-active .tour-stage{height:480px}.tour-hd-viewer{inset:12px 8px 78px}.tour-stage[data-view=cabin] .tour-hd-viewer{top:68px}.tour-hd-actions{right:16px;bottom:16px}.tour-hd-actions a,.tour-hd-actions button{padding:0 10px;font-size:13px}}

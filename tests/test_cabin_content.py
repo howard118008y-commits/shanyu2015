@@ -165,10 +165,11 @@ class CabinContentTests(unittest.TestCase):
     def test_stylesheet_and_entry_module_versions_match_their_assets(self):
         for filename in ("index.html", "tour.html", "tour-ui.js", "tour-loader.js", "scene3d.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
-            versions = re.findall(r"(tour\.css|tour-loader\.js|tour-ui\.js|scene3d\.js|model-export\.js)\?v=([\w-]+)", source)
+            versions = re.findall(r"(tour\.css|tour-loader\.js|tour-hd-ui\.js|tour-ui\.js|scene3d\.js|model-export\.js)\?v=([\w-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                self.assertEqual(version, "20260911-mesh1")
+                expected = "20260911-mesh1" if filename in ("tour-ui.js", "scene3d.js") else "20260911-original1"
+                self.assertEqual(version, expected)
 
 
 if __name__ == "__main__":

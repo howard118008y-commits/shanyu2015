@@ -3,25 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>360° 立體模型｜山遇莊園民宿</title>
+  <title>高清 3D 原圖｜山遇莊園民宿</title>
+  <link rel="canonical" href="https://shanyu2015.com/tour.html">
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260911-mesh1">
-  <script type="importmap">
-  {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
-  </script>
+  <link rel="stylesheet" href="tour.css?v=20260911-original1">
 </head>
 <body class="tour-standalone">
   <section class="hero3d" id="hero3d" aria-label="山遇莊園立體導覽">
     <header class="tour-head">
-      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・立體導覽</h1></div>
-      <div><a class="tour-back" href="tour-hd.html">查看高清模型圖</a> · <a class="tour-back" href="./#hero3d">返回山遇首頁</a></div>
+      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・高清 3D 原圖</h1></div>
+      <a class="tour-back" href="./#hero3d">返回山遇首頁</a>
     </header>
     <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
     <div class="tour-layout">
     <div class="tour-stage" id="tour-stage" role="tabpanel">
-      <canvas tabindex="0" aria-label="山遇莊園立體模型"></canvas>
-      <div class="hero3d-load"><img src="assets/hd-models/estate.jpg" alt="山遇莊園高清 3D 模型圖"><button type="button">載入高清導覽</button></div>
+      <div class="hero3d-load"><img src="assets/hd-models/estate.png" alt="山遇莊園高清 3D 原圖"><button type="button">載入高清原圖</button></div>
     </div>
     <aside class="tour-prices" aria-label="住宿房價">
       <div class="tour-price-heading"><h3>住宿房價</h3><span>NT$ / 晚</span></div>
@@ -48,9 +45,9 @@
     const section=document.querySelector('.hero3d'),button=section.querySelector('.hero3d-load button');
     let loading=false;
     async function start(){
-      if(loading)return;loading=true;button.textContent='建立可旋轉模型…';
+      if(loading)return;loading=true;button.textContent='載入高清原圖…';
       try{
-        const {mountTour}=await import('./tour-loader.js?v=20260911-mesh1');
+        const {mountTour}=await import('./tour-loader.js?v=20260911-original1');
         await mountTour(section);
       }
       catch(error){button.textContent='載入失敗，請重試';loading=false;console.error(error);}
