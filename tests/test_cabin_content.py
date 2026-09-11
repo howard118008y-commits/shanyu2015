@@ -95,9 +95,9 @@ class CabinContentTests(unittest.TestCase):
     def test_first_hero_and_floor_references_are_unchanged(self):
         hero = self.home.find(".//*[@class='hero-img']/img")
         self.assertEqual(hero.get("src"), "assets/hero-house.jpg")
-        ui = (ROOT / "photo-tour-ui.js").read_text(encoding="utf-8")
+        ui = (ROOT / "tour-3d-ui.js").read_text(encoding="utf-8")
         self.assertIn("ground:'一樓',upper:'二樓'", ui)
-        self.assertIn("'cabin-'+level", ui)
+        self.assertIn("api.setCabinLevel(button.dataset.level)", ui)
         for name in ("cabin-ground", "cabin-upper"):
             self.assertTrue((ROOT / "assets" / "hd-models" / (name + ".png")).is_file())
 
@@ -164,12 +164,12 @@ class CabinContentTests(unittest.TestCase):
         self.assertNotIn("box(cabin,0,y,2.52,4.75", source)  # No old rail across the doorway.
 
     def test_stylesheet_and_entry_module_versions_match_their_assets(self):
-        for filename in ("index.html", "tour.html", "tour-loader.js", "photo-tour-ui.js", "photo-depth-scene.js"):
+        for filename in ("index.html", "tour.html", "tour-loader.js", "tour-3d-ui.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
-            versions = re.findall(r"(tour\.css|tour-loader\.js|photo-tour-ui\.js|photo-depth-scene\.js|photo-depth-geometry\.js)\?v=([\w-]+)", source)
+            versions = re.findall(r"(tour\.css|tour-loader\.js|tour-3d-ui\.js|scene3d\.js)\?v=([\w-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                self.assertEqual(version, "20260911-photo3d1")
+                self.assertEqual(version, "20260911-solid3d1")
 
 
 if __name__ == "__main__":

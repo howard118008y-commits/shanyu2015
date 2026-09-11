@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>高清立體導覽｜山遇莊園民宿</title>
+  <title>360° 立體導覽｜山遇莊園民宿</title>
   <link rel="canonical" href="https://shanyu2015.com/tour.html">
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260911-photo3d1">
+  <link rel="stylesheet" href="tour.css?v=20260911-solid3d1">
   <script>
     const address=new URL(location.href);
     if(address.searchParams.has('v')||address.searchParams.has('mode')){
@@ -20,13 +20,13 @@
 <body class="tour-standalone">
   <section class="hero3d tour-guest" id="hero3d" aria-label="山遇莊園立體導覽">
     <header class="tour-head">
-      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・高清立體導覽</h1></div>
+      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・360° 立體導覽</h1></div>
       <a class="tour-back" href="./#hero3d">返回山遇首頁</a>
     </header>
     <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
     <div class="tour-layout">
     <div class="tour-stage" id="tour-stage" role="tabpanel">
-      <div class="hero3d-load"><img src="assets/hd-models/estate.png" alt="山遇莊園高清空間模擬圖" fetchpriority="high"><button type="button" hidden>開啟房型切換</button></div>
+      <div class="hero3d-load"><img src="assets/hd-models/estate.png" alt="山遇莊園高清空間參考圖，立體模型載入中" fetchpriority="high"><button type="button" disabled>正在載入 360° 立體模型…</button></div>
     </div>
     <aside class="tour-prices" aria-label="住宿房價">
       <div class="tour-price-heading"><h3>住宿房價</h3><span>NT$ / 晚</span></div>
@@ -53,12 +53,12 @@
     const section=document.querySelector('.hero3d'),button=section.querySelector('.hero3d-load button');
     let loading=false;
     async function start(){
-      if(loading)return;loading=true;button.hidden=true;
+      if(loading)return;loading=true;button.hidden=false;button.disabled=true;button.textContent='正在載入 360° 立體模型…';
       try{
-        const {mountTour}=await import('./tour-loader.js?v=20260911-photo3d1');
+        const {mountTour}=await import('./tour-loader.js?v=20260911-solid3d1');
         await mountTour(section);
       }
-      catch(error){button.hidden=false;button.textContent='點按重試房型切換';loading=false;console.error(error);}
+      catch(error){button.hidden=false;button.disabled=false;button.textContent='模型未載入，點按重試';loading=false;console.error(error);}
     }
     button.addEventListener('click',start);start();
   </script>

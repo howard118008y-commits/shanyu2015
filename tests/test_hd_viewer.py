@@ -1,6 +1,5 @@
 from pathlib import Path
 import hashlib
-import struct
 import unittest
 
 
@@ -15,52 +14,43 @@ IMAGES = {
 }
 
 
-class PhotoDepthTourTests(unittest.TestCase):
-    def test_all_entrypoints_use_the_same_permanent_photo_tour(self):
+class SolidTourTests(unittest.TestCase):
+    def test_all_entrypoints_use_the_same_permanent_solid_tour(self):
         for filename in ("index.html", "tour.html"):
             source = (ROOT / filename).read_text()
-            self.assertIn("tour-loader.js?v=20260911-photo3d1", source)
+            self.assertIn("tour-loader.js?v=20260911-solid3d1", source)
             self.assertIn('src="assets/hd-models/estate.png"', source)
             self.assertIn('fetchpriority="high"', source)
             self.assertNotIn("20260911-guest1", source)
         loader = (ROOT / "tour-loader.js").read_text()
-        self.assertIn("mountPhotoTour(section, options)", loader)
-        self.assertNotIn("scene3d", loader)
+        self.assertIn("await mountSolidTour(section, options)", loader)
+        self.assertIn("tour-3d-ui.js", loader)
         self.assertNotIn("tour-guest-ui", loader)
         self.assertNotIn("mode", loader)
 
-    def test_all_six_original_images_are_unchanged_and_have_nonflat_depth(self):
+    def test_all_six_original_images_are_preserved_as_references(self):
         for name, digest in IMAGES.items():
             image = (ROOT / "assets" / "hd-models" / (name + ".png")).read_bytes()
             self.assertEqual(hashlib.sha256(image).hexdigest(), digest)
-            data = (ROOT / "assets" / "photo-depth" / (name + ".bin")).read_bytes()
-            self.assertEqual(data[:4], b"SYD1")
-            columns, rows, width, height, strength = struct.unpack_from("<4Hf", data, 4)
-            self.assertEqual(len(data), 16 + columns * rows * 2)
-            self.assertGreater(columns * rows, 30000)
-            self.assertGreater(width, 1500)
-            self.assertGreater(height, 900)
-            self.assertGreater(strength, 0)
-            depths = struct.unpack_from("<" + str(columns * rows) + "H", data, 16)
-            self.assertGreater(len(set(depths)), 1000)
-            self.assertGreater(max(depths) - min(depths), 60000)
 
-    def test_autorotation_preserves_the_original_texture_without_old_models(self):
-        ui = (ROOT / "photo-tour-ui.js").read_text()
-        scene = (ROOT / "photo-depth-scene.js").read_text()
+    def test_one_actual_geometry_canvas_with_full_orbit_and_no_download_controls(self):
+        ui = (ROOT / "tour-3d-ui.js").read_text()
+        scene = (ROOT / "scene3d.js").read_text()
         self.assertEqual(ui.count("document.createElement('canvas')"), 1)
-        self.assertIn("displayDepth(image)", ui)
-        self.assertIn("暫停迴轉", ui)
-        self.assertIn("非 360° 全景", ui)
-        self.assertIn("prefers-reduced-motion", scene)
-        self.assertIn("if(automatic)", scene)
-        self.assertIn("Math.sin(phase)", scene)
-        self.assertIn("MeshBasicMaterial", scene)
-        self.assertIn("NoToneMapping", scene)
+        self.assertIn("api=buildScene(canvas", ui)
+        self.assertIn("暫停環繞", ui)
+        self.assertIn("back:'背面'", ui)
+        self.assertIn("prefers-reduced-motion", ui)
+        self.assertIn("new OrbitControls(camera, canvas)", scene)
+        self.assertIn("controls.autoRotate=Boolean(enabled)", scene)
+        self.assertNotIn("maxAzimuthAngle", scene)
+        self.assertNotIn("minAzimuthAngle", scene)
+        self.assertIn("setCameraAngle", scene)
         for source in (ui, scene):
             self.assertNotIn("download", source)
             self.assertNotIn(".glb", source)
-            self.assertNotIn("scene3d.js", source)
+            self.assertNotIn("photo-depth", source)
+            self.assertNotIn("Math.sin(phase)", source)
             self.assertNotIn("transformers", source)
 
     def test_retired_renderers_and_downloads_are_removed(self):

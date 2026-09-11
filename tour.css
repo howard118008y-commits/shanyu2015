@@ -189,3 +189,28 @@
   .tour-photo3d .tour-guest-actions{gap:4px}
   .tour-photo3d .tour-guest-actions button{padding:0 10px}
 }
+.tour-solid3d .tour-stage canvas{inset:64px 0 88px;width:100%;height:calc(100% - 152px)}
+.tour-solid3d .tour-stage[data-view=cabin] canvas{top:114px;height:calc(100% - 202px)}
+.tour-solid3d [hidden]{display:none!important}
+.tour-solid-navigation{position:absolute;bottom:32px;left:24px;right:24px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tour-solid-navigation label{display:flex;align-items:center;gap:8px;color:#31543d;font:14px 'Noto Sans TC',sans-serif;letter-spacing:0}
+.tour-solid-navigation select{min-height:44px;max-width:125px;padding:0 8px;border:1px solid #91a294;border-radius:4px;background:#f8faf6;color:#31543d;font:14px 'Noto Sans TC',sans-serif}
+.tour-solid-tools{display:flex;gap:4px}
+.tour-solid-tools button{width:44px;height:44px;border:1px solid #91a294;border-radius:4px;background:#f8faf6;color:#31543d;font-size:22px;cursor:pointer}
+.tour-solid-status{position:absolute;bottom:7px;left:12px;right:12px;margin:0;text-align:center;color:#435849;font:12px/1.5 'Noto Sans TC',sans-serif;pointer-events:none}
+.tour-solid3d .tour-levels{top:66px}
+.tour-solid3d .tour-stage{min-height:520px}
+.tour-solid3d .tour-head .en,.tour-solid3d .tour-price-heading>span,.tour-solid3d .tour-footer p{font-size:12px}
+.tour-solid3d .tour-tabs button{font-size:14px}
+.tour-solid3d select:focus-visible{outline:2px solid #286044;outline-offset:3px}
+@media(max-width:640px){
+  .tour-solid-navigation{left:12px;right:12px;gap:6px}
+  .tour-solid-navigation label{flex-direction:column;align-items:start;gap:2px;font-size:12px}
+  .tour-solid-tools{gap:3px}
+  .tour-solid-navigation select{max-width:115px}
+  .tour-solid3d .tour-guest-actions{gap:4px}
+  .tour-solid3d .tour-guest-actions button{padding:0 8px}
+  .tour-solid3d .tour-stage{height:540px}
+  .tour-solid3d .tour-stage canvas{bottom:104px;height:calc(100% - 168px)}
+  .tour-solid3d .tour-stage[data-view=cabin] canvas{height:calc(100% - 218px)}
+}

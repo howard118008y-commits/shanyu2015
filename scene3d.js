@@ -32,7 +32,7 @@ export function buildScene(canvas, opts = {}) {
   controls.minPolarAngle = 0.28;
   controls.maxPolarAngle = Math.PI / 2.08;
   controls.zoomSpeed = 0.75;
-  controls.autoRotateSpeed = 0.7;
+  controls.autoRotateSpeed = 1;
   scene.add(new THREE.HemisphereLight(0xe6f3ff, 0x657747, 1.35));
   const sun = new THREE.DirectionalLight(0xffefda, 3.3);
   sun.position.set(-14, 24, 17); sun.castShadow = true;
@@ -179,7 +179,7 @@ export function buildScene(canvas, opts = {}) {
     curtain:material(0xeee6ce,{roughness:1}),post:material(0x4b342b,{map:grain}),
     canopy:material(0xd7e9dc,{roughness:0.1,clearcoat:1,transparent:true,opacity:0.3,depthWrite:false,side:THREE.DoubleSide}),
     tile:material(0xc88e80,{map:tile,bumpMap:tile,bumpScale:0.025}),
-    yellow:material(0xe4b13a,{roughness:0.7}),cloth:material(0xefc8d5,{map:tile,roughness:1}),
+    chair:material(0xb73425,{roughness:0.44,clearcoat:0.2,side:THREE.DoubleSide}),
   };
   const facade=new THREE.Group();facade.name='main-ground-facade';main.add(facade);
   const openings=[[-2.2,1.56,3.1,2.6],[2.05,1.56,3.35,2.6]];
@@ -211,12 +211,14 @@ export function buildScene(canvas, opts = {}) {
   const verandah=new THREE.Group();verandah.name='main-verandah';main.add(verandah);
   const porch=new THREE.Group();porch.name='main-porch';verandah.add(porch);
   [[1.3,4.5,12.4,2.6,'front'],[6.075,0,2.85,6.4,'right']].forEach(([x,z,w,d,name])=>{
-    const map=tile.clone();map.repeat.set(w/2,d/2);textures.add(map);
-    box(porch,x,0.06,z,w,0.4,d,material(0xc88e80,{map,bumpMap:map,bumpScale:0.025})).name=`main-porch-${name}`;
+    box(porch,x,0.06,z,w,0.4,d,M.darkWood).name=`main-porch-${name}`;
+    const planks=new THREE.Group();planks.name=`main-deck-planks-${name}`;porch.add(planks);
+    const count=Math.ceil(d/0.18);
+    for(let plank=0;plank<count;plank++)box(planks,x,0.27,z-d/2+(plank+0.5)*d/count,w,0.035,d/count-0.008,M.wood);
   });
   const steps=new THREE.Group();steps.name='main-porch-steps';porch.add(steps);
-  box(steps,-2.2,-0.01,6.01,1.85,0.26,0.42,exterior.tile);
-  box(steps,-2.2,-0.075,6.43,1.85,0.13,0.42,exterior.tile);
+  box(steps,-2.2,-0.01,6.01,1.85,0.26,0.42,M.wood);
+  box(steps,-2.2,-0.075,6.43,1.85,0.13,0.42,M.wood);
   const frontGlass=box(verandah,1.4,3.05,4.5,12.8,0.035,2.7,exterior.canopy);frontGlass.name='main-canopy-front';frontGlass.castShadow=false;
   const sideGlass=box(verandah,6.225,3.05,-0.1,3.15,0.035,6.5,exterior.canopy);sideGlass.name='main-canopy-right';sideGlass.castShadow=false;
   const posts=new THREE.Group();posts.name='main-canopy-posts';verandah.add(posts);
@@ -242,21 +244,25 @@ export function buildScene(canvas, opts = {}) {
   [3.03,5.95].forEach(y=>ivy(main,0,y,3.51,9.6,0.36,650));
   ivy(main,-4.45,0.26,3.5,0.5,2.7,180);
   const furniture=new THREE.Group();furniture.name='main-porch-furniture';furniture.position.y=0.26;porch.add(furniture);
-  [0.1,2.15,4.75].forEach((x,i)=>{
-    const chair=new THREE.Group();chair.name=`main-yellow-chair-${i+1}`;chair.position.set(x,0,4.05);chair.rotation.y=[-0.2,0.2,-0.3][i];furniture.add(chair);
-    box(chair,0,0.43,0,0.55,0.065,0.52,exterior.yellow,0.025);
-    [-1,1].forEach(s=>{rod(chair,[s*0.23,0,0.2],[s*0.23,0.45,0.2],0.025,exterior.yellow);rod(chair,[s*0.23,0,-0.2],[s*0.25,0.99,-0.27],0.025,exterior.yellow);});
-    for(let i=-2;i<=2;i++)rod(chair,[i*0.1,0.49,-0.21],[i*0.11,0.96,-0.27],0.015,exterior.yellow);
-    box(chair,0,0.98,-0.27,0.57,0.06,0.06,exterior.yellow,0.025);
+  [1.6,3.1].forEach((position,index)=>{
+    const chair=new THREE.Group();chair.name=`main-red-chair-${index+1}`;chair.position.set(position,0,4.4);chair.rotation.y=index?-0.22:0.22;furniture.add(chair);
+    box(chair,0,0.43,0,0.59,0.07,0.55,exterior.chair,0.032);
+    const shell=geometry(new THREE.PlaneGeometry(0.64,0.56,24,20)),vertices=shell.attributes.position;
+    for(let vertex=0;vertex<vertices.count;vertex++){
+      const across=vertices.getX(vertex),height=(vertices.getY(vertex)+0.28)/0.56;
+      vertices.setXYZ(vertex,across*(0.84+0.16*Math.sin(height*Math.PI)),0.46+height*0.53,-0.21-height*0.11+0.13*(across/0.32)**2);
+    }
+    shell.computeVertexNormals();mesh(chair,shell,exterior.chair,0,0,0);
+    for(const side of [-1,1])for(const end of [-1,1])rod(chair,[side*0.26,0,end*0.25],[side*0.19,0.42,end*0.17],0.016,M.frame);
   });
-  const patioTable=new THREE.Group();patioTable.name='main-clothed-table';patioTable.position.set(1.12,0,4.1);furniture.add(patioTable);
-  [-1,1].forEach(s=>[-1,1].forEach(t=>rod(patioTable,[s*0.25,0,t*0.25],[s*0.17,0.68,t*0.17],0.022,M.linen)));
-  mesh(patioTable,geometry(new THREE.CylinderGeometry(0.44,0.49,0.24,24)),exterior.cloth,0,0.64,0);
-  const bbq=new THREE.Group();bbq.name='main-bbq-cart';bbq.position.set(3.43,0,4.02);furniture.add(bbq);
-  box(bbq,0,0.67,0,0.75,0.25,0.48,M.black,0.035);box(bbq,0,0.2,0,0.66,0.05,0.43,M.frame);
-  [-1,1].forEach(s=>[-1,1].forEach(t=>rod(bbq,[s*0.29,0.08,t*0.18],[s*0.29,0.6,t*0.18],0.025,M.frame)));
-  [-1,1].forEach(s=>{const wheel=mesh(bbq,geometry(new THREE.CylinderGeometry(0.09,0.09,0.045,12)),M.black,0.3,0.09,s*0.23);wheel.rotation.x=Math.PI/2;});
-  for(let x=-0.3;x<0.35;x+=0.1)box(bbq,x,0.8,0,0.024,0.025,0.4,M.frame);
+  const bench=new THREE.Group();bench.name='main-wood-bench';bench.position.set(-0.15,0,4.02);furniture.add(bench);
+  for(let plank=0;plank<4;plank++)box(bench,0,0.43,(plank-1.5)*0.13,1.55,0.085,0.12,M.wood,0.012);
+  for(const side of [-1,1])for(const end of [-1,1])box(bench,side*0.61,0.22,end*0.18,0.095,0.44,0.095,M.darkWood);
+  const terracotta=material(0xa47456,{roughness:0.9});
+  for(const position of [-4.3,0.7,3.9]){
+    mesh(furniture,geometry(new THREE.CylinderGeometry(0.17,0.12,0.29,24)),terracotta,position,0.145,3.85);
+    shrub(furniture,position,0.29,3.85,0.35);
+  }
   seat(main,2.1,0.1,2,0x88a2a5,2.5);
   box(main,-1.4,3.9,1.5,2.3,0.12,0.9,M.darkWood);[-2.3,-0.5].forEach(x=>seat(main,x,3.24,1.2,0xa59068,0.5));
   box(main,-5.15,1.28,2.6,1.3,2.6,1.6);box(main,-5.15,1.12,3.43,0.86,2.15,0.09,M.darkWood);roof(main,-5.15,2.72,2.7,1.8,2.3,0.12);
@@ -771,7 +777,7 @@ export function buildScene(canvas, opts = {}) {
     const k=pick(e);if(k!==hovered){hovered=k;canvas.style.cursor=k?'pointer':'grab';opts.onHover?.(k);}
   }
   function leave(){hovered=null;canvas.style.cursor='grab';opts.onHover?.(null);}
-  function down(e){pointerStart=e.isPrimary?{x:e.clientX,y:e.clientY,id:e.pointerId,dragged:false}:null;transition=null;setAutoRotate(false);}
+  function down(e){pointerStart=e.isPrimary?{x:e.clientX,y:e.clientY,id:e.pointerId,dragged:false}:null;transition=null;setAutoRotate(false);opts.onCameraAngleChange?.('custom');}
   function up(e){if(pointerStart&&!pointerStart.dragged&&pointerStart.id===e.pointerId&&Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y)<6){const k=pick(e);if(k)opts.onPick?.(k);}pointerStart=null;}
   function cancel(){pointerStart=null;}
   const events={pointermove:move,pointerleave:leave,pointerdown:down,pointerup:up,pointercancel:cancel};
@@ -801,7 +807,18 @@ export function buildScene(canvas, opts = {}) {
     transition=null;setAutoRotate(false);
     const spherical=new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
     spherical.theta+=horizontal;spherical.phi=THREE.MathUtils.clamp(spherical.phi+vertical,controls.minPolarAngle,controls.maxPolarAngle);
-    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
+    camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();opts.onCameraAngleChange?.('custom');
+  }
+  function setCameraAngle(angle){
+    const angles={front:0,right:Math.PI/2,back:Math.PI,left:-Math.PI/2};
+    if(angle!=='overview'&&!Object.hasOwn(angles,angle))return;
+    setAutoRotate(false);controls.enableDamping=false;controls.update(0);controls.enableDamping=true;fit();
+    if(angle!=='overview'){
+      const spherical=new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
+      spherical.theta=angles[angle];
+      camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
+    }
+    opts.onCameraAngleChange?.(angle);
   }
   function pan(horizontal,vertical){
     transition=null;setAutoRotate(false);
@@ -813,7 +830,7 @@ export function buildScene(canvas, opts = {}) {
     if(angles[event.key]){event.preventDefault();if(event.shiftKey)pan(angles[event.key][0]*3,-angles[event.key][1]*3);else orbit(...angles[event.key]);}
     else if(event.key==='+'||event.key==='='){event.preventDefault();zoom(0.8);}
     else if(event.key==='-'){event.preventDefault();zoom(1.25);}
-    else if(event.key==='Home'){event.preventDefault();fit(true);}
+    else if(event.key==='Home'){event.preventDefault();setCameraAngle('overview');}
   }
   canvas.addEventListener('keydown',keyboard);
   let previousTime=0;
@@ -823,7 +840,7 @@ export function buildScene(canvas, opts = {}) {
     controls.update(Math.min((time-previousTime)/1000,0.1));previousTime=time;renderer.render(scene,camera);
   });
   resize();setView('estate');
-  return{ready:photoMaterials.ready,setView,setCabinLevel,setAutoRotate,setPaused(value){paused=Boolean(value);},orbit,pan,exportModel(){return photoMaterials.ready.then(()=>exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active));},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
+  return{ready:photoMaterials.ready,setView,setCabinLevel,setAutoRotate,setCameraAngle,setPaused(value){paused=Boolean(value);},orbit,pan,exportModel(){return photoMaterials.ready.then(()=>exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active));},reset(){setCameraAngle('overview');},zoom,stop(){
     if(stopped)return;stopped=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();
     for(const[name,fn]of Object.entries(events))canvas.removeEventListener(name,fn);
     canvas.removeEventListener('keydown',keyboard);environmentTarget.dispose();
