@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { exportModel } from './model-export.js?v=20260911-mesh1';
+import { exportModel } from './model-export.js?v=20260911-rebuild1';
+import { createPhotoSurfaces } from './photo-surfaces.js?v=20260911-rebuild1';
 import { createFloorTextures } from './floor-textures.js?v=20260907-1';
 
 // Photo-based proportions; the shared scene is used by the home page and tour.html.
@@ -26,7 +27,8 @@ export function buildScene(canvas, opts = {}) {
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
-  controls.enablePan = false;
+  controls.enablePan = true;
+  controls.screenSpacePanning = true;
   controls.minPolarAngle = 0.28;
   controls.maxPolarAngle = Math.PI / 2.08;
   controls.zoomSpeed = 0.75;
@@ -41,6 +43,8 @@ export function buildScene(canvas, opts = {}) {
   const fill = new THREE.DirectionalLight(0xd7eaff, 0.75);
   fill.position.set(12, 12, -8); scene.add(fill);
   const geometries = new Set(), materials = new Set(), textures = new Set();
+  const photoMaterials=createPhotoSurfaces({materials,textures,anisotropy:Math.min(8,renderer.capabilities.getMaxAnisotropy())});
+  const photo=photoMaterials.surfaces;
   const groups = new Map(), hitTargets = [];
   const V = (x, y, z) => new THREE.Vector3(x, y, z);
   let seed = 2015;
@@ -192,9 +196,17 @@ export function buildScene(canvas, opts = {}) {
     windowFrame(main,s*4.75,4.65,0,3.8,2.2,{rotation:s*Math.PI/2});
     box(facade,s*4.75,0.13,0,0.11,0.26,6.4,exterior.tile);
   });
-  roof(main,0,6.2,0,10.1,7.3,-0.035);box(main,-0.6,6.48,-1.5,3.1,0.48,2.3);roof(main,-0.6,6.81,-1.5,3.4,2.7,-0.05);
-  for(let x=-2;x<1.1;x+=0.7)box(main,x,6.98,-0.24,0.08,0.55,0.08,M.darkWood);
-  [6.9,7.12].forEach(y=>box(main,-0.5,y,-0.24,3.2,0.08,0.08,M.darkWood));
+  const mainRoof=new THREE.Group();mainRoof.name='reconstructed-main-roof';main.add(mainRoof);
+  const frontRoof=roof(mainRoof,0,6.52,1.82,10.1,3.77,0.235);
+  const backRoof=roof(mainRoof,0,6.52,-1.82,10.1,3.77,-0.235);
+  frontRoof.name='main-roof-front-pitch';backRoof.name='main-roof-rear-pitch';
+  const roofEnd=new THREE.Shape();roofEnd.moveTo(-3.65,6.06);roofEnd.lineTo(0,6.96);roofEnd.lineTo(3.65,6.06);roofEnd.closePath();
+  for(const side of [-1,1]){
+    const fascia=mesh(mainRoof,geometry(new THREE.ShapeGeometry(roofEnd)),M.roof,side*5.05,0,0);fascia.rotation.y=side*Math.PI/2;fascia.material.side=THREE.DoubleSide;
+  }
+  box(mainRoof,0,6.98,0,10.16,0.09,0.16,M.roof);
+  box(main,-0.6,7.06,-0.65,3.1,0.48,2.0);roof(main,-0.6,7.39,-0.65,3.4,2.4,-0.05);
+  windowFrame(main,-0.6,7.11,0.4,2.65,0.28,{dark:true,panes:4,fullHeight:true});
   // The glass verandah turns from the front around the right wall to the rear.
   const verandah=new THREE.Group();verandah.name='main-verandah';main.add(verandah);
   const porch=new THREE.Group();porch.name='main-porch';verandah.add(porch);
@@ -465,16 +477,30 @@ export function buildScene(canvas, opts = {}) {
   function addTarget(p,key){p.traverse(o=>{if(o.isMesh&&!o.isInstancedMesh){o.userData.view=key;hitTargets.push(o);}});}
   addTarget(main,'estate');addTarget(cabin,'cabin');
   function pillow(p,x,y,z,w,mat) {
-    const m=box(p,x,y,z,w,0.17,0.45,mat,0.09);m.rotation.x=-0.12;
+    const shape=geometry(new RoundedBoxGeometry(w,0.19,0.48,6,0.09));
+    const positions=shape.attributes.position;
+    for(let vertex=0;vertex<positions.count;vertex++){
+      const xx=positions.getX(vertex),yy=positions.getY(vertex),zz=positions.getZ(vertex);
+      if(yy>0)positions.setY(vertex,yy+0.018*Math.cos(xx*7)*Math.cos(zz*9)-0.009*Math.sin(xx*39+zz*16));
+    }
+    shape.computeVertexNormals();
+    const cushion=mesh(p,shape,mat,x,y,z);cushion.name='soft-pillow';cushion.rotation.x=-0.12;
   }
-  function bed(p,x,z,width,accent,upholstered=false) {
-    const base=upholstered?material(0xc9bda8,{map:stucco}):M.darkWood;
+  function bed(p,x,z,width,accent,upholstered=false,cover=photo.linenIvory) {
+    const base=upholstered?photo.upholstered:M.darkWood;
     box(p,x,0.28,z,width,0.32,2.1,base,0.035);
     box(p,x,0.52,z,width-0.02,0.22,2.08,M.linen,0.09);
-    const quilt=box(p,x,0.66,z+0.2,width+0.03,0.12,1.58,M.linen,0.055);
-    const a=quilt.geometry.attributes.position;
-    for(let i=0;i<a.count;i++)if(a.getY(i)>0)a.setY(i,a.getY(i)+Math.sin(a.getX(i)*18+a.getZ(i)*4)*0.018);
-    a.needsUpdate=true;quilt.geometry.computeVertexNormals();
+    const cloth=geometry(new THREE.PlaneGeometry(width+0.3,1.88,56,48));
+    const clothPositions=cloth.attributes.position;
+    for(let vertex=0;vertex<clothPositions.count;vertex++){
+      const xx=clothPositions.getX(vertex),zz=-clothPositions.getY(vertex);
+      const sideDrop=Math.pow(Math.max(0,(Math.abs(xx)-width/2+0.08)/0.23),2)*0.23;
+      const footDrop=Math.pow(Math.max(0,(zz-0.76)/0.18),2)*0.19;
+      const fold=0.018*Math.sin(xx*23+zz*7)+0.012*Math.sin(zz*31-xx*5);
+      clothPositions.setXYZ(vertex,xx,0.045+fold-sideDrop-footDrop,zz);
+    }
+    cloth.computeVertexNormals();
+    const quilt=mesh(p,cloth,cover,x,0.66,z+0.2);quilt.name='reconstructed-draped-quilt';
     box(p,x,0.67,z+0.79,width+0.05,0.045,0.35,accent,0.02);
     box(p,x,0.6,z-1.02,width+0.07,1.05,0.13,base,0.045);
     const count=width>1.4?2:1;
@@ -517,7 +543,7 @@ export function buildScene(canvas, opts = {}) {
   let floorIndex=0;
   for(const[key,def]of Object.entries(roomDefs)) {
     const room=new THREE.Group();groups.set(key,room);scene.add(room);room.visible=false;
-    const wallMat=material(def.wall,{map:def.wooden?grain:stucco,bumpMap:def.wooden?grain:stucco,bumpScale:0.015});
+    const wallMat=key==='yunsidai'?photo.wallYunsidai:material(def.wall,{map:def.wooden?grain:stucco,bumpMap:def.wooden?grain:stucco,bumpScale:0.015});
     const accent=material(def.accent,{map:stucco,bumpMap:stucco,bumpScale:0.008,sheen:0.8,sheenColor:new THREE.Color(0xffeee0),sheenRoughness:0.85});
     roomFloor(room,def,floorIndex++);
     const backOpenings = key==='lihalai'?[[1.28,2.12,2.5,1.65]]:
@@ -532,9 +558,10 @@ export function buildScene(canvas, opts = {}) {
       bed(room,-1.18,-1.12,2.08,accent);bed(room,1.12,-1.12,2.08,accent);
       windowFrame(room,1.28,2.12,-2.61,2.5,1.65,{dark:true,curtains:true,garden:true});
     } else if(key==='yunsidai') {
-      bed(room,-1.3,-1.12,1.1,accent);bed(room,0.83,-1.12,1.9,accent,true);
+      bed(room,-1.3,-1.12,1.1,accent,false,photo.linenPink);bed(room,0.83,-1.12,1.9,accent,true,photo.linenPink);
       windowFrame(room,-1.9,2.05,-2.61,0.85,1.95,{dark:true,panes:1,garden:true});
       picture(room,0.15,2.12,-2.66,0.56,0xe7d7bb);
+      const artwork=mesh(room,geometry(new THREE.PlaneGeometry(0.45,0.62)),photo.calligraphy,0.15,2.12,-2.602);artwork.name='photo-calligraphy';
       for(const end of [-2.12,-0.12]){
         box(room,-1.3,0.65,end,1.16,0.075,0.085,M.wood,0.025);
         for(let slat=0;slat<7;slat++)box(room,-1.78+slat*0.16,0.49,end,0.065,0.29,0.055,M.wood);
@@ -558,7 +585,14 @@ export function buildScene(canvas, opts = {}) {
       picture(room,-0.85,2.02,-2.59,0.72,0x386776);picture(room,0.6,1.91,-2.59,0.92,0x688746);
       windowFrame(room,2.61,1.94,-2.61,0.64,2.05,{dark:true,panes:1,garden:true});
     }
-    for(let x=-2.5;x<3;x+=1.05)box(room,x,3.17,-1.4,0.11,0.18,2.8,def.wooden?M.frame:M.darkWood);
+    for(let x=-2.5;x<3;x+=1.05)box(room,x,3.17,-1.4,0.17,0.24,2.8,def.wooden?M.frame:M.darkWood);
+    for(const side of [-1,1])box(room,side*3.18,0.09,0,0.065,0.18,5.65,M.darkWood);
+    if(key==='lihalai'){
+      const cabinet=new THREE.Group();cabinet.name='photo-reference-cabinet';cabinet.position.set(-2.65,0,1.7);room.add(cabinet);
+      box(cabinet,0,0.53,0,0.62,1.06,0.56,material(0x929992,{metalness:0.35,roughness:0.5}),0.035);
+      box(cabinet,0.2,0.77,0.305,0.04,0.35,0.045,M.frame,0.015);
+      box(cabinet,0,1.08,0,0.64,0.045,0.58,M.wood);
+    }
     fan(room,-0.25,3.18,0.25);
     box(room,2.3,0.42,1.7,1.28,0.72,0.46,M.darkWood);
     box(room,2.3,1.18,1.6,1.06,0.67,0.06,M.black,0.025);box(room,2.3,0.84,1.61,0.2,0.16,0.07,M.black);
@@ -578,8 +612,8 @@ export function buildScene(canvas, opts = {}) {
   const loftFloor=new THREE.Group();loftFloor.position.set(0,0,-2.4);cabinUpper.add(loftFloor);
   roomFloor(loftFloor,cabinFloor,4,7.6,3.8);
   cabinUpper.position.y=3.15;
-  const pine=material(0xc3a36b,{map:grain,bumpMap:grain,bumpScale:0.02});
-  const blueCurtain=material(0x8c9da7,{map:stucco,roughness:1});
+  const pine=photo.woodPine;
+  const blueCurtain=photo.blueCurtain;
   const yellow=material(0xddc44d,{map:stucco}),greenLinen=material(0x91b95a,{map:stucco});
   const cherry=material(0x98603c,{map:grain,roughness:0.65});
   function timberWall(parent,width,height,openings) {
@@ -619,7 +653,7 @@ export function buildScene(canvas, opts = {}) {
   }
   function cabinBed(parent,x,z,upper=false) {
     const group=new THREE.Group();parent.add(group);group.position.set(x,0,z);bed(group,0,0,1.95,upper?greenLinen:yellow);
-    const cover=floral(upper?'#526b42':'#c5b771');
+    const cover=upper?photo.floralUpper:photo.floralLower;
     group.children.forEach(part=>{if(part.position.y===0.66)part.material=cover;});
     box(group,0,0.75,0.05,1.97,0.035,0.48,M.linen,0.015);
     if(upper){pillow(group,-0.45,0.83,-0.45,0.83,yellow);pillow(group,0.45,0.83,-0.45,0.83,yellow);}
@@ -769,9 +803,14 @@ export function buildScene(canvas, opts = {}) {
     spherical.theta+=horizontal;spherical.phi=THREE.MathUtils.clamp(spherical.phi+vertical,controls.minPolarAngle,controls.maxPolarAngle);
     camera.position.copy(controls.target).add(new THREE.Vector3().setFromSpherical(spherical));controls.update();
   }
+  function pan(horizontal,vertical){
+    transition=null;setAutoRotate(false);
+    const shift=new THREE.Vector3(horizontal,vertical,0).applyQuaternion(camera.quaternion);
+    camera.position.add(shift);controls.target.add(shift);controls.update();
+  }
   function keyboard(event){
     const angles={ArrowLeft:[-0.18,0],ArrowRight:[0.18,0],ArrowUp:[0,-0.12],ArrowDown:[0,0.12]};
-    if(angles[event.key]){event.preventDefault();orbit(...angles[event.key]);}
+    if(angles[event.key]){event.preventDefault();if(event.shiftKey)pan(angles[event.key][0]*3,-angles[event.key][1]*3);else orbit(...angles[event.key]);}
     else if(event.key==='+'||event.key==='='){event.preventDefault();zoom(0.8);}
     else if(event.key==='-'){event.preventDefault();zoom(1.25);}
     else if(event.key==='Home'){event.preventDefault();fit(true);}
@@ -784,7 +823,7 @@ export function buildScene(canvas, opts = {}) {
     controls.update(Math.min((time-previousTime)/1000,0.1));previousTime=time;renderer.render(scene,camera);
   });
   resize();setView('estate');
-  return{setView,setCabinLevel,setAutoRotate,orbit,exportModel(){return exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active);},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
+  return{ready:photoMaterials.ready,setView,setCabinLevel,setAutoRotate,orbit,pan,exportModel(){return photoMaterials.ready.then(()=>exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active));},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
     if(stopped)return;stopped=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();
     for(const[name,fn]of Object.entries(events))canvas.removeEventListener(name,fn);
     canvas.removeEventListener('keydown',keyboard);environmentTarget.dispose();

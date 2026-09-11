@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>高清 3D 原圖｜山遇莊園民宿</title>
+  <title>3D 立體導覽｜山遇莊園民宿</title>
   <link rel="canonical" href="https://shanyu2015.com/tour.html">
   <script>
     const destination=new URL('tour.html',location.href);
@@ -14,13 +14,13 @@
     if(['cabin-ground','cabin-upper'].includes(fragment)){
       destination.searchParams.set('view','cabin');
       destination.searchParams.set('level',fragment.slice(6));
-    }else if(view==='cabin'&&['ground','upper'].includes(params.get('level'))){
+    }else if(view==='cabin'&&['all','ground','upper'].includes(params.get('level'))){
       destination.searchParams.set('level',params.get('level'));
     }
-    destination.searchParams.set('v','20260911-original1');
+    destination.searchParams.set('v','20260911-rebuild1');
     location.replace(destination.href);
   </script>
   <noscript><meta http-equiv="refresh" content="0;url=tour.html"></noscript>
 </head>
-<body><p><a href="tour.html">前往山遇高清原圖</a></p></body>
+<body><p><a href="tour.html">前往山遇可旋轉立體導覽</a></p></body>
 </html>

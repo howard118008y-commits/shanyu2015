@@ -81,11 +81,14 @@
 .tour-mesh-actions a:focus-visible{outline:2px solid #286044;outline-offset:3px}
 .tour-mesh-status{position:absolute;left:180px;right:180px;bottom:25px;text-align:center;pointer-events:none;margin:0;font:12px/1.5 'Noto Sans TC',sans-serif;color:#435849;text-shadow:0 1px 4px #fff}
 .tour-mesh-actions~.tour-levels{top:70px}
+.tour-reconstruction-active .tour-mesh-status{left:24px;right:270px;bottom:30px;text-align:left}
+.tour-reconstruction-active .tour-tools button{font-size:22px}
 @media(max-width:640px){
   .tour-mesh-actions{top:12px;right:16px;left:16px;max-width:none;justify-content:flex-start}
   .tour-mesh-actions button,.tour-mesh-actions a{font-size:13px;padding:0 10px}
   .tour-mesh-actions~.tour-levels{top:66px}
   .tour-mesh-status{left:16px;right:16px;bottom:112px;font-size:11px}
+  .tour-reconstruction-active .tour-mesh-status{left:16px;right:16px;bottom:80px}
 }
 .tour-back{color:#42634b;font:13px 'Noto Sans TC',sans-serif;text-decoration:none;padding:12px 0}
 @media(max-width:640px){
