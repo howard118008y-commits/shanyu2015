@@ -14,17 +14,18 @@ IMAGES = {
 }
 
 
-class SolidTourTests(unittest.TestCase):
-    def test_all_entrypoints_use_the_same_permanent_solid_tour(self):
+class ReferencePreviewTests(unittest.TestCase):
+    def test_retired_model_is_no_longer_loaded_by_public_entrypoints(self):
         for filename in ("index.html", "tour.html"):
             source = (ROOT / filename).read_text()
-            self.assertIn("tour-loader.js?v=20260911-solid3d1", source)
+            self.assertIn("tour-loader.js?v=20260911-reference1", source)
             self.assertIn('src="assets/hd-models/estate.png"', source)
             self.assertIn('fetchpriority="high"', source)
             self.assertNotIn("20260911-guest1", source)
         loader = (ROOT / "tour-loader.js").read_text()
-        self.assertIn("await mountSolidTour(section, options)", loader)
-        self.assertIn("tour-3d-ui.js", loader)
+        self.assertIn("await mountReferenceTour(section, options)", loader)
+        self.assertIn("tour-reference-ui.js", loader)
+        self.assertNotIn("tour-3d-ui.js", loader)
         self.assertNotIn("tour-guest-ui", loader)
         self.assertNotIn("mode", loader)
 
@@ -33,25 +34,13 @@ class SolidTourTests(unittest.TestCase):
             image = (ROOT / "assets" / "hd-models" / (name + ".png")).read_bytes()
             self.assertEqual(hashlib.sha256(image).hexdigest(), digest)
 
-    def test_one_actual_geometry_canvas_with_full_orbit_and_no_download_controls(self):
-        ui = (ROOT / "tour-3d-ui.js").read_text()
-        scene = (ROOT / "scene3d.js").read_text()
-        self.assertEqual(ui.count("document.createElement('canvas')"), 1)
-        self.assertIn("api=buildScene(canvas", ui)
-        self.assertIn("暫停環繞", ui)
-        self.assertIn("back:'背面'", ui)
-        self.assertIn("prefers-reduced-motion", ui)
-        self.assertIn("new OrbitControls(camera, canvas)", scene)
-        self.assertIn("controls.autoRotate=Boolean(enabled)", scene)
-        self.assertNotIn("maxAzimuthAngle", scene)
-        self.assertNotIn("minAzimuthAngle", scene)
-        self.assertIn("setCameraAngle", scene)
-        for source in (ui, scene):
-            self.assertNotIn("download", source)
-            self.assertNotIn(".glb", source)
-            self.assertNotIn("photo-depth", source)
-            self.assertNotIn("Math.sin(phase)", source)
-            self.assertNotIn("transformers", source)
+    def test_temporary_preview_is_honest_not_fake_4k_or_rotating_photo(self):
+        ui = (ROOT / "tour-reference-ui.js").read_text()
+        self.assertIn("靜態模擬圖・非 4K 可旋轉導覽", ui)
+        for term in ("canvas", "import(", "buildScene", "download", ".glb", "photo-depth", "Math.sin(phase)", "transformers"):
+            self.assertNotIn(term, ui)
+        self.assertIn("setView('estate')", ui)
+        self.assertIn("'cabin-'+level", ui)
 
     def test_retired_renderers_and_downloads_are_removed(self):
         for filename in ("tour-ui.js", "tour-reconstruction-ui.js", "tour-hd-ui.js", "tour-guest-ui.js", "tour-hd.css"):
