@@ -395,7 +395,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   .hero3d-head p{display:none}
 }
 </style>
-<link rel="stylesheet" href="tour.css?v=20260908-4">
+<link rel="stylesheet" href="tour.css?v=20260911-hd2">
 <script type="importmap">
 {"imports":{
   "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js",
@@ -451,8 +451,8 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     </div>
   </div>
   <div class="hero3d-load">
-    <img src="assets/hero-house.jpg" alt="山遇莊園主棟實景" loading="lazy">
-    <button type="button">載入立體導覽</button>
+    <img src="assets/hd-models/estate.jpg" alt="山遇莊園高清 3D 模型圖：雙池與玻璃廊道下的盪鞦韆" fetchpriority="high">
+    <button type="button">載入高清導覽</button>
   </div>
   </div>
   <aside class="tour-prices" aria-label="住宿房價">
@@ -912,9 +912,6 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   var canvas = sec.querySelector('canvas'), btn = sec.querySelector('.hero3d-load button');
   var started = false;
 
-  function supported(){
-    try { return !!document.createElement('canvas').getContext('webgl2'); } catch(e){ return false; }
-  }
   var card = document.getElementById('r3dCard');
   var ROOMS = {
     yunsidai: { name:'雲絲帶', cap:'三人房型，一大床一小床<br>位於一樓無障礙空間，冬暖夏涼舒適禪風',
@@ -961,24 +958,17 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     if (started) return;
     started = true;
     btn.textContent = '載入中…';
-    import('./tour-ui.js?v=20260909-2')
+    import('./tour-hd-ui.js?v=20260911-hd2')
       .then(function(m){ m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
       .catch(function(error){ btn.textContent = '載入失敗，請重試'; started = false; console.error(error); });
   }
   btn.addEventListener('click', start);
 
-  if (!supported()) {
-    btn.textContent = '此裝置不支援 3D';
-    btn.disabled = true;
-    return;
-  }
-  // 桌機且非省流量時，捲到就自動載入
-  var slow = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''));
-  if (!slow && innerWidth > 900 && 'IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window) {
     new IntersectionObserver(function(es, o){
       es.forEach(function(e){ if (e.isIntersecting) { o.disconnect(); start(); } });
     }, {rootMargin: '200px'}).observe(sec);
-  }
+  } else start();
 })();
 </script>
 </body>

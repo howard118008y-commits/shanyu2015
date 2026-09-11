@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>立體導覽｜山遇莊園民宿</title>
+    <title>立體導覽｜山遇莊園民宿</title>
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260908-4">
+  <link rel="stylesheet" href="tour.css?v=20260911-hd2">
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}
   </script>
@@ -21,7 +21,7 @@
     <div class="tour-layout">
     <div class="tour-stage" id="tour-stage" role="tabpanel">
       <canvas tabindex="0" aria-label="山遇莊園立體模型"></canvas>
-      <div class="hero3d-load"><img src="assets/hero-house.jpg" alt="山遇莊園主棟實景"><button type="button">載入立體導覽</button></div>
+      <div class="hero3d-load"><img src="assets/hd-models/estate.jpg" alt="山遇莊園高清 3D 模型圖"><button type="button">載入高清導覽</button></div>
     </div>
     <aside class="tour-prices" aria-label="住宿房價">
       <div class="tour-price-heading"><h3>住宿房價</h3><span>NT$ / 晚</span></div>
@@ -46,10 +46,16 @@
   </section>
   <script type="module">
     const section=document.querySelector('.hero3d'),button=section.querySelector('.hero3d-load button');
+    const params=new URLSearchParams(location.search),interactive=params.get('mode')==='interactive';
     let loading=false;
     async function start(){
       if(loading)return;loading=true;button.textContent='載入中…';
-      try{const {mountTour}=await import('./tour-ui.js?v=20260909-2');mountTour(section);}
+      try{
+        const {mountTour}=await import(interactive?'./tour-ui.js?v=20260909-2':'./tour-hd-ui.js?v=20260911-hd2');
+        const api=mountTour(section),view=params.get('view');
+        if(['estate','yunsidai','lihalai','zhenqing','cabin'].includes(view))api.setView(view);
+        if(interactive){const link=document.createElement('a');link.className='tour-mode-toggle';link.href='tour.html';link.textContent='高清模型圖';section.querySelector('.tour-stage').append(link);}
+      }
       catch(error){button.textContent='載入失敗，請重試';loading=false;console.error(error);}
     }
     button.addEventListener('click',start);start();
