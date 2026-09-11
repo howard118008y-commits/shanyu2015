@@ -1,7 +1,7 @@
-import { mountTour as mountReconstruction } from './tour-reconstruction-ui.js?v=20260911-rebuild1';
+import { mountTour as mountGuest } from './tour-guest-ui.js?v=20260911-guest1';
 
 export async function mountTour(section, options = {}) {
-  const api = await mountReconstruction(section, options);
+  const api = mountGuest(section, options);
   const params = new URLSearchParams(location.search);
   const view = params.get('view'), level = params.get('level');
   if(['estate','yunsidai','lihalai','zhenqing','cabin'].includes(view)) api.setView(view);

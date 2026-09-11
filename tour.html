@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>照片重建・可旋轉 3D 導覽｜山遇莊園民宿</title>
+  <title>莊園與客房高清導覽｜山遇莊園民宿</title>
   <link rel="canonical" href="https://shanyu2015.com/tour.html">
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260911-rebuild1">
+  <link rel="stylesheet" href="tour.css?v=20260911-guest1">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body class="tour-standalone">
-  <section class="hero3d" id="hero3d" aria-label="山遇莊園立體導覽">
+  <section class="hero3d tour-guest" id="hero3d" aria-label="山遇莊園立體導覽">
     <header class="tour-head">
-      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・3D 立體導覽</h1></div>
+      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・莊園與客房</h1></div>
       <a class="tour-back" href="./#hero3d">返回山遇首頁</a>
     </header>
     <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
     <div class="tour-layout">
     <div class="tour-stage" id="tour-stage" role="tabpanel">
-      <div class="hero3d-load"><img src="assets/hd-models/estate.png" alt="山遇莊園重建參考圖，載入後可旋轉模型"><button type="button">載入可旋轉模型</button></div>
+      <div class="hero3d-load"><img src="assets/hd-models/estate.png" alt="山遇莊園高清空間模擬圖" fetchpriority="high"><button type="button" hidden>開啟房型切換</button></div>
     </div>
     <aside class="tour-prices" aria-label="住宿房價">
       <div class="tour-price-heading"><h3>住宿房價</h3><span>NT$ / 晚</span></div>
@@ -46,12 +46,12 @@
     const section=document.querySelector('.hero3d'),button=section.querySelector('.hero3d-load button');
     let loading=false;
     async function start(){
-      if(loading)return;loading=true;button.textContent='載入立體模型與照片材質…';
+      if(loading)return;loading=true;button.hidden=true;
       try{
-        const {mountTour}=await import('./tour-loader.js?v=20260911-rebuild1');
+        const {mountTour}=await import('./tour-loader.js?v=20260911-guest1');
         await mountTour(section);
       }
-      catch(error){button.textContent='3D 載入失敗，請確認瀏覽器支援 WebGL 後重試';loading=false;console.error(error);}
+      catch(error){button.hidden=false;button.textContent='點按重試房型切換';loading=false;console.error(error);}
     }
     button.addEventListener('click',start);start();
   </script>

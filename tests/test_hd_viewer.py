@@ -7,37 +7,47 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PhotoReconstructionTests(unittest.TestCase):
-    def test_all_entrypoints_use_one_rotatable_renderer(self):
+    def test_all_entrypoints_show_guest_images_before_optional_rotation(self):
         for filename in ("index.html", "tour.html"):
             source = (ROOT / filename).read_text()
-            self.assertIn("tour-loader.js?v=20260911-rebuild1", source)
+            self.assertIn("tour-loader.js?v=20260911-guest1", source)
             self.assertIn('type="importmap"', source)
             self.assertIn("three@0.169.0", source)
             self.assertNotIn('href="tour-hd.html"', source)
             self.assertNotIn("20260911-original1", source)
-            self.assertIn("WebGL", source)
+            self.assertIn('src="assets/hd-models/estate.png"', source)
+            self.assertIn('type="button" hidden>開啟房型切換', source)
+            self.assertIn('fetchpriority="high"', source)
         loader = (ROOT / "tour-loader.js").read_text()
-        self.assertIn("await mountReconstruction", loader)
+        self.assertIn("mountGuest(section, options)", loader)
         self.assertNotIn("mode", loader)
         self.assertNotIn("tour-ui.js", loader)
         self.assertNotIn("tour-hd-ui.js", loader)
+        self.assertNotIn("tour-reconstruction-ui.js", loader)
         self.assertIn("['all','ground','upper']", loader)
 
-    def test_single_canvas_has_rotation_zoom_and_floor_controls(self):
-        source = (ROOT / "tour-reconstruction-ui.js").read_text()
+    def test_rotation_stays_in_the_page_without_downloads(self):
+        source = (ROOT / "tour-guest-ui.js").read_text()
         self.assertEqual(source.count("document.createElement('canvas')"), 1)
         self.assertIn("buildScene(canvas", source)
-        self.assertIn("await api.ready", source)
-        self.assertIn("api.setAutoRotate", source)
-        self.assertIn("prefers-reduced-motion", source)
-        self.assertIn("api.orbit", source)
-        self.assertIn("api.zoom", source)
-        self.assertIn("api.setCabinLevel", source)
+        self.assertIn("await scene.ready", source)
+        self.assertIn("await import('./scene3d.js?v=20260911-guest1')", source)
+        self.assertNotIn("import { buildScene }", source)
+        self.assertIn("scene.orbit", source)
+        self.assertIn("scene.zoom", source)
+        self.assertIn("scene.setCabinLevel", source)
+        self.assertIn("scene?.setPaused(true)", source)
+        self.assertIn("photograph.src='assets/hd-models/'", source)
+        self.assertIn("旋轉看空間", source)
         self.assertIn("遮擋面推估，非實測", source)
         self.assertNotIn("dialog.showModal", source)
         self.assertNotIn("mode=", source)
         self.assertNotIn("tour-hd.html", source)
-        self.assertIn("assets/models-v2/shanyu-", source)
+        self.assertNotIn("assets/models", source)
+        self.assertNotIn("download", source)
+        self.assertNotIn(".glb", source)
+
+    def test_existing_model_backups_are_not_deleted(self):
         for name in ("estate", "yunsidai", "lihalai", "zhenqing", "cabin-all", "cabin-ground", "cabin-upper"):
             model = ROOT / "assets" / "models-v2" / ("shanyu-" + name + ".glb")
             self.assertTrue(model.is_file(), name)

@@ -152,3 +152,31 @@
 .tour-hd-actions a:hover,.tour-hd-actions button:hover{background:#e0ebdf}
 .tour-hd-active a:focus-visible{outline:2px solid #286044;outline-offset:4px}
 @media(max-width:640px){.tour-hd-active .tour-stage{height:480px}.tour-hd-viewer{inset:12px 8px 78px}.tour-stage[data-view=cabin] .tour-hd-viewer{top:68px}.tour-hd-actions{right:16px;bottom:16px}.tour-hd-actions a,.tour-hd-actions button{padding:0 10px;font-size:13px}}
+.tour-guest .hero3d-load>img{opacity:1}
+.tour-guest-poster{position:absolute;inset:66px 12px 26px}
+.tour-guest-poster img{display:block;width:100%;height:100%;object-fit:contain}
+.tour-guest [hidden]{display:none!important}
+.tour-guest .tour-stage:not(.is-rotating) canvas{visibility:hidden;pointer-events:none}
+.tour-guest .tour-stage[data-view=cabin]:not(.is-rotating) .tour-guest-poster{top:116px}
+.tour-guest-actions{position:absolute;top:16px;left:24px;right:24px;z-index:3;display:flex;justify-content:flex-end;gap:8px}
+.tour-guest-actions button{min-height:44px;padding:0 16px;border:1px solid #91a294;border-radius:4px;background:#f8faf6;color:#31543d;font:14px 'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:0}
+.tour-guest-actions button:first-child{background:#315b45;color:white;border-color:#315b45}
+.tour-guest-actions button:disabled{opacity:.75;cursor:wait}
+.tour-guest .tour-levels{top:70px}
+.tour-guest .tour-tools button{font-size:22px}
+.tour-guest-status{position:absolute;left:24px;right:24px;bottom:6px;pointer-events:none;margin:0;color:#435849;font:12px/1.5 'Noto Sans TC',sans-serif;text-align:center;text-shadow:0 1px 4px #fff}
+.tour-guest .is-rotating .tour-guest-status{right:270px;bottom:30px;text-align:left}
+.hero3d.tour-enlarged{height:auto;min-height:0;max-height:none}
+.tour-enlarged .tour-layout{display:flex;flex-direction:column;flex:none}
+.tour-enlarged .tour-stage{height:85svh;min-height:560px;flex:none}
+.tour-enlarged .tour-prices{border-left:0;border-top:1px solid #c3cfc5}
+@media(max-width:800px){
+  .tour-guest .tour-stage{height:460px}
+  .tour-guest.tour-enlarged .tour-stage{height:85svh;min-height:480px}
+}
+@media(max-width:640px){
+  .tour-guest-actions{left:12px;right:12px;top:12px;justify-content:space-between}
+  .tour-guest-actions button{padding:0 12px}
+  .tour-guest-poster{left:4px;right:4px;bottom:26px}
+  .tour-guest .is-rotating .tour-guest-status{left:16px;right:16px;bottom:80px}
+}

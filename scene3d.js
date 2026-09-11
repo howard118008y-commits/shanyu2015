@@ -756,7 +756,7 @@ export function buildScene(canvas, opts = {}) {
     cabin:cabinPresets.all,
   };
   const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
-  let active='estate',pointerStart=null,hovered=null,transition=null,visible=true,stopped=false;
+  let active='estate',pointerStart=null,hovered=null,transition=null,visible=true,stopped=false,paused=false;
   function pick(event) {
     const bounds=canvas.getBoundingClientRect();
     pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
@@ -818,12 +818,12 @@ export function buildScene(canvas, opts = {}) {
   canvas.addEventListener('keydown',keyboard);
   let previousTime=0;
   renderer.setAnimationLoop(time=>{
-    if(stopped||!visible||document.hidden)return;
+    if(stopped||paused||!visible||document.hidden)return;
     if(transition){const t=Math.min(1,(time-transition.start)/650),ease=1-Math.pow(1-t,3);camera.position.lerpVectors(transition.from,transition.to,ease);controls.target.lerpVectors(transition.fromTarget,transition.target,ease);if(t===1)transition=null;}
     controls.update(Math.min((time-previousTime)/1000,0.1));previousTime=time;renderer.render(scene,camera);
   });
   resize();setView('estate');
-  return{ready:photoMaterials.ready,setView,setCabinLevel,setAutoRotate,orbit,pan,exportModel(){return photoMaterials.ready.then(()=>exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active));},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
+  return{ready:photoMaterials.ready,setView,setCabinLevel,setAutoRotate,setPaused(value){paused=Boolean(value);},orbit,pan,exportModel(){return photoMaterials.ready.then(()=>exportModel(groups.get(active),active==='cabin'?'cabin-'+cabinLevel:active));},reset(){setAutoRotate(false);fit(true);},zoom,stop(){
     if(stopped)return;stopped=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();
     for(const[name,fn]of Object.entries(events))canvas.removeEventListener(name,fn);
     canvas.removeEventListener('keydown',keyboard);environmentTarget.dispose();

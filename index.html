@@ -395,7 +395,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   .hero3d-head p{display:none}
 }
 </style>
-<link rel="stylesheet" href="tour.css?v=20260911-rebuild1">
+<link rel="stylesheet" href="tour.css?v=20260911-guest1">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -426,9 +426,9 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   </div>
 </header>
 
-<section class="hero3d home-tour" id="hero3d" aria-label="山遇莊園立體導覽">
+<section class="hero3d home-tour tour-guest" id="hero3d" aria-label="山遇莊園立體導覽">
   <header class="tour-head">
-    <div><div class="en">SHANYU · THE ESTATE</div><h2>山遇・3D 立體導覽</h2></div>
+    <div><div class="en">SHANYU · THE ESTATE</div><h2>山遇・莊園與客房</h2></div>
     <div><p>山腳下的家園<br>主棟與房間風景</p></div>
   </header>
   <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
@@ -445,8 +445,8 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     </div>
   </div>
   <div class="hero3d-load">
-    <img src="assets/hd-models/estate.png" alt="山遇莊園重建參考圖：雙池與玻璃廊道下的盪鞦韆，載入後可旋轉模型" fetchpriority="high">
-    <button type="button">載入可旋轉模型</button>
+    <img src="assets/hd-models/estate.png" alt="山遇莊園高清空間模擬圖：雙池與玻璃廊道下的盪鞦韆" fetchpriority="high">
+    <button type="button" hidden>開啟房型切換</button>
   </div>
   </div>
   <aside class="tour-prices" aria-label="住宿房價">
@@ -951,10 +951,10 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   function start(){
     if (started) return;
     started = true;
-    btn.textContent = '載入立體模型與照片材質…';
-    import('./tour-loader.js?v=20260911-rebuild1')
+    btn.hidden = true;
+    import('./tour-loader.js?v=20260911-guest1')
       .then(function(m){ return m.mountTour(sec, { onPick: showCard, onViewChange: hideCard }); })
-      .catch(function(error){ btn.textContent = '3D 載入失敗，請確認瀏覽器支援 WebGL 後重試'; started = false; console.error(error); });
+      .catch(function(error){ btn.hidden = false; btn.textContent = '點按重試房型切換'; started = false; console.error(error); });
   }
   btn.addEventListener('click', start);
 
