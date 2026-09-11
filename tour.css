@@ -180,3 +180,12 @@
   .tour-guest-poster{left:4px;right:4px;bottom:26px}
   .tour-guest .is-rotating .tour-guest-status{left:16px;right:16px;bottom:80px}
 }
+.tour-photo3d .tour-stage canvas{inset:66px 12px 26px;width:calc(100% - 24px);height:calc(100% - 92px);touch-action:pan-y pinch-zoom}
+.tour-photo3d .tour-stage.is-rotating canvas{touch-action:none}
+.tour-photo3d .tour-stage[data-view=cabin] canvas{top:116px;height:calc(100% - 142px)}
+.tour-photo3d .is-rotating .tour-guest-status{left:12px;right:12px;bottom:5px;text-align:center}
+@media(max-width:640px){
+  .tour-photo3d .tour-stage canvas{left:4px;right:4px;width:calc(100% - 8px)}
+  .tour-photo3d .tour-guest-actions{gap:4px}
+  .tour-photo3d .tour-guest-actions button{padding:0 10px}
+}

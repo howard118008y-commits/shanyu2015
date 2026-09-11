@@ -3,17 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>莊園與客房高清導覽｜山遇莊園民宿</title>
+  <title>高清立體導覽｜山遇莊園民宿</title>
   <link rel="canonical" href="https://shanyu2015.com/tour.html">
   <link rel="icon" href="assets/icon/icon-96.png" type="image/png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500&family=Noto+Sans+TC:wght@400;500&display=swap">
-  <link rel="stylesheet" href="tour.css?v=20260911-guest1">
+  <link rel="stylesheet" href="tour.css?v=20260911-photo3d1">
+  <script>
+    const address=new URL(location.href);
+    if(address.searchParams.has('v')||address.searchParams.has('mode')){
+      address.searchParams.delete('v');address.searchParams.delete('mode');
+      history.replaceState(null,'',address.pathname+address.search+address.hash);
+    }
+  </script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body class="tour-standalone">
   <section class="hero3d tour-guest" id="hero3d" aria-label="山遇莊園立體導覽">
     <header class="tour-head">
-      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・莊園與客房</h1></div>
+      <div><div class="en">SHANYU · THE ESTATE</div><h1>山遇・高清立體導覽</h1></div>
       <a class="tour-back" href="./#hero3d">返回山遇首頁</a>
     </header>
     <div class="tour-tabs" role="tablist" aria-label="莊園與房型"></div>
@@ -48,7 +55,7 @@
     async function start(){
       if(loading)return;loading=true;button.hidden=true;
       try{
-        const {mountTour}=await import('./tour-loader.js?v=20260911-guest1');
+        const {mountTour}=await import('./tour-loader.js?v=20260911-photo3d1');
         await mountTour(section);
       }
       catch(error){button.hidden=false;button.textContent='點按重試房型切換';loading=false;console.error(error);}

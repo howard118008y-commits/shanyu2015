@@ -95,10 +95,11 @@ class CabinContentTests(unittest.TestCase):
     def test_first_hero_and_floor_references_are_unchanged(self):
         hero = self.home.find(".//*[@class='hero-img']/img")
         self.assertEqual(hero.get("src"), "assets/hero-house.jpg")
-        ui = (ROOT / "tour-ui.js").read_text(encoding="utf-8")
-        self.assertRegex(ui, r"ground:\{name:'一樓',photo:'assets/cabin-1.jpg'")
-        self.assertRegex(ui, r"upper:\{name:'二樓',photo:'assets/cabin-2.jpg'")
-        self.assertRegex(ui, r"all:\{name:'整棟',photo:'assets/cabin-exterior-pond.jpg'")
+        ui = (ROOT / "photo-tour-ui.js").read_text(encoding="utf-8")
+        self.assertIn("ground:'一樓',upper:'二樓'", ui)
+        self.assertIn("'cabin-'+level", ui)
+        for name in ("cabin-ground", "cabin-upper"):
+            self.assertTrue((ROOT / "assets" / "hd-models" / (name + ".png")).is_file())
 
     def test_cabin_pond_is_larger_separate_and_leaves_entry_route_dry(self):
         source = (ROOT / "scene3d.js").read_text(encoding="utf-8")
@@ -163,13 +164,12 @@ class CabinContentTests(unittest.TestCase):
         self.assertNotIn("box(cabin,0,y,2.52,4.75", source)  # No old rail across the doorway.
 
     def test_stylesheet_and_entry_module_versions_match_their_assets(self):
-        for filename in ("index.html", "tour.html", "tour-ui.js", "tour-loader.js", "tour-guest-ui.js", "tour-reconstruction-ui.js", "scene3d.js"):
+        for filename in ("index.html", "tour.html", "tour-loader.js", "photo-tour-ui.js", "photo-depth-scene.js"):
             source = (ROOT / filename).read_text(encoding="utf-8")
-            versions = re.findall(r"(tour\.css|tour-loader\.js|tour-hd-ui\.js|tour-ui\.js|tour-guest-ui\.js|tour-reconstruction-ui\.js|photo-surfaces\.js|scene3d\.js|model-export\.js)\?v=([\w-]+)", source)
+            versions = re.findall(r"(tour\.css|tour-loader\.js|photo-tour-ui\.js|photo-depth-scene\.js|photo-depth-geometry\.js)\?v=([\w-]+)", source)
             self.assertTrue(versions)
             for asset, version in versions:
-                expected = {"tour-ui.js": "20260911-mesh1", "tour-reconstruction-ui.js": "20260911-rebuild1", "scene3d.js": "20260911-rebuild1"}.get(filename, "20260911-guest1")
-                self.assertEqual(version, expected)
+                self.assertEqual(version, "20260911-photo3d1")
 
 
 if __name__ == "__main__":
