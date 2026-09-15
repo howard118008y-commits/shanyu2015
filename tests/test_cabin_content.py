@@ -10,8 +10,8 @@ from xml.etree.ElementTree import Element, SubElement
 ROOT = Path(__file__).resolve().parents[1]
 EXTERIORS = {
     f"assets/cabin-exterior-{name}.jpg"
-    for name in ("pond", "green-entrance", "path", "side", "night")
-}
+    for name in ("green-entrance", "path", "side", "night")
+} | {"assets/gallery-20260916/cabin-pond.jpg"}
 
 
 class PageParser(HTMLParser):
@@ -67,7 +67,7 @@ class CabinContentTests(unittest.TestCase):
 
     def test_daytime_pond_is_main_and_original_gallery_is_preserved(self):
         main = self.gallery.find("./button[@class='ph-main']/img")
-        self.assertEqual(main.get("src"), "assets/cabin-exterior-pond.jpg")
+        self.assertEqual(main.get("src"), "assets/gallery-20260916/cabin-pond.jpg")
         sources = {photo.get("src") for photo in self.gallery.iter("img")}
         originals = {"cabin-2main.jpg", "cabin-main.jpg", "cabin-3.jpg", "cabin-1.jpg", "cabin-2.jpg", "room-cabin.jpg"}
         self.assertEqual(sources - EXTERIORS, {f"assets/{name}" for name in originals})
@@ -92,9 +92,9 @@ class CabinContentTests(unittest.TestCase):
         self.assertEqual(cabin.find("h4").text, "水岸小築・水見曉逐")
         self.assertEqual(cabin.find("p[@class='naming-origin']").text, "水岸小築定名～［水見曉逐］")
 
-    def test_first_hero_and_floor_references_are_unchanged(self):
+    def test_updated_garden_hero_and_floor_references_are_preserved(self):
         hero = self.home.find(".//*[@class='hero-img']/img")
-        self.assertEqual(hero.get("src"), "assets/hero-house.jpg")
+        self.assertEqual(hero.get("src"), "assets/gallery-20260916/garden-pond.jpg")
         ui = (ROOT / "tour-reference-ui.js").read_text(encoding="utf-8")
         self.assertIn("ground:'一樓',upper:'二樓'", ui)
         self.assertIn("setCabinLevel(button.dataset.level)", ui)
