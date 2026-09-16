@@ -54,11 +54,14 @@ class CabinContentTests(unittest.TestCase):
         sources = [button.get("data-src") for button in buttons]
         self.assertEqual(len(sources), 11)
         self.assertEqual(len(set(sources)), 11)
-        self.assertEqual(set(sources) & EXTERIORS, EXTERIORS)
+        previews = {source.replace("gallery-hd-20260916/", "gallery-20260916/") for source in sources}
+        self.assertEqual(previews & EXTERIORS, EXTERIORS)
         for button in buttons:
             photo = button.find("img")
-            self.assertEqual(photo.get("src"), button.get("data-src"))
+            expected_full = photo.get("src").replace("gallery-20260916/", "gallery-hd-20260916/")
+            self.assertEqual(expected_full, button.get("data-src"))
             self.assertTrue((ROOT / photo.get("src")).is_file())
+            self.assertTrue((ROOT / button.get("data-src")).is_file())
             self.assertTrue(photo.get("alt"))
             self.assertTrue(button.get("aria-label"))
             self.assertEqual(photo.get("loading"), "lazy")
