@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERIORS = {
     f"assets/cabin-exterior-{name}.jpg"
     for name in ("green-entrance", "path", "side", "night")
-} | {"assets/gallery-20260916/cabin-pond.jpg"}
+} | {"assets/gallery-hd-20260916/cabin-pond.jpg"}
 
 
 class PageParser(HTMLParser):
@@ -54,12 +54,10 @@ class CabinContentTests(unittest.TestCase):
         sources = [button.get("data-src") for button in buttons]
         self.assertEqual(len(sources), 11)
         self.assertEqual(len(set(sources)), 11)
-        previews = {source.replace("gallery-hd-20260916/", "gallery-20260916/") for source in sources}
-        self.assertEqual(previews & EXTERIORS, EXTERIORS)
+        self.assertEqual(set(sources) & EXTERIORS, EXTERIORS)
         for button in buttons:
             photo = button.find("img")
-            expected_full = photo.get("src").replace("gallery-20260916/", "gallery-hd-20260916/")
-            self.assertEqual(expected_full, button.get("data-src"))
+            self.assertEqual(photo.get("src"), button.get("data-src"))
             self.assertTrue((ROOT / photo.get("src")).is_file())
             self.assertTrue((ROOT / button.get("data-src")).is_file())
             self.assertTrue(photo.get("alt"))
@@ -70,7 +68,7 @@ class CabinContentTests(unittest.TestCase):
 
     def test_daytime_pond_is_main_and_original_gallery_is_preserved(self):
         main = self.gallery.find("./button[@class='ph-main']/img")
-        self.assertEqual(main.get("src"), "assets/gallery-20260916/cabin-pond.jpg")
+        self.assertEqual(main.get("src"), "assets/gallery-hd-20260916/cabin-pond.jpg")
         sources = {photo.get("src") for photo in self.gallery.iter("img")}
         originals = {"cabin-2main.jpg", "cabin-main.jpg", "cabin-3.jpg", "cabin-1.jpg", "cabin-2.jpg", "room-cabin.jpg"}
         self.assertEqual(sources - EXTERIORS, {f"assets/{name}" for name in originals})
@@ -97,7 +95,7 @@ class CabinContentTests(unittest.TestCase):
 
     def test_updated_garden_hero_and_floor_references_are_preserved(self):
         hero = self.home.find(".//*[@class='hero-img']/img")
-        self.assertEqual(hero.get("src"), "assets/gallery-20260916/garden-pond.jpg")
+        self.assertEqual(hero.get("src"), "assets/gallery-hd-20260916/garden-pond.jpg")
         ui = (ROOT / "tour-reference-ui.js").read_text(encoding="utf-8")
         self.assertIn("ground:'一樓',upper:'二樓'", ui)
         self.assertIn("setCabinLevel(button.dataset.level)", ui)
