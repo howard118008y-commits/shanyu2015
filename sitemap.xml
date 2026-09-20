@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shanyu2015.com/</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-pond.jpg</image:loc>
@@ -30,11 +30,5 @@
     <lastmod>2026-09-20</lastmod>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/cabin-pond.jpg</image:loc>
       <image:title>水見曉逐獨棟木屋池畔實景</image:title></image:image>
-  </url>
-  <url>
-    <loc>https://shanyu2015.com/tour.html</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
 </urlset>
