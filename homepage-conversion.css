@@ -1,0 +1,84 @@
+/* Clear booking choices, in the existing manor palette. */
+html{scroll-padding-top:0}
+.stay-options,.room,.whole-house,#rooms,#reserve,#booking-faq{scroll-margin-top:92px}
+.nav,.nav.on-tour{box-sizing:border-box;height:80px;padding:16px 28px;mix-blend-mode:normal;transition:background .25s,color .25s}
+.nav-links{display:flex;gap:10px;pointer-events:auto}
+.nav .nav-links a,.nav.on-tour .nav-links a{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;height:44px;padding:10px 16px;letter-spacing:2px}
+.nav.scrolled,.nav.on-tour{background:#f4f1e8;color:#26291f;border-bottom:1px solid #d8d2bf}
+.nav.scrolled a,.nav.on-tour a{color:#26291f;border-color:#8a8e7e}
+.nav.scrolled a:hover,.nav.on-tour a:hover{background:#e9e5d8;color:#26291f}
+.nav.scrolled::before,.nav.on-tour::before{opacity:0}
+.hero-shade{background:linear-gradient(0deg,rgba(16,23,16,.9),rgba(16,23,16,0) 65%),linear-gradient(180deg,rgba(16,23,16,.35),transparent 35%)}
+.hero-offer{position:absolute;left:clamp(28px,6vw,88px);right:28px;bottom:110px;max-width:900px;color:#f4f1e8}
+.hero-location{margin:0;font-size:clamp(22px,2.7vw,38px);line-height:1.6;font-weight:600;letter-spacing:2px;text-wrap:balance;text-shadow:0 2px 12px rgba(0,0,0,.3)}
+.hero-location span{white-space:nowrap}
+.hero-welcome{margin:12px 0 24px;font-size:15px;letter-spacing:3px;line-height:1.8}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.stay-button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:13px 22px;background:#303e32;color:#fff;font-family:'Noto Sans TC',sans-serif;font-size:13px;font-weight:500;letter-spacing:1.5px;border:1px solid #303e32;text-align:center}
+.stay-button:hover{background:#435345;color:#fff;border-color:#435345}
+.stay-button-light{background:#f4f1e8;border-color:#f4f1e8;color:#26291f}
+.stay-button-light:hover{background:#fff;border-color:#fff;color:#26291f}
+.stay-button-outline{background:rgba(16,23,16,.3);border-color:rgba(244,241,232,.7);color:#f4f1e8}
+.stay-button:focus-visible,.stay-detail:focus-visible,.nav a:focus-visible{outline:3px solid #ad8d4c;outline-offset:4px}
+.stay-options{padding:clamp(56px,7vw,96px) clamp(20px,6vw,72px);max-width:1320px;margin:auto}
+.stay-heading{margin-bottom:32px}
+.stay-heading .en{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:5px;color:#807b67}
+.stay-heading h2{margin:14px 0 18px;font-size:clamp(25px,4vw,34px);letter-spacing:5px;font-weight:600;line-height:1.6}
+.stay-heading p,.stay-note{font-family:'Noto Sans TC',sans-serif;color:#606454;font-size:14px;line-height:1.9;letter-spacing:.6px}
+.stay-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+.stay-card{grid-column:span 2;min-width:0;padding:26px;background:#fbf9f2;border:1px solid #d8d2bf;display:flex;flex-direction:column}
+.stay-featured{grid-column:span 3;background:#e9ede5;border-color:#c6cebf}
+.stay-label{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:3px;color:#707861}
+.stay-card h3{font-size:24px;letter-spacing:3px;line-height:1.6;margin:12px 0 8px;font-weight:600}
+.stay-capacity{margin:0 0 20px;font-family:'Noto Sans TC',sans-serif;font-size:14px;letter-spacing:1px;line-height:1.7}
+.stay-facts{display:flex;flex-direction:column;gap:12px;margin:0 0 22px;font-family:'Noto Sans TC',sans-serif;font-size:13px;line-height:1.8}
+.stay-facts>div{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:12px}
+.stay-facts dt{color:#737763}
+.stay-facts dd{margin:0;color:#424937}
+.stay-rates{border-top:1px solid #d3d8ca;padding-top:17px;margin-top:auto;display:flex;gap:24px;flex-wrap:wrap}
+.stay-rates p{margin:0;display:flex;flex-direction:column;gap:5px}
+.stay-rates span{font-family:'Noto Sans TC',sans-serif;font-size:11px;letter-spacing:1px;color:#737763}
+.stay-rates strong{font-size:24px;font-weight:600;letter-spacing:.5px}
+.stay-rates b{font-size:19px;font-weight:400;line-height:1.7;color:#5d644f}
+.stay-card-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;margin-top:22px}
+.stay-detail{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-family:'Noto Sans TC',sans-serif;font-size:12.5px;letter-spacing:1px;color:#3d503c;text-decoration:underline;text-underline-offset:5px}
+.stay-note{max-width:850px;font-size:12px;margin:22px 0 0}
+.room-actions{display:flex;gap:12px 20px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.whole-house .room-actions{justify-content:center;flex-basis:100%}
+.booking-faq{margin-top:44px}
+.booking-faq h3{font-size:22px;letter-spacing:3px;font-weight:600}
+.booking-faq details{border-bottom:1px solid #d8d2bf;font-family:'Noto Sans TC',sans-serif}
+.booking-faq summary{padding:20px 0;cursor:pointer;font-size:14px;line-height:1.7;color:#364431}
+.booking-faq summary:focus-visible{outline:2px solid #807052;outline-offset:4px}
+.booking-faq p{margin:0 0 22px;color:#55584a;font-size:14px;font-weight:300;line-height:2}
+.booking-faq>.stay-detail{margin-top:20px}
+@media(max-width:1000px){.stay-card{padding:22px}.stay-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stay-card,.stay-featured{grid-column:auto}.stay-card:last-child{grid-column:1/-1}}
+@media(max-width:640px){
+  .stay-options,.room,.whole-house,#rooms,#reserve,#booking-faq{scroll-margin-top:76px}
+  .nav,.nav.on-tour{height:68px;padding:10px 16px}
+  .nav .brand{font-size:18px;letter-spacing:6px}
+  .nav-links{gap:8px}
+  .nav .nav-links a,.nav.on-tour .nav-links a{padding:8px 11px;font-size:12px;letter-spacing:1px}
+  .hero{height:100svh;min-height:560px;max-height:980px;display:block;padding:0}
+  .hero-img{position:absolute;inset:0;animation:none}
+  .hero-img img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:48% center}
+  .hero-shade{display:block;background:linear-gradient(0deg,rgba(16,23,16,.96),rgba(16,23,16,.58) 35%,rgba(16,23,16,0) 65%),linear-gradient(180deg,rgba(16,23,16,.45),transparent 40%)}
+  .hero-title{position:absolute;top:95px;right:25px;justify-content:flex-start;gap:14px;animation:none}
+  .hero-title h1 img{height:148px}
+  .hero-title .sub{font-size:12px;letter-spacing:5px;padding-top:0}
+  .hero-title::before{display:none}
+  .hero-offer{left:22px;right:22px;bottom:92px}
+  .hero-location{font-size:24px;line-height:1.8;letter-spacing:1px;text-wrap:wrap}
+  .hero-welcome{font-size:13px;letter-spacing:1px;margin:10px 0 20px}
+  .hero-actions{gap:10px;display:grid;grid-template-columns:1fr 1fr}
+  .hero-actions .stay-button{font-size:12px;letter-spacing:.5px;padding:12px 7px;gap:5px}
+  .stay-options{padding:48px 20px}
+  .stay-grid{grid-template-columns:1fr;gap:16px}
+  .stay-card,.stay-card:last-child{grid-column:auto}
+  .stay-heading h2{font-size:25px;letter-spacing:3px}
+  .stay-card h3{font-size:23px}
+  .stay-facts>div{gap:8px}
+  .room,.voices-grid,.access-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:360px){.hero-title{top:88px}.hero-title h1 img{height:120px}.hero-title .sub{font-size:11px;letter-spacing:4px}.hero-offer{left:16px;right:16px;bottom:83px}.hero-location{font-size:21px}.hero-welcome{font-size:12px}.stay-card{padding:20px}.stay-card-actions{gap:8px 12px}.stay-rates{gap:20px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.nav{transition:none}}

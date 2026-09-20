@@ -396,15 +396,21 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 }
 </style>
 <link rel="stylesheet" href="tour.css?v=20260911-solid3d1">
+<link rel="stylesheet" href="homepage-conversion.css?v=20260920">
+<script src="analytics-config.js" defer></script>
+<script src="analytics.js" defer></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 </head>
 <body>
 
 <div class="splash" aria-hidden="true"><div class="mark">山遇</div></div>
 
-<nav class="nav">
+<nav class="nav" aria-label="主要導覽">
   <div class="brand">山遇</div>
-  <a href="#reserve">預 約</a>
+  <div class="nav-links">
+    <a href="#room-options" data-track="room_select" data-room="all" data-placement="nav">房型房價</a>
+    <a href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="all" data-placement="nav">LINE 詢房</a>
+  </div>
 </nav>
 
 <header class="hero">
@@ -420,11 +426,75 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     <div class="sub">花蓮壽豐　山腳下的家園</div>
     <h1><img src="assets/logo/shanyu-calligraphy-light.png" alt="山遇" width="520" height="890" fetchpriority="high"></h1>
   </div>
-  <div class="scroll-hint">
-    <div class="word">SCROLL</div>
-    <div class="line"></div>
+  <div class="hero-offer">
+    <p class="hero-location">花蓮壽豐｜<span>11 人包棟</span>・<span>獨棟小木屋</span></p>
+    <p class="hero-welcome">一家人的旅行，從山腳下開始。</p>
+    <div class="hero-actions">
+      <a class="stay-button stay-button-light" href="#room-options" data-track="room_select" data-room="all" data-placement="hero">看房型與房價 <span aria-hidden="true">↓</span></a>
+      <a class="stay-button stay-button-outline" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="all" data-placement="hero">LINE 詢問空房</a>
+    </div>
   </div>
 </header>
+
+<section class="stay-options" id="room-options" aria-labelledby="stay-options-title">
+  <div class="stay-heading">
+    <span class="en">FIND YOUR STAY</span>
+    <h2 id="stay-options-title">選一種，喜歡的住法</h2>
+    <p>三間主棟客房、11 人包棟，或池畔的獨棟木屋。<br>住宿皆含次日早餐，先找到適合同行人數的空間。</p>
+  </div>
+  <div class="stay-grid">
+    <article class="stay-card stay-featured" data-placement="comparison" data-room-view="main-building">
+      <div class="stay-label">全家相聚</div>
+      <h3>主棟包棟</h3>
+      <p class="stay-capacity">11 人 · 3 間客房</p>
+      <dl class="stay-facts">
+        <div><dt>房間與床型</dt><dd>雲絲帶：一大床一小床<br>里哈籟、山遇真情：各兩雙人床</dd></div>
+        <div><dt>早餐</dt><dd>含次日早餐</dd></div>
+        <div><dt>包棟範圍</dt><dd>以上三間主棟客房，不含獨立小木屋</dd></div>
+      </dl>
+      <div class="stay-rates"><p><span>平日／每晚</span><strong>NT$10,000</strong></p><p><span>春節／每晚</span><b>NT$13,000</b></p></div>
+      <div class="stay-card-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="main-building" data-placement="comparison" aria-label="LINE 詢問主棟包棟空房">LINE 詢問空房</a><a class="stay-detail" href="main-building.html" data-track="room_select" data-room="main-building" data-placement="comparison">認識 11 人包棟 <span aria-hidden="true">→</span></a></div>
+    </article>
+    <article class="stay-card stay-featured" data-placement="comparison" data-room-view="cabin">
+      <div class="stay-label">池畔獨棟</div>
+      <h3>水見曉逐・小木屋</h3>
+      <p class="stay-capacity">4 人 · 2 間雙人套房</p>
+      <dl class="stay-facts">
+        <div><dt>房間與空間</dt><dd>兩間雙人套房<br>起居室、廚房</dd></div>
+        <div><dt>早餐</dt><dd>含次日 4 人早餐</dd></div>
+        <div><dt>住宿方式</dt><dd>獨立小木屋，與主棟分開預約</dd></div>
+      </dl>
+      <div class="stay-rates"><p><span>平日／每晚</span><strong>NT$5,500</strong></p><p><span>春節／每晚</span><b>NT$6,500</b></p></div>
+      <div class="stay-card-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="cabin" data-placement="comparison" aria-label="LINE 詢問水見曉逐小木屋空房">LINE 詢問空房</a><a class="stay-detail" href="cabin.html" data-track="room_select" data-room="cabin" data-placement="comparison">走進獨棟小木屋 <span aria-hidden="true">→</span></a></div>
+    </article>
+    <article class="stay-card" data-placement="comparison" data-room-view="yunsidai">
+      <div class="stay-label">主棟客房 〇一</div>
+      <h3>雲絲帶</h3>
+      <p class="stay-capacity">3 人 · 一大床一小床</p>
+      <dl class="stay-facts"><div><dt>空間</dt><dd>一樓無障礙空間</dd></div><div><dt>早餐</dt><dd>含次日早餐</dd></div></dl>
+      <div class="stay-rates"><p><span>平日／每晚</span><strong>NT$2,500</strong></p><p><span>春節／每晚</span><b>NT$3,500</b></p></div>
+      <div class="stay-card-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="yunsidai" data-placement="comparison" aria-label="LINE 詢問雲絲帶空房">LINE 詢問空房</a><a class="stay-detail" href="#room-yunsidai" data-track="room_select" data-room="yunsidai" data-placement="comparison">看客房實景 <span aria-hidden="true">→</span></a></div>
+    </article>
+    <article class="stay-card" data-placement="comparison" data-room-view="lihalai">
+      <div class="stay-label">主棟客房 〇二</div>
+      <h3>里哈籟</h3>
+      <p class="stay-capacity">2–4 人 · 兩雙人床</p>
+      <dl class="stay-facts"><div><dt>空間</dt><dd>輕鬆自在的綠野風格</dd></div><div><dt>早餐</dt><dd>含次日早餐</dd></div></dl>
+      <div class="stay-rates"><p><span>平日／每晚</span><strong>NT$3,000</strong></p><p><span>春節／每晚</span><b>NT$4,000</b></p></div>
+      <div class="stay-card-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="lihalai" data-placement="comparison" aria-label="LINE 詢問里哈籟空房">LINE 詢問空房</a><a class="stay-detail" href="#room-lihalai" data-track="room_select" data-room="lihalai" data-placement="comparison">看客房實景 <span aria-hidden="true">→</span></a></div>
+    </article>
+    <article class="stay-card" data-placement="comparison" data-room-view="zhenqing">
+      <div class="stay-label">主棟客房 〇三</div>
+      <h3>山遇真情</h3>
+      <p class="stay-capacity">4 人 · 兩雙人床</p>
+      <dl class="stay-facts"><div><dt>空間</dt><dd>暖色調親子家族間</dd></div><div><dt>早餐</dt><dd>含次日早餐</dd></div></dl>
+      <div class="stay-rates"><p><span>平日／每晚</span><strong>NT$4,500</strong></p><p><span>春節／每晚</span><b>NT$5,500</b></p></div>
+      <div class="stay-card-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="zhenqing" data-placement="comparison" aria-label="LINE 詢問山遇真情空房">LINE 詢問空房</a><a class="stay-detail" href="#room-zhenqing" data-track="room_select" data-room="zhenqing" data-placement="comparison">看客房實景 <span aria-hidden="true">→</span></a></div>
+    </article>
+  </div>
+  <p class="stay-note">價格為新臺幣；請提供入住日期、人數與房型，向主人確認空房及適用房價。木屋早餐每增加一人酌收 NT$150；住宿加人安排另請先詢問。</p>
+  <a class="stay-detail" href="#booking-faq">停車、加人與訂房常見問題 <span aria-hidden="true">↓</span></a>
+</section>
 
 <section class="hero3d home-tour tour-guest" id="hero3d" aria-label="山遇莊園立體導覽">
   <header class="tour-head">
@@ -510,14 +580,14 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   </div>
 </section>
 
-<section class="rooms">
+<section class="rooms" id="rooms">
   <div class="sec-head" data-reveal>
     <div class="en">ROOMS</div>
     <h2>房</h2>
   </div>
   <div class="room-list">
 
-    <article class="room" data-reveal>
+    <article class="room" data-reveal id="room-yunsidai" data-placement="room-card" data-room-view="yunsidai">
       <div class="room-photo room-gallery" data-gallery="yunsidai">
         <button class="ph-main" type="button" data-src="assets/room-yunsidai.jpg" aria-label="放大檢視雲絲帶房——一大床一小床禪風房"><img src="assets/room-yunsidai.jpg" alt="雲絲帶房——一大床一小床，落地窗外庭園綠意" loading="lazy" width="1320" height="1665"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
@@ -537,10 +607,11 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
           <div class="price"><span class="label">平日</span><span class="wk">NT$2,500</span></div>
           <div class="price"><span class="label">春節</span><span class="cny">NT$3,500</span></div>
         </div>
+        <div class="room-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="yunsidai" data-placement="room-card" aria-label="LINE 詢問雲絲帶空房">LINE 詢問空房</a></div>
       </div>
     </article>
 
-    <article class="room alt" data-reveal>
+    <article class="room alt" data-reveal id="room-lihalai" data-placement="room-card" data-room-view="lihalai">
       <div class="room-photo room-gallery" data-gallery="lihalai">
         <button class="ph-main" type="button" data-src="assets/room-lihalai.jpg" aria-label="放大檢視里哈籟房——綠野風格山景房"><img src="assets/room-lihalai.jpg" alt="里哈籟房——兩雙人床通鋪，窗外中央山脈" loading="lazy" width="945" height="709"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
@@ -557,10 +628,11 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
           <div class="price"><span class="label">平日</span><span class="wk">NT$3,000</span></div>
           <div class="price"><span class="label">春節</span><span class="cny">NT$4,000</span></div>
         </div>
+        <div class="room-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="lihalai" data-placement="room-card" aria-label="LINE 詢問里哈籟空房">LINE 詢問空房</a></div>
       </div>
     </article>
 
-    <article class="room" data-reveal>
+    <article class="room" data-reveal id="room-zhenqing" data-placement="room-card" data-room-view="zhenqing">
       <div class="room-photo room-gallery" data-gallery="zhenqing">
         <button class="ph-main" type="button" data-src="assets/room-zhenqing.jpg" aria-label="放大檢視山遇真情房——暖色調親子家族房"><img src="assets/room-zhenqing.jpg" alt="山遇真情房——兩雙人床，紅牆與落地窗山景" loading="lazy" width="810" height="456"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
@@ -577,17 +649,19 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
           <div class="price"><span class="label">平日</span><span class="wk">NT$4,500</span></div>
           <div class="price"><span class="label">春節</span><span class="cny">NT$5,500</span></div>
         </div>
+        <div class="room-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="zhenqing" data-placement="room-card" aria-label="LINE 詢問山遇真情空房">LINE 詢問空房</a></div>
       </div>
     </article>
 
-    <div class="whole-house" data-reveal>
+    <div class="whole-house" data-reveal id="room-main-building" data-placement="room-card" data-room-view="main-building">
       <div class="name">主棟包棟<span>　11 人</span></div>
       <div class="price"><span class="label">平日</span><span class="wk">NT$10,000</span></div>
       <div class="price"><span class="label">春節</span><span class="cny">NT$13,000</span></div>
       <p class="room-cap">主棟包棟含雲絲帶、里哈籟、山遇真情，不含獨立小木屋</p>
+      <div class="room-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="main-building" data-placement="room-card" aria-label="LINE 詢問主棟包棟空房">LINE 詢問空房</a><a class="stay-detail" href="main-building.html" data-track="room_select" data-room="main-building" data-placement="room-card">主棟包棟詳情 →</a></div>
     </div>
 
-    <article class="room alt room-cabin" data-reveal>
+    <article class="room alt room-cabin" data-reveal id="room-cabin" data-placement="room-card" data-room-view="cabin">
       <div class="room-photo room-gallery" data-gallery="cabin">
         <button class="ph-main" type="button" data-src="assets/gallery-hd-20260916/cabin-pond.jpg" aria-label="放大檢視水見曉逐木屋白天外觀，雙層玻璃窗與池畔倒影"><img src="assets/gallery-hd-20260916/cabin-pond.jpg" alt="水見曉逐木屋白天外觀，雙層玻璃窗與池畔倒影" loading="lazy" width="2364" height="1774"><span class="ph-zoom" aria-hidden="true">＋</span></button>
         <div class="ph-thumbs">
@@ -620,6 +694,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
           <div class="price"><span class="label">平日</span><span class="wk">NT$5,500</span></div>
           <div class="price"><span class="label">春節</span><span class="cny">NT$6,500</span></div>
         </div>
+        <div class="room-actions"><a class="stay-button" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="cabin" data-placement="room-card" aria-label="LINE 詢問水見曉逐空房">LINE 詢問空房</a> <a class="stay-detail" href="cabin.html" data-track="room_select" data-room="cabin" data-placement="room-card">木屋住宿詳情 →</a></div>
       </div>
     </article>
 
@@ -733,9 +808,19 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     <div class="info-row"><dt>退房</dt><dd>11:00</dd></div>
     <div class="info-row"><dt>預約</dt><dd>LINE（ID：hans588121）加好友聊天預約，主人親自回覆；亦可電洽 <span class="nowrap">0939-588121</span> / <span class="nowrap">(03) 8650-566</span></dd></div>
     <div class="info-row"><dt>早餐</dt><dd>住宿含次日早餐；木屋次日早餐提供以四人為基準，每增加一人酌收 150 元</dd></div>
-    <div class="info-row"><dt>付款</dt><dd>訂金與付款細節，請於 LINE 上與主人確認</dd></div>
+    <div class="info-row"><dt>付款</dt><dd>訂房前請透過 LINE 確認訂金、取消及改期條件，確認後再匯款</dd></div>
     <div class="info-row"><dt>提醒</dt><dd>全館禁菸；寵物同行請先詢問；山區夜晚較涼，備件薄外套</dd></div>
   </dl>
+  <div class="booking-faq" id="booking-faq">
+    <h3>訂房前，先了解</h3>
+    <details><summary>開車前往，可以停在哪裡？</summary><p>民宿庭院空地或門口可停車。請在預約時告知車輛數，向主人確認當日停放安排。</p></details>
+    <details><summary>可以加人、加床，或帶小朋友入住嗎？</summary><p>請提供成人、小朋友的人數與年齡，並說明是否需要加床，由主人確認適合房型、可用安排與費用。木屋額外早餐每人 NT$150 為早餐費，住宿加人費用須另行確認。</p></details>
+    <details><summary>訂金、取消或改期，怎麼確認？</summary><p>訂房前請透過 LINE 確認訂金金額、付款期限，以及取消／改期條件；確認後再匯款。請保留主人回覆的訂房內容與條件，方便後續核對。</p></details>
+    <details><summary>11 人包棟包含獨棟小木屋嗎？</summary><p>主棟包棟含雲絲帶、里哈籟、山遇真情三間客房，標準入住 11 人，不含水見曉逐獨棟小木屋；木屋須另行預約。</p></details>
+    <details><summary>入住與退房時間是幾點？</summary><p>15:00 入住，翌日 11:00 退房。提早抵達可先寄放行李；如有其他時間安排，請提前與主人確認。</p></details>
+    <details><summary>可以帶寵物同行嗎？</summary><p>寵物同行請先詢問，預約前與主人確認是否能接待及相關安排。</p></details>
+    <a class="stay-detail" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="all" data-placement="faq">LINE 確認住宿細節 <span aria-hidden="true">→</span></a>
+  </div>
 </section>
 
 <section class="access">
@@ -761,13 +846,13 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
     <h2>與山相遇</h2>
     <p class="lead">以 LINE 加好友聊天預約，主人親自回覆。<br>空房日期、房價與細節，都在對話中為您安排。</p>
     <div class="reserve-btns">
-      <a class="btn-line" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
+      <a class="btn-line" data-track="line_click" data-room="all" data-placement="footer" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.5 13.4 22 11.83 22 10.13 22 5.64 17.52 2 12 2z"/></svg>
-        LINE 預約
+        LINE 詢問空房
       </a>
-      <a class="btn-tel" href="tel:0939588121">0939-588121</a>
+      <a class="btn-tel" data-track="phone_click" data-room="all" data-placement="footer" href="tel:0939588121">0939-588121</a>
     </div>
-    <div class="fine">LINE ID：hans588121　程先生　·　市話 <a class="nowrap" href="tel:038650566">(03) 8650-566</a>　·　<a class="fb" href="https://www.facebook.com/shanyu2015" target="_blank" rel="noopener">Facebook 粉絲頁</a></div>
+    <div class="fine">LINE ID：hans588121　程先生　·　市話 <a class="nowrap" data-track="phone_click" data-room="all" data-placement="footer" href="tel:038650566">(03) 8650-566</a>　·　<a class="fb" href="https://www.facebook.com/shanyu2015" target="_blank" rel="noopener">Facebook 粉絲頁</a></div>
   </div>
 </section>
 
@@ -778,11 +863,11 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 </footer>
 
 <div class="sticky-bar">
-  <a class="line" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
+  <a class="line" data-track="line_click" data-room="all" data-placement="sticky" href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="#06c755" aria-hidden="true"><path d="M12 2C6.48 2 2 5.64 2 10.13c0 4.02 3.55 7.39 8.35 8.03.33.07.77.22.88.5.1.26.07.66.03.92l-.14.85c-.04.26-.2 1.01.89.55 1.09-.46 5.87-3.46 8.01-5.92C21.5 13.4 22 11.83 22 10.13 22 5.64 17.52 2 12 2z"/></svg>
-    LINE 預約
+    LINE 詢問空房
   </a>
-  <a class="tel" href="tel:0939588121" aria-label="撥打電話">
+  <a class="tel" data-track="phone_click" data-room="all" data-placement="sticky" href="tel:0939588121" aria-label="撥打電話">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
   </a>
 </div>
@@ -815,6 +900,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   var zones = [].slice.call(document.querySelectorAll('.hero, .breakfast'));
   var tour = document.querySelector('.home-tour');
   function navShade() {
+    nav.classList.toggle('scrolled', window.scrollY > 36);
     var mid = nav.offsetHeight * 0.55;
     var over = zones.some(function (el) {
       var r = el.getBoundingClientRect();

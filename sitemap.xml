@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shanyu2015.com/</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-pond.jpg</image:loc>
@@ -18,6 +18,18 @@
       <image:title>山遇・水見曉逐 獨棟木屋</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/breakfast-dish.jpg</image:loc>
       <image:title>主人手做的家常早餐</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://shanyu2015.com/main-building.html</loc>
+    <lastmod>2026-09-20</lastmod>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/living-room.jpg</image:loc>
+      <image:title>山遇主棟 11 人包棟公共客廳</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://shanyu2015.com/cabin.html</loc>
+    <lastmod>2026-09-20</lastmod>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/cabin-pond.jpg</image:loc>
+      <image:title>水見曉逐獨棟木屋池畔實景</image:title></image:image>
   </url>
   <url>
     <loc>https://shanyu2015.com/tour.html</loc>
