@@ -94,7 +94,7 @@ class CabinContentTests(unittest.TestCase):
         self.assertEqual(cabin.find("p[@class='naming-origin']").text, "水岸小築定名～［水見曉逐］")
 
     def test_updated_garden_hero_and_floor_references_are_preserved(self):
-        hero = self.home.find(".//*[@class='hero-img']/img")
+        hero = self.home.find(".//*[@class='hero-img']/picture/img")
         self.assertEqual(hero.get("src"), "assets/gallery-hd-20260916/garden-pond.jpg")
         ui = (ROOT / "tour-reference-ui.js").read_text(encoding="utf-8")
         self.assertIn("ground:'一樓',upper:'二樓'", ui)

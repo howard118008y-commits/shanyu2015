@@ -3,32 +3,64 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shanyu2015.com/</loc>
-    <lastmod>2026-09-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-10-01</lastmod>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-pond.jpg</image:loc>
-      <image:title>山遇莊園庭園與生態池</image:title></image:image>
+      <image:title>山遇莊園庭園、草坪與生態池</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/cabin-pond.jpg</image:loc>
+      <image:title>水見曉逐木屋白天外觀與池畔倒影</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-yunsidai.jpg</image:loc>
       <image:title>雲絲帶 三人房</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-lihalai.jpg</image:loc>
       <image:title>里哈籟 二至四人房</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/room-zhenqing.jpg</image:loc>
       <image:title>山遇真情 四人房</image:title></image:image>
-    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/cabin-pond.jpg</image:loc>
-      <image:title>山遇・水見曉逐 獨棟木屋</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/dining-room.jpg</image:loc>
+      <image:title>公共餐廳木質餐桌與庭園綠意</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/window-seat.jpg</image:loc>
+      <image:title>窗邊休憩臥榻</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-lawn.jpg</image:loc>
+      <image:title>莊園草坪與生態池</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/living-room.jpg</image:loc>
+      <image:title>公共客廳</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/bar.jpg</image:loc>
+      <image:title>公共吧檯</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-exterior-green-entrance.jpg</image:loc>
+      <image:title>水見曉逐木屋入口</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-exterior-night.jpg</image:loc>
+      <image:title>水見曉逐木屋夜景</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-2main.jpg</image:loc>
+      <image:title>水見曉逐木屋雙人床與窗邊書桌</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/breakfast-dish.jpg</image:loc>
       <image:title>主人手做的家常早餐</image:title></image:image>
   </url>
   <url>
     <loc>https://shanyu2015.com/main-building.html</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/living-room.jpg</image:loc>
       <image:title>山遇主棟 11 人包棟公共客廳</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/dining-room.jpg</image:loc>
+      <image:title>主棟木質餐桌與落地窗外綠意</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/room-yunsidai-2.jpg</image:loc>
+      <image:title>雲絲帶 一大床一單人床</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/room-lihalai.jpg</image:loc>
+      <image:title>里哈籟 兩張雙人床</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/room-zhenqing.jpg</image:loc>
+      <image:title>山遇真情 兩張雙人床</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-pond.jpg</image:loc>
+      <image:title>山遇莊園庭園與生態池</image:title></image:image>
   </url>
   <url>
     <loc>https://shanyu2015.com/cabin.html</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/cabin-pond.jpg</image:loc>
       <image:title>水見曉逐獨棟木屋池畔實景</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-2main.jpg</image:loc>
+      <image:title>水見曉逐木屋雙人床與窗邊書桌</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-main.jpg</image:loc>
+      <image:title>水見曉逐木屋雙人床</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/cabin-3.jpg</image:loc>
+      <image:title>水見曉逐木屋紅磚牆與留聲機</image:title></image:image>
+    <image:image><image:loc>https://shanyu2015.com/assets/gallery-hd-20260916/garden-lawn.jpg</image:loc>
+      <image:title>木屋旁庭園草地與樹木</image:title></image:image>
   </url>
 </urlset>

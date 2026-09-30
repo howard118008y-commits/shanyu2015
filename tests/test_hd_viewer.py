@@ -19,7 +19,7 @@ class ReferencePreviewTests(unittest.TestCase):
         for filename in ("index.html", "tour.html"):
             source = (ROOT / filename).read_text()
             self.assertIn("tour-loader.js?v=20260911-reference1", source)
-            self.assertIn('src="assets/hd-models/estate.png"', source)
+            self.assertIn('src="assets/hd-models/estate.webp"', source)
             self.assertIn('fetchpriority="high"', source)
             self.assertNotIn("20260911-guest1", source)
         loader = (ROOT / "tour-loader.js").read_text()
