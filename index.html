@@ -366,6 +366,9 @@
         "url": "https://shanyu2015.com/assets/gallery-hd-20260916/garden-pond.jpg",
         "width": 2730,
         "height": 1536
+      },
+      "video": {
+        "@id": "https://shanyu2015.com/#hero-video"
       }
     },
     {
@@ -453,6 +456,22 @@
           }
         }
       ]
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://shanyu2015.com/#hero-video",
+      "name": "山遇莊園美樂地｜30 秒莊園導覽",
+      "description": "花蓮壽豐山遇莊園美樂地導覽影片：千坪莊園與生態池、主棟公共空間、雲絲帶・里哈籟・山遇真情三間客房、水見曉逐獨棟木屋、主屋一樓的次日早餐，以及莊園主人程斯汗。",
+      "thumbnailUrl": [
+        "https://shanyu2015.com/assets/video/hero-poster.webp"
+      ],
+      "uploadDate": "2026-10-01T08:00:00+08:00",
+      "duration": "PT30S",
+      "contentUrl": "https://shanyu2015.com/assets/video/hero-h.mp4",
+      "inLanguage": "zh-Hant",
+      "publisher": {
+        "@id": "https://shanyu2015.com/#lodging"
+      }
     }
   ]
 }
@@ -487,6 +506,8 @@ img{display:block}
 .nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;justify-content:space-between;align-items:center;padding:22px 28px;mix-blend-mode:difference;color:#f4f1e8;pointer-events:none}
 .nav .brand{font-weight:600;font-size:19px;letter-spacing:10px}
 .nav a{pointer-events:auto;color:#f4f1e8;font-size:12.5px;letter-spacing:5px;border:1px solid rgba(244,241,232,.55);padding:10px 22px}
+.nav .sound-toggle{pointer-events:auto;font:inherit;font-size:12.5px;letter-spacing:2px;color:#f4f1e8;background:none;border:1px solid rgba(244,241,232,.55);padding:10px 14px;cursor:pointer;white-space:nowrap;box-sizing:border-box;min-height:44px;display:inline-flex;align-items:center}
+@media (max-width:640px){.nav .sound-toggle{padding:8px 9px;font-size:12px;letter-spacing:1px}}
 .nav a:hover{color:#fff;border-color:#fff}
 .nav::before{content:"";position:absolute;top:0;left:0;right:0;bottom:-34px;background:linear-gradient(rgba(20,22,16,.6),rgba(20,22,16,0));opacity:0;transition:opacity .4s ease;pointer-events:none;z-index:-1}
 .nav.on-photo{mix-blend-mode:normal}
@@ -730,6 +751,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 <nav class="nav" aria-label="主要導覽">
   <div class="brand">山遇</div>
   <div class="nav-links">
+    <button class="sound-toggle" type="button" aria-pressed="false" aria-label="開啟首頁影片聲音">♪ 開聲音</button>
     <a href="#room-options" data-track="room_select" data-room="all" data-placement="nav">房型房價</a>
     <a href="https://line.me/ti/p/~hans588121" target="_blank" rel="noopener" data-track="line_click" data-room="all" data-placement="nav">LINE 詢房</a>
   </div>
@@ -1185,6 +1207,7 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 <footer>
   <div class="brand">山遇</div>
   <div class="lines">花蓮縣壽豐鄉豐山村和平街8號<br><span class="nowrap">0939-588121 程先生</span> ｜ <span class="nowrap">(03) 8650-566</span> ｜ <span class="nowrap">LINE：hans588121</span><br><a href="https://www.facebook.com/shanyu2015" target="_blank" rel="noopener">Facebook</a></div>
+  <div class="lines">首頁影片配樂：J.S. Bach《無伴奏大提琴組曲第一號・前奏曲》，演奏 Philip Milman，<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener license">CC BY 3.0</a>，經剪輯</div>
   <div class="copy">© 2026 山遇莊園民宿</div>
 </footer>
 
@@ -1203,9 +1226,21 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
   var splash = document.querySelector('.splash');
   if (splash) setTimeout(function () { splash.remove(); }, 3700);
   var heroVideo = document.querySelector('.hero-video');
-  if (heroVideo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    setTimeout(function () { var pr = heroVideo.play(); if (pr) pr.catch(function () {}); }, 2600);
-  }
+  var heroOn = false;
+  function playHero() { heroOn = true; var pr = heroVideo.play(); if (pr) pr.catch(function () {}); }
+  if (heroVideo && !matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(playHero, 2600);
+  // browsers only autoplay muted video; sound starts from the visitor's own tap
+  var soundBtn = document.querySelector('.sound-toggle');
+  if (heroVideo && soundBtn) soundBtn.addEventListener('click', function () {
+    heroVideo.muted = !heroVideo.muted;
+    soundBtn.setAttribute('aria-pressed', String(!heroVideo.muted));
+    soundBtn.setAttribute('aria-label', heroVideo.muted ? '開啟首頁影片聲音' : '關閉首頁影片聲音');
+    soundBtn.textContent = heroVideo.muted ? '♪ 開聲音' : '♪ 關聲音';
+    if (!heroVideo.muted) playHero();
+  });
+  if (heroVideo && 'IntersectionObserver' in window) new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (!e.isIntersecting) heroVideo.pause(); else if (heroOn) playHero(); });
+  }).observe(heroVideo);
   var els = document.querySelectorAll('[data-reveal]');
   if (!('IntersectionObserver' in window)) return;
   els.forEach(function (el) {

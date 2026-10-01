@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://shanyu2015.com/</loc>
     <lastmod>2026-10-01</lastmod>
@@ -32,6 +33,14 @@
       <image:title>水見曉逐木屋雙人床與窗邊書桌</image:title></image:image>
     <image:image><image:loc>https://shanyu2015.com/assets/breakfast-dish.jpg</image:loc>
       <image:title>主人手做的家常早餐</image:title></image:image>
+    <video:video>
+      <video:thumbnail_loc>https://shanyu2015.com/assets/video/hero-poster.webp</video:thumbnail_loc>
+      <video:title>山遇莊園美樂地｜30 秒莊園導覽</video:title>
+      <video:description>花蓮壽豐山遇莊園美樂地導覽影片：千坪莊園與生態池、主棟公共空間、三間主棟客房、水見曉逐獨棟木屋、主屋一樓的次日早餐，以及莊園主人程斯汗。</video:description>
+      <video:content_loc>https://shanyu2015.com/assets/video/hero-h.mp4</video:content_loc>
+      <video:duration>30</video:duration>
+      <video:publication_date>2026-10-01T08:00:00+08:00</video:publication_date>
+    </video:video>
   </url>
   <url>
     <loc>https://shanyu2015.com/main-building.html</loc>
