@@ -21,7 +21,7 @@
 <meta name="twitter:image:alt" content="山遇莊園庭園，草坪、樹林與生態池">
 <meta property="og:locale" content="zh_TW">
 <link rel="canonical" href="https://shanyu2015.com/">
-<link rel="preload" as="image" imagesrcset="assets/gallery-hd-20260916/garden-pond-640.webp 640w, assets/gallery-hd-20260916/garden-pond-1080.webp 1080w, assets/gallery-hd-20260916/garden-pond-1600.webp 1600w, assets/gallery-hd-20260916/garden-pond.webp 2730w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="assets/video/hero-poster.webp" fetchpriority="high">
 <meta name="geo.region" content="TW-HUA">
 <meta name="geo.placename" content="花蓮縣壽豐鄉">
 <meta name="geo.position" content="23.8443443;121.483352">
@@ -475,8 +475,6 @@ img{display:block}
 @keyframes heroFade{from{opacity:0}to{opacity:1}}
 @keyframes splashText{0%{opacity:1}75%{opacity:1}100%{opacity:0}}
 @keyframes splashOut{to{opacity:0;visibility:hidden}}
-@keyframes slideFade{0%{opacity:0}5%{opacity:1}20%{opacity:1}25%{opacity:0}100%{opacity:0}}
-@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.07)}}
 @keyframes slowRise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 @keyframes scrollHint{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(10px);opacity:.25}}
 
@@ -497,16 +495,10 @@ img{display:block}
 /* ── Hero ── */
 .hero{position:relative;height:100vh;min-height:560px;background:#1c1e18;overflow:hidden}
 .hero-img{position:absolute;inset:0;animation:heroFade 2.4s ease both}
-.hero-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:0;animation:slideFade 25s ease-in-out infinite,kenburns 25s linear infinite}
-.hero-img picture:nth-child(1) img{animation-delay:-1.25s,-1.25s}
-.hero-img picture:nth-child(2) img{animation-delay:3.75s,3.75s}
-.hero-img picture:nth-child(3) img{animation-delay:8.75s,8.75s}
-.hero-img picture:nth-child(4) img{animation-delay:13.75s,13.75s}
-.hero-img picture:nth-child(5) img{animation-delay:18.75s,18.75s}
-@media (prefers-reduced-motion:reduce){.hero-img img{animation:none}.hero-img picture:first-child img{opacity:1}}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero-shade{position:absolute;inset:0;background:linear-gradient(to bottom left,rgba(20,22,16,.5) 0%,rgba(20,22,16,.22) 30%,rgba(20,22,16,0) 52%),radial-gradient(ellipse at 50% 60%,rgba(20,22,16,0) 45%,rgba(20,22,16,.42) 100%);pointer-events:none}
 .hero-title{position:absolute;top:20%;right:clamp(24px,8vw,110px);transform:translateY(-50%);display:flex;gap:26px;color:#f4f1e8;pointer-events:none;animation:slowRise 1.6s .5s ease both}
-.hero-title::before{content:'';position:absolute;inset:-16% -22% -18% -26%;background:radial-gradient(ellipse at 62% 50%,rgba(18,20,14,.72) 0%,rgba(18,20,14,.46) 48%,rgba(18,20,14,.16) 70%,rgba(18,20,14,0) 84%);z-index:-1}
+.hero-title::before{content:'';position:absolute;inset:-16% -22% -18% -26%;background:radial-gradient(closest-side at 62% 50%,rgba(18,20,14,.72) 0%,rgba(18,20,14,.46) 48%,rgba(18,20,14,.16) 70%,rgba(18,20,14,0) 84%);z-index:-1}
 .hero-title .sub{writing-mode:vertical-rl;font-size:clamp(17px,3.1vw,23px);letter-spacing:11px;font-weight:300;opacity:.9;padding-top:10px;text-shadow:0 1px 3px rgba(0,0,0,.55),0 2px 22px rgba(0,0,0,.6)}
 .hero-title h1{margin:0;line-height:0}
 .hero-title h1 img{display:block;width:auto;height:clamp(230px,40vh,380px);filter:drop-shadow(0 1px 3px rgba(0,0,0,.5)) drop-shadow(0 3px 26px rgba(0,0,0,.5))}
@@ -516,8 +508,6 @@ img{display:block}
 @media (max-width:640px){
   .hero{height:auto;min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:38px;padding:80px 0 34px}
   .hero-img{position:static;order:2;animation:heroFade 2.4s ease both}
-  .hero-img img{position:static;width:100%;height:auto;object-fit:unset;opacity:1;animation:none}
-  .hero-img picture:nth-child(n+2) img{display:none}
   .hero-shade{display:none}
   .hero-title{position:static;transform:none;order:1;justify-content:center}
   .hero-title h1 img{height:clamp(190px,32vh,270px)}
@@ -747,11 +737,10 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 
 <header class="hero">
   <div class="hero-img">
-    <picture><source type="image/webp" srcset="assets/gallery-hd-20260916/garden-pond-640.webp 640w, assets/gallery-hd-20260916/garden-pond-1080.webp 1080w, assets/gallery-hd-20260916/garden-pond-1600.webp 1600w, assets/gallery-hd-20260916/garden-pond.webp 2730w" sizes="100vw"><img src="assets/gallery-hd-20260916/garden-pond.jpg" alt="山遇莊園庭園，草坪、樹林與生態池" fetchpriority="high" width="2730" height="1536"></picture>
-    <picture><source type="image/webp" srcset="assets/gallery-hd-20260916/cabin-pond-640.webp 640w, assets/gallery-hd-20260916/cabin-pond-1080.webp 1080w, assets/gallery-hd-20260916/cabin-pond-1600.webp 1600w, assets/gallery-hd-20260916/cabin-pond.webp 2364w" sizes="100vw"><img src="assets/gallery-hd-20260916/cabin-pond.jpg" alt="水見曉逐木屋白天外觀，雙層玻璃窗與池畔倒影" loading="lazy" width="2364" height="1774"></picture>
-    <picture><source type="image/webp" srcset="assets/gallery-hd-20260916/dining-room-640.webp 640w, assets/gallery-hd-20260916/dining-room-1080.webp 1080w, assets/gallery-hd-20260916/dining-room-1600.webp 1600w, assets/gallery-hd-20260916/dining-room.webp 2364w" sizes="100vw"><img src="assets/gallery-hd-20260916/dining-room.jpg" alt="公共餐廳，木質餐桌與落地窗外的庭園綠意" loading="lazy" width="2364" height="1774"></picture>
-    <picture><source type="image/webp" srcset="assets/gallery-hd-20260916/window-seat-640.webp 640w, assets/gallery-hd-20260916/window-seat-1080.webp 1080w, assets/gallery-hd-20260916/window-seat-1600.webp 1600w, assets/gallery-hd-20260916/window-seat.webp 2364w" sizes="100vw"><img src="assets/gallery-hd-20260916/window-seat.jpg" alt="窗邊休憩臥榻，向日葵抱枕與窗外庭園" loading="lazy" width="2364" height="1774"></picture>
-    <picture><source type="image/webp" srcset="assets/gallery-hd-20260916/garden-lawn-640.webp 640w, assets/gallery-hd-20260916/garden-lawn-1080.webp 1080w, assets/gallery-hd-20260916/garden-lawn-1600.webp 1600w, assets/gallery-hd-20260916/garden-lawn.webp 2730w" sizes="100vw"><img src="assets/gallery-hd-20260916/garden-lawn.jpg" alt="莊園草坪上的彩色鳥飾與綠蔭環繞的生態池" loading="lazy" width="2730" height="1536"></picture>
+    <video class="hero-video" muted loop playsinline preload="metadata" poster="assets/video/hero-poster.webp" aria-label="山遇莊園導覽影片：莊園環境、公共空間、四間客房與早餐">
+      <source src="assets/video/hero-v.mp4" type="video/mp4" media="(orientation: portrait)">
+      <source src="assets/video/hero-h.mp4" type="video/mp4">
+    </video>
   </div>
   <div class="hero-shade"></div>
   <div class="hero-title">
@@ -1213,6 +1202,10 @@ body{padding-bottom:calc(56px + env(safe-area-inset-bottom))}
 (function () {
   var splash = document.querySelector('.splash');
   if (splash) setTimeout(function () { splash.remove(); }, 3700);
+  var heroVideo = document.querySelector('.hero-video');
+  if (heroVideo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(function () { var pr = heroVideo.play(); if (pr) pr.catch(function () {}); }, 2600);
+  }
   var els = document.querySelectorAll('[data-reveal]');
   if (!('IntersectionObserver' in window)) return;
   els.forEach(function (el) {
